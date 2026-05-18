@@ -1,0 +1,182 @@
+/* =============================================
+   BILLING APP - Premium Bootstrap 5 Overrides
+   ============================================= */
+
+:root {
+  --bs-primary: #6366f1;
+  --bs-primary-rgb: 99, 102, 241;
+  --bs-secondary: #06b6d4;
+  --bs-secondary-rgb: 6, 182, 212;
+  --bs-body-bg: #0f0f1a;
+  --bs-body-color: #f1f5f9;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --glass-blur: blur(12px);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bs-body-bg);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.08), transparent 25%);
+  background-attachment: fixed;
+  color: var(--bs-body-color);
+  min-height: 100vh;
+}
+
+/* Glassmorphism Utilities */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 1rem;
+}
+
+/* Auth Page specific */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-container {
+  width: 100%;
+  max-width: 420px;
+  animation: slideUp 0.5s ease forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Controls */
+.form-control, .form-select {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  color: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+.form-control:focus, .form-select:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  color: #fff;
+}
+
+.input-group-text {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-right: none;
+  color: #94a3b8;
+}
+.input-group .form-control {
+  border-left: none;
+  padding-left: 0;
+}
+.input-group .form-control:focus {
+  border-left: none;
+  box-shadow: none;
+}
+.input-group:focus-within {
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  border-radius: 0.5rem;
+}
+.input-group:focus-within .input-group-text,
+.input-group:focus-within .form-control {
+  border-color: var(--bs-primary);
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, var(--bs-primary), #4f46e5);
+  border: none;
+  box-shadow: 0 4px 15px rgba(var(--bs-primary-rgb), 0.4);
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--bs-primary-rgb), 0.6);
+}
+
+/* Layout - Sidebar */
+.wrapper {
+  overflow: hidden;
+}
+.sidebar {
+  width: 260px;
+  background: rgba(15, 15, 26, 0.8) !important;
+  backdrop-filter: var(--glass-blur);
+  z-index: 1000;
+  transition: all 0.3s;
+}
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  height: 100vh;
+}
+.nav-link {
+  color: #94a3b8;
+  border-radius: 0.5rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s;
+}
+.nav-link:hover, .nav-link.active {
+  background: rgba(var(--bs-primary-rgb), 0.15);
+  color: #fff;
+}
+.nav-link i {
+  width: 24px;
+}
+
+/* Cards & Tables */
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+.table-dark {
+  --bs-table-bg: transparent;
+}
+.table-dark tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive Sidebar & Overlays */
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;
+    height: 100vh;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  }
+  .sidebar.show {
+    left: 0;
+  }
+  .main-content {
+    width: 100%;
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.sidebar-overlay.show {
+  display: block;
+  opacity: 1;
+}

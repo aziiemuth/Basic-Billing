@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo isset($data['title']) ? $data['title'] : SITENAME; ?></title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/style.css">
+</head>
+<body class="admin-layout">
+    <div class="d-flex h-100 wrapper">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar d-flex flex-column border-end border-secondary border-opacity-25 shadow-sm">
+            <div class="p-4 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-3">
+                <div class="bg-primary bg-gradient rounded p-2 text-white shadow-sm">
+                    <i class="bi bi-router fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold text-white">Billing App</h6>
+                    <small class="text-secondary" style="font-size: 0.75rem;">ISP Management</small>
+                </div>
+            </div>
+
+            <div class="flex-grow-1 overflow-auto p-3">
+                <div class="small fw-semibold text-secondary mb-2 mt-2 px-2 text-uppercase" style="letter-spacing: 1px;">Utama</div>
+                <nav class="nav flex-column mb-4">
+                    <a href="<?php echo URLROOT; ?>/AdminDashboardController" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminDashboard') !== false || $_SERVER['REQUEST_URI'] == URLROOT.'/' || $_SERVER['REQUEST_URI'] == URLROOT ? 'active' : ''; ?> fw-medium d-flex align-items-center gap-2">
+                        <i class="bi bi-grid"></i> Dashboard
+                    </a>
+                    <a href="<?php echo URLROOT; ?>/AdminCustomerController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminCustomer') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-people"></i> Pelanggan
+                    </a>
+                    <a href="<?php echo URLROOT; ?>/AdminPackageController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminPackage') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-box-seam"></i> Paket Internet
+                    </a>
+                    <a href="<?php echo URLROOT; ?>/AdminRouterController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminRouter') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-router"></i> Router / Server
+                    </a>
+                </nav>
+
+                <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase" style="letter-spacing: 1px;">Keuangan</div>
+                <nav class="nav flex-column mb-4">
+                    <a href="<?php echo URLROOT; ?>/AdminInvoiceController/generate" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminInvoice') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-receipt"></i> Generate Tagihan
+                    </a>
+                    <a href="<?php echo URLROOT; ?>/AdminReportController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminReport') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-graph-up"></i> Laporan & Arus Kas
+                    </a>
+                </nav>
+            </div>
+
+            <div class="p-3 border-top border-secondary border-opacity-25 mt-auto">
+                <a href="<?php echo URLROOT; ?>/AdminProfileController" class="text-decoration-none">
+                    <div class="d-flex align-items-center gap-2 mb-3 bg-dark bg-opacity-50 p-2 rounded border border-secondary border-opacity-25" style="transition: all 0.2s ease;">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px;">
+                            <?php echo strtoupper(substr($_SESSION['user_name'] ?? 'A', 0, 1)); ?>
+                        </div>
+                        <div class="overflow-hidden">
+                            <div class="fw-semibold text-white text-truncate small"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?></div>
+                            <div class="text-info" style="font-size: 0.7rem;"><i class="bi bi-gear-fill me-1"></i>Pengaturan Sistem</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="<?php echo URLROOT; ?>/AdminAuthController/logout" class="btn btn-outline-danger w-100 btn-sm fw-medium d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT WRAPPER -->
+        <main class="main-content flex-grow-1 bg-transparent">
+            <!-- TOPBAR -->
+            <header class="d-flex justify-content-between align-items-center p-3 p-md-4 border-bottom border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 50;">
+                <div class="d-flex align-items-center gap-3">
+                    <button id="sidebarToggle" class="btn btn-outline-secondary d-lg-none border-0" aria-label="Toggle Sidebar">
+                        <i class="bi bi-list fs-4"></i>
+                    </button>
+                    <div>
+                        <h4 class="mb-0 fw-bold text-white fs-5 fs-md-4"><?php echo isset($data['title']) ? $data['title'] : 'Dashboard'; ?></h4>
+                        <p class="text-secondary small mb-0 d-none d-md-block">Selamat datang kembali, <?php echo htmlspecialchars($_SESSION['user_name'] ?? ''); ?>!</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-inline-flex align-items-center gap-2 px-2 py-1 px-md-3 rounded-pill" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <span class="spinner-grow spinner-grow-sm text-success" style="width: 8px; height: 8px;" role="status" aria-hidden="true"></span>
+                        <span class="text-success small fw-semibold d-none d-sm-inline">Sistem Online</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <div class="p-4">

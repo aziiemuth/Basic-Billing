@@ -1,0 +1,8 @@
+{
+    "name": "project/billing",
+    "description": "Billing Project",
+    "type": "project",
+    "require": {
+        "midtrans/midtrans-php": "^2.6"
+    }
+}
