@@ -98,8 +98,8 @@ class CronController extends Controller {
                         require_once APPROOT . '/app/libraries/WhatsappService.php';
                         WhatsappService::sendNewInvoice($customer->id, $customer->whatsapp, $customer->name, $invoice_number, $amount, $billing_month, $due_date);
                         
-                        // Beri jeda 2 detik agar tidak SPAM/Banned oleh Fonnte
-                        sleep(2);
+                        // Beri jeda 10 detik agar tidak SPAM/Banned oleh Fonnte
+                        sleep(10);
                     }
                     $count++;
                 }
@@ -135,8 +135,8 @@ class CronController extends Controller {
             WhatsappService::sendPaymentReminder($inv->customer_id, $inv->whatsapp, $inv->name, $inv->total_amount, $inv->due_date);
             $count++;
             
-            // Beri jeda 2 detik agar tidak SPAM/Banned oleh Fonnte
-            sleep(2);
+            // Beri jeda 10 detik agar tidak SPAM/Banned oleh Fonnte
+            sleep(10);
         }
         echo "       >> Mengirim $count reminder jatuh tempo.\n";
     }

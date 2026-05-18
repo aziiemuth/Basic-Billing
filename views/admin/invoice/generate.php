@@ -189,11 +189,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 countSuccessEl.innerText = success;
                 countFailedEl.innerText = failed;
 
-                // Memberi jeda aman selama 2 detik (2000 ms) tiap kali invoice + WA terkirim
+                // Memberi jeda aman selama 10 detik (10000 ms) tiap kali invoice + WA terkirim
                 // untuk menghindari sistem anti-spam WhatsApp
                 if (processed < total) {
-                    progressStatus.innerText = 'Menjaga jeda aman pengiriman WA (Anti-Banned)...';
-                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    progressStatus.innerText = 'Menjaga jeda aman pengiriman WA (Anti-Banned 10 Detik)...';
+                    await new Promise(resolve => setTimeout(resolve, 10000));
                     progressStatus.innerText = 'Memproses penagihan pelanggan berikutnya...';
                 }
             }
