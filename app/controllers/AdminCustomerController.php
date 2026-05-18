@@ -34,6 +34,44 @@ class AdminCustomerController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING); // Deprecated in PHP 8.1+
 
+            $pppoe_username = isset($_POST['pppoe_username']) ? trim($_POST['pppoe_username']) : '';
+            $mikrotik_router_id = trim($_POST['mikrotik_router_id']);
+
+            // 1. Cek jika username PPPoE kosong
+            if (empty($pppoe_username)) {
+                $_SESSION['toast_error'] = 'Username PPPoE tidak boleh kosong!';
+                header('Location: ' . URLROOT . '/AdminCustomerController/create');
+                exit;
+            }
+
+            // 2. Cek duplikasi PPPoE Username di Database Lokal
+            $pppoeModel = $this->model('PppoeSecretModel');
+            if ($pppoeModel->getByUsername($pppoe_username)) {
+                $_SESSION['toast_error'] = 'Gagal! Username PPPoE sudah terdaftar di database billing.';
+                header('Location: ' . URLROOT . '/AdminCustomerController/create');
+                exit;
+            }
+
+            // 3. Cek duplikasi PPPoE Username di Router MikroTik
+            $mikrotikService = new MikrotikService();
+            if ($mikrotikService->connect($mikrotik_router_id)) {
+                $rawSecrets = $mikrotikService->getAllPppoeSecrets();
+                $existsOnMikrotik = false;
+                foreach ($rawSecrets as $s) {
+                    if (isset($s['name']) && $s['name'] === $pppoe_username) {
+                        $existsOnMikrotik = true;
+                        break;
+                    }
+                }
+                $mikrotikService->disconnect();
+
+                if ($existsOnMikrotik) {
+                    $_SESSION['toast_error'] = 'Gagal! Username PPPoE "' . htmlspecialchars($pppoe_username) . '" sudah digunakan di Router MikroTik Anda. Silakan gunakan nama lain.';
+                    header('Location: ' . URLROOT . '/AdminCustomerController/create');
+                    exit;
+                }
+            }
+
             $data = [
                 'customer_id' => trim($_POST['customer_id']),
                 'name' => trim($_POST['name']),
@@ -140,6 +178,49 @@ class AdminCustomerController extends Controller {
     public function update($id) {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING); // Deprecated in PHP 8.1+
+
+            $pppoe_username = isset($_POST['pppoe_username']) ? trim($_POST['pppoe_username']) : '';
+            $mikrotik_router_id = trim($_POST['mikrotik_router_id']);
+
+            // 1. Cek jika username PPPoE kosong
+            if (empty($pppoe_username)) {
+                $_SESSION['toast_error'] = 'Username PPPoE tidak boleh kosong!';
+                header('Location: ' . URLROOT . '/AdminCustomerController/edit/' . $id);
+                exit;
+            }
+
+            // 2. Cek duplikasi PPPoE Username di Database Lokal (Kecuali user ini sendiri)
+            $pppoeModel = $this->model('PppoeSecretModel');
+            if ($pppoeModel->getByUsernameExcludingCustomer($pppoe_username, $id)) {
+                $_SESSION['toast_error'] = 'Gagal! Username PPPoE sudah digunakan oleh pelanggan lain di database billing.';
+                header('Location: ' . URLROOT . '/AdminCustomerController/edit/' . $id);
+                exit;
+            }
+
+            // 3. Cek duplikasi PPPoE Username di Router MikroTik (Kecuali jika username tidak berubah)
+            $existingPppoe = $pppoeModel->getByCustomerId($id);
+            $hasUsernameChanged = (!$existingPppoe || $existingPppoe->username !== $pppoe_username);
+            
+            if ($hasUsernameChanged) {
+                $mikrotikService = new MikrotikService();
+                if ($mikrotikService->connect($mikrotik_router_id)) {
+                    $rawSecrets = $mikrotikService->getAllPppoeSecrets();
+                    $existsOnMikrotik = false;
+                    foreach ($rawSecrets as $s) {
+                        if (isset($s['name']) && $s['name'] === $pppoe_username) {
+                            $existsOnMikrotik = true;
+                            break;
+                        }
+                    }
+                    $mikrotikService->disconnect();
+
+                    if ($existsOnMikrotik) {
+                        $_SESSION['toast_error'] = 'Gagal! Username PPPoE "' . htmlspecialchars($pppoe_username) . '" sudah digunakan oleh pengguna lain di Router MikroTik Anda. Silakan gunakan nama lain.';
+                        header('Location: ' . URLROOT . '/AdminCustomerController/edit/' . $id);
+                        exit;
+                    }
+                }
+            }
 
             $data = [
                 'id' => $id,

@@ -54,6 +54,19 @@ class PppoeSecretModel {
         return $this->db->single();
     }
 
+    public function getByUsername($username) {
+        $this->db->query('SELECT * FROM pppoe_secrets WHERE username = :username LIMIT 1');
+        $this->db->bind(':username', $username);
+        return $this->db->single();
+    }
+
+    public function getByUsernameExcludingCustomer($username, $customer_id) {
+        $this->db->query('SELECT * FROM pppoe_secrets WHERE username = :username AND customer_id != :customer_id LIMIT 1');
+        $this->db->bind(':username', $username);
+        $this->db->bind(':customer_id', $customer_id);
+        return $this->db->single();
+    }
+
     public function deleteByCustomerId($customer_id) {
         $this->db->query('DELETE FROM pppoe_secrets WHERE customer_id = :customer_id');
         $this->db->bind(':customer_id', $customer_id);
