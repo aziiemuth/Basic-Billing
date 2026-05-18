@@ -20,6 +20,25 @@ class AdminInvoiceController extends Controller {
         $this->view('admin/invoice/generate', $data);
     }
 
+    public function manual() {
+        // Hanya ambil pelanggan yang aktif untuk mempermudah list
+        $customers = $this->customerModel->getCustomersForBilling('all');
+        $packages = $this->packageModel->getAll();
+        
+        // Buat map paket untuk mempermudah di view
+        $packageMap = [];
+        foreach($packages as $pkg) {
+            $packageMap[$pkg->id] = $pkg;
+        }
+        
+        $data = [
+            'title' => 'Tagihan Manual (Direct WA)',
+            'customers' => $customers,
+            'packageMap' => $packageMap
+        ];
+        $this->view('admin/invoice/manual', $data);
+    }
+
     public function apiGetTargetCustomers() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('Content-Type: application/json');

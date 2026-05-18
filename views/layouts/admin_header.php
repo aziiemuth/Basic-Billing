@@ -47,8 +47,11 @@
 
                 <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase" style="letter-spacing: 1px;">Keuangan</div>
                 <nav class="nav flex-column mb-4">
-                    <a href="<?php echo URLROOT; ?>/AdminInvoiceController/generate" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminInvoice') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-receipt"></i> Generate Tagihan
+                    <a href="<?php echo URLROOT; ?>/AdminInvoiceController/generate" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminInvoice/generate') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-receipt"></i> Generate Tagihan (Otomatis)
+                    </a>
+                    <a href="<?php echo URLROOT; ?>/AdminInvoiceController/manual" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminInvoice/manual') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-whatsapp"></i> Tagihan Manual (Direct WA)
                     </a>
                     <a href="<?php echo URLROOT; ?>/AdminReportController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminReport') !== false ? 'active' : ''; ?>">
                         <i class="bi bi-graph-up"></i> Laporan & Arus Kas
