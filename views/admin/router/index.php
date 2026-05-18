@@ -104,6 +104,7 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <form action="<?php echo URLROOT; ?>/AdminRouterController/delete/<?php echo $router->id; ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus router ini?');">
+    <?php echo SecurityHelper::csrfField(); ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger border-opacity-25 text-danger" title="Hapus">
                                             <i class="bi bi-trash"></i>
                                         </button>

@@ -10,6 +10,19 @@ class Core {
     public function __construct() {
         $url = $this->getUrl();
 
+        // Global CSRF Protection for all POST requests (except external webhooks like Midtrans)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $isWebhook = false;
+            if (isset($url[0]) && strcasecmp($url[0], 'PaymentController') === 0) {
+                if (isset($url[1]) && strcasecmp($url[1], 'webhook') === 0) {
+                    $isWebhook = true;
+                }
+            }
+            if (!$isWebhook) {
+                SecurityHelper::validateCsrf();
+            }
+        }
+
         // Default controller if not set
         if (!isset($url[0])) {
             $url[0] = 'AdminDashboardController';

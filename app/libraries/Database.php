@@ -22,7 +22,9 @@ class Database {
             $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
         } catch (PDOException $e) {
             $this->error = $e->getMessage();
-            die('Database Connection Error: ' . $this->error);
+            // Log error internally instead of exposing credentials/DB IP to users
+            error_log('Database Connection Error: ' . $this->error);
+            die('Maaf, terjadi masalah koneksi ke database. Silakan hubungi Administrator atau coba beberapa saat lagi.');
         }
     }
 

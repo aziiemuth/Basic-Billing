@@ -79,6 +79,7 @@
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     <form action="<?php echo URLROOT; ?>/AdminCustomerController/delete/<?php echo $customer->id; ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus pelanggan ini? Semua data terkait juga akan terhapus.');">
+    <?php echo SecurityHelper::csrfField(); ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger border-opacity-25 text-danger" title="Hapus">
                                             <i class="bi bi-trash"></i>
                                         </button>

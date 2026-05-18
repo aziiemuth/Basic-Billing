@@ -8,6 +8,7 @@
 </div>
 
 <form action="<?php echo URLROOT; ?>/AdminPackageController/update/<?php echo $data['package']->id; ?>" method="POST">
+    <?php echo SecurityHelper::csrfField(); ?>
     <div class="row g-4">
         <div class="col-12 col-xl-8">
             <div class="card glass-card border-0 shadow-sm mb-4">

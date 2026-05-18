@@ -77,7 +77,8 @@ class PaymentController extends Controller {
             exit;
             
         } catch (\Exception $e) {
-            die('Error Midtrans: ' . $e->getMessage());
+            error_log('Error Midtrans: ' . $e->getMessage());
+            die('Gagal memproses pembayaran melalui Midtrans. Silakan hubungi Administrator atau coba beberapa saat lagi.');
         }
     }
 

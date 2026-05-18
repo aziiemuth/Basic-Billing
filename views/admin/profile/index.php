@@ -115,6 +115,7 @@
             </div>
             <div class="card-body p-4">
                 <form action="<?php echo URLROOT; ?>/AdminProfileController/updateSettings" method="POST">
+    <?php echo SecurityHelper::csrfField(); ?>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label text-secondary small">Nama Usaha</label>

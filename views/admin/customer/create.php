@@ -8,6 +8,7 @@
 </div>
 
 <form action="<?php echo URLROOT; ?>/AdminCustomerController/store" method="POST" enctype="multipart/form-data">
+    <?php echo SecurityHelper::csrfField(); ?>
     <div class="row g-4">
         <!-- Informasi Personal -->
         <div class="col-12 col-xl-8">

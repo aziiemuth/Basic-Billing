@@ -57,6 +57,7 @@
             </div>
         <?php else: ?>
             <form action="<?php echo URLROOT; ?>/AdminCustomerController/storeImportMikrotik" method="POST" id="importForm">
+    <?php echo SecurityHelper::csrfField(); ?>
                 <input type="hidden" name="router_id" value="<?php echo htmlspecialchars($data['router_id']); ?>">
                 
                 <div class="row mb-4">

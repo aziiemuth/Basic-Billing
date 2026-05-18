@@ -13,6 +13,7 @@
         <div class="card glass-card border-0 shadow-sm">
             <div class="card-body p-4">
                 <form action="<?php echo URLROOT; ?>/AdminRouterController/store" method="POST">
+    <?php echo SecurityHelper::csrfField(); ?>
                     
                     <h6 class="text-white fw-bold mb-3 border-bottom border-secondary border-opacity-25 pb-2">Informasi Umum</h6>
                     <div class="row mb-4">
