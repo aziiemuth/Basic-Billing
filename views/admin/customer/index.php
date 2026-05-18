@@ -5,9 +5,14 @@
         <h4 class="fw-bold text-white mb-1">Manajemen Pelanggan</h4>
         <p class="text-secondary small mb-0">Kelola data pelanggan, status, dan layanan internet.</p>
     </div>
-    <a href="<?php echo URLROOT; ?>/AdminCustomerController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
-        <i class="bi bi-plus-lg"></i> Tambah Pelanggan
-    </a>
+    <div class="d-flex gap-2">
+        <a href="<?php echo URLROOT; ?>/AdminCustomerController/importMikrotik" class="btn btn-outline-info btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25">
+            <i class="bi bi-cloud-download"></i> Import dari MikroTik
+        </a>
+        <a href="<?php echo URLROOT; ?>/AdminCustomerController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
+            <i class="bi bi-plus-lg"></i> Tambah Pelanggan
+        </a>
+    </div>
 </div>
 
 <div class="card glass-card border-0 shadow-sm">

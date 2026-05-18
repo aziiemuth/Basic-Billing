@@ -320,4 +320,127 @@ class AdminCustomerController extends Controller {
         header('Location: ' . URLROOT . '/AdminCustomerController');
         exit;
     }
+
+    public function importMikrotik() {
+        $routerModel = $this->model('MikrotikRouterModel');
+        $routers = $routerModel->getAll();
+        
+        $router_id = isset($_GET['router_id']) ? $_GET['router_id'] : null;
+        if (!$router_id && count($routers) > 0) {
+            $router_id = $routers[0]->id;
+        }
+
+        $secrets = [];
+        $error = null;
+
+        if ($router_id) {
+            $mikrotikService = new MikrotikService();
+            if ($mikrotikService->connect($router_id)) {
+                $rawSecrets = $mikrotikService->getAllPppoeSecrets();
+                
+                // Get existing usernames to avoid duplication
+                $db = new Database();
+                $db->query("SELECT username FROM pppoe_secrets");
+                $existing = $db->resultSet();
+                $existingUsernames = [];
+                foreach ($existing as $e) {
+                    $existingUsernames[] = $e->username;
+                }
+                
+                foreach ($rawSecrets as $s) {
+                    if (isset($s['name']) && !in_array($s['name'], $existingUsernames)) {
+                        $secrets[] = $s;
+                    }
+                }
+            } else {
+                $error = "Gagal terhubung ke MikroTik Router. Pastikan status router aktif.";
+            }
+        }
+
+        $data = [
+            'title' => 'Import Pelanggan dari MikroTik',
+            'routers' => $routers,
+            'router_id' => $router_id,
+            'secrets' => $secrets,
+            'error' => $error,
+            'packages' => $this->model('PackageModel')->getAll()
+        ];
+        
+        $this->view('admin/customer/import_mikrotik', $data);
+    }
+
+    public function storeImportMikrotik() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $router_id = $_POST['router_id'];
+            $selected_secrets = isset($_POST['secrets']) ? $_POST['secrets'] : [];
+            $package_id = $_POST['package_id'];
+            
+            if (empty($selected_secrets) || empty($router_id) || empty($package_id)) {
+                die("Pilih minimal satu pelanggan dan tentukan paket internet default-nya.");
+            }
+            
+            $mikrotikService = new MikrotikService();
+            if (!$mikrotikService->connect($router_id)) {
+                die("Gagal terhubung ke router.");
+            }
+            
+            $rawSecrets = $mikrotikService->getAllPppoeSecrets();
+            $secretMap = [];
+            foreach ($rawSecrets as $s) {
+                if (isset($s['name'])) {
+                    $secretMap[$s['name']] = $s;
+                }
+            }
+            
+            $success = 0;
+            foreach ($selected_secrets as $username) {
+                if (isset($secretMap[$username])) {
+                    $s = $secretMap[$username];
+                    
+                    $cid = $this->customerModel->generateCustomerId();
+                    
+                    // Create customer
+                    $customerData = [
+                        'customer_id' => $cid,
+                        'name' => $username,
+                        'whatsapp' => '',
+                        'email' => null,
+                        'username' => $username,
+                        'password' => password_hash('123456', PASSWORD_DEFAULT),
+                        'address' => 'Imported from MikroTik',
+                        'latitude' => null,
+                        'longitude' => null,
+                        'package_id' => $package_id,
+                        'custom_price' => null,
+                        'mikrotik_router_id' => $router_id,
+                        'installation_date' => date('Y-m-d'),
+                        'due_date' => 20, // default billing due date
+                        'status' => (isset($s['disabled']) && $s['disabled'] == 'true') ? 'isolated' : 'active',
+                        'photo_profile' => null,
+                        'photo_ktp' => null
+                    ];
+                    
+                    if ($this->customerModel->create($customerData)) {
+                        $newCustomer = $this->customerModel->getByCustomerIdString($cid);
+                        if ($newCustomer) {
+                            $this->model('PppoeSecretModel')->create([
+                                'customer_id' => $newCustomer->id,
+                                'mikrotik_router_id' => $router_id,
+                                'username' => $username,
+                                'password' => isset($s['password']) ? $s['password'] : '',
+                                'profile' => isset($s['profile']) ? $s['profile'] : 'default',
+                                'service' => isset($s['service']) ? $s['service'] : 'pppoe',
+                                'status' => (isset($s['disabled']) && $s['disabled'] == 'true') ? 'disabled' : 'enabled'
+                            ]);
+                            $success++;
+                        }
+                    }
+                }
+            }
+            
+            $_SESSION['toast_success'] = "Berhasil mengimport $success pelanggan dari MikroTik.";
+            header('Location: ' . URLROOT . '/AdminCustomerController');
+            exit;
+        }
+    }
 }
