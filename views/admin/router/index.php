@@ -158,8 +158,20 @@
                             </div>
                             <div class="col-12">
                                 <div class="glass-card rounded p-3">
-                                    <div class="text-secondary small">Uptime Router</div>
+                                    <div class="text-success small">Uptime Router</div>
                                     <div class="text-success fw-medium" id="tc-uptime">-</div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="glass-card rounded p-3">
+                                    <div class="text-info fw-bold small mb-2"><i class="bi bi-person-badge-fill me-1"></i>PPPoE Profiles (untuk MIKROTIK_PROFILE)</div>
+                                    <div id="tc-profiles" class="d-flex flex-wrap gap-1 text-white small">-</div>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <div class="glass-card rounded p-3">
+                                    <div class="text-warning fw-bold small mb-2"><i class="bi bi-hdd-network-fill me-1"></i>Interfaces (untuk MIKROTIK_INTERFACE)</div>
+                                    <div id="tc-interfaces" class="d-flex flex-wrap gap-1 text-white small">-</div>
                                 </div>
                             </div>
                         </div>
@@ -257,6 +269,28 @@ document.getElementById('btn-test-config').addEventListener('click', function() 
                 document.getElementById('tc-identity').textContent = data.identity || '-';
                 document.getElementById('tc-version').textContent  = data.version  || '-';
                 document.getElementById('tc-uptime').textContent   = data.uptime   || '-';
+                
+                // Render profiles
+                var profilesHtml = '';
+                if (data.profiles && data.profiles.length > 0) {
+                    data.profiles.forEach(function(p) {
+                        profilesHtml += '<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1 m-1 rounded font-monospace">' + p + '</span>';
+                    });
+                } else {
+                    profilesHtml = '<span class="text-secondary small">Tidak ada profile</span>';
+                }
+                document.getElementById('tc-profiles').innerHTML = profilesHtml;
+
+                // Render interfaces
+                var interfacesHtml = '';
+                if (data.interfaces && data.interfaces.length > 0) {
+                    data.interfaces.forEach(function(i) {
+                        interfacesHtml += '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 m-1 rounded font-monospace">' + i + '</span>';
+                    });
+                } else {
+                    interfacesHtml = '<span class="text-secondary small">Tidak ada interface</span>';
+                }
+                document.getElementById('tc-interfaces').innerHTML = interfacesHtml;
             } else {
                 document.getElementById('test-conn-error').classList.remove('d-none');
                 document.getElementById('tc-error-msg').textContent = data.message;
@@ -297,6 +331,28 @@ document.querySelectorAll('.btn-test-conn').forEach(function(btn) {
                     document.getElementById('tc-identity').textContent  = data.identity || '-';
                     document.getElementById('tc-version').textContent   = data.version  || '-';
                     document.getElementById('tc-uptime').textContent    = data.uptime   || '-';
+                    
+                    // Render profiles
+                    var profilesHtml = '';
+                    if (data.profiles && data.profiles.length > 0) {
+                        data.profiles.forEach(function(p) {
+                            profilesHtml += '<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1 m-1 rounded font-monospace">' + p + '</span>';
+                        });
+                    } else {
+                        profilesHtml = '<span class="text-secondary small">Tidak ada profile</span>';
+                    }
+                    document.getElementById('tc-profiles').innerHTML = profilesHtml;
+
+                    // Render interfaces
+                    var interfacesHtml = '';
+                    if (data.interfaces && data.interfaces.length > 0) {
+                        data.interfaces.forEach(function(i) {
+                            interfacesHtml += '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 m-1 rounded font-monospace">' + i + '</span>';
+                        });
+                    } else {
+                        interfacesHtml = '<span class="text-secondary small">Tidak ada interface</span>';
+                    }
+                    document.getElementById('tc-interfaces').innerHTML = interfacesHtml;
                 } else {
                     document.getElementById('test-conn-error').classList.remove('d-none');
                     document.getElementById('tc-error-msg').textContent = data.message;

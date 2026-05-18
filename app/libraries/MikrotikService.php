@@ -132,17 +132,40 @@ class MikrotikService {
             $uptime   = (!empty($resource) && isset($resource[0]['uptime'])) ? $resource[0]['uptime'] : '-';
             $version  = (!empty($resource) && isset($resource[0]['version'])) ? $resource[0]['version'] : '-';
 
+            // Fetch Profiles & Interfaces from RouterOS
+            $profilesData = $api->comm('/ppp/profile/print');
+            $profiles = [];
+            if (is_array($profilesData)) {
+                foreach ($profilesData as $p) {
+                    if (isset($p['name'])) {
+                        $profiles[] = $p['name'];
+                    }
+                }
+            }
+
+            $interfacesData = $api->comm('/interface/print');
+            $interfaces = [];
+            if (is_array($interfacesData)) {
+                foreach ($interfacesData as $i) {
+                    if (isset($i['name'])) {
+                        $interfaces[] = $i['name'];
+                    }
+                }
+            }
+
             $api->disconnect();
 
             return [
-                'success'  => true,
-                'message'  => 'Koneksi berhasil! (Sumber: ' . $source . ')',
-                'identity' => $name,
-                'uptime'   => $uptime,
-                'version'  => $version,
-                'host'     => $host,
-                'port'     => $port,
-                'source'   => $source,
+                'success'    => true,
+                'message'    => 'Koneksi berhasil! (Sumber: ' . $source . ')',
+                'identity'   => $name,
+                'uptime'     => $uptime,
+                'version'    => $version,
+                'host'       => $host,
+                'port'       => $port,
+                'source'     => $source,
+                'profiles'   => $profiles,
+                'interfaces' => $interfaces
             ];
         }
 
@@ -445,6 +468,17 @@ class MikrotikService {
     // =========================================================================
     // PRIVATE HELPERS
     // =========================================================================
+
+    /**
+     * Get list of all physical and virtual interfaces
+     */
+    public function getInterfaceList() {
+        try {
+            return $this->api->comm('/interface/print');
+        } catch (Exception $e) {
+            return [];
+        }
+    }
 
     /**
      * Kick active PPPoE connection
