@@ -155,7 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
             progressStatus.innerText = 'Mulai memproses ' + total + ' pelanggan...';
 
             // Step 2: Batch Processing
-            const batchSize = 10; // Proses 10 pelanggan per request
+            // Diubah menjadi 1 agar pengiriman notifikasi WA dilakukan satu per satu dan aman dari resiko banned SPAM
+            const batchSize = 1; 
             let processed = 0;
             let success = 0;
             let failed = 0;
@@ -187,6 +188,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 progressText.innerText = processed + ' / ' + total;
                 countSuccessEl.innerText = success;
                 countFailedEl.innerText = failed;
+
+                // Memberi jeda aman selama 2 detik (2000 ms) tiap kali invoice + WA terkirim
+                // untuk menghindari sistem anti-spam WhatsApp
+                if (processed < total) {
+                    progressStatus.innerText = 'Menjaga jeda aman pengiriman WA (Anti-Banned)...';
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    progressStatus.innerText = 'Memproses penagihan pelanggan berikutnya...';
+                }
             }
 
             progressStatus.innerText = 'Pembuatan tagihan massal selesai!';
