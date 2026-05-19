@@ -112,4 +112,77 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay.classList.remove('show');
         });
     }
+
+    // PWA Install Prompt Handler
+    let deferredPrompt;
+    const installBtn = document.getElementById('pwa-install-btn');
+    const installNav = document.getElementById('pwa-install-nav');
+    const installContainer = document.getElementById('pwa-install-container');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installNav) {
+            installNav.classList.remove('d-none');
+            installNav.classList.add('d-block');
+        }
+        if (installContainer) {
+            installContainer.classList.remove('d-none');
+            installContainer.classList.add('d-block');
+        }
+    });
+
+    if (installBtn) {
+        installBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('PWA installation accepted');
+                } else {
+                    console.log('PWA installation dismissed');
+                }
+                deferredPrompt = null;
+                if (installNav) {
+                    installNav.classList.add('d-none');
+                    installNav.classList.remove('d-block');
+                }
+                if (installContainer) {
+                    installContainer.classList.add('d-none');
+                    installContainer.classList.remove('d-block');
+                }
+            });
+        });
+    }
+
+    window.addEventListener('appinstalled', () => {
+        console.log('PWA was installed');
+        if (installNav) {
+            installNav.classList.add('d-none');
+            installNav.classList.remove('d-block');
+        }
+        if (installContainer) {
+            installContainer.classList.add('d-none');
+            installContainer.classList.remove('d-block');
+        }
+    });
 });
+
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        const scripts = document.getElementsByTagName('script');
+        let swPath = '/sw.js';
+        for (let i = 0; i < scripts.length; i++) {
+            const src = scripts[i].src;
+            if (src && src.includes('/assets/main.js')) {
+                swPath = src.replace('assets/main.js', 'sw.js');
+                break;
+            }
+        }
+        navigator.serviceWorker.register(swPath)
+            .then(reg => console.log('Service Worker registered. Scope:', reg.scope))
+            .catch(err => console.error('Service Worker registration failed:', err));
+    });
+}

@@ -11,6 +11,11 @@
             </div>
             <h3 class="fw-bold text-white mb-1">Portal Pelanggan</h3>
             <p class="text-secondary small">Cek tagihan & status internet Anda</p>
+            <div class="d-none mb-3" id="pwa-install-container">
+                <button type="button" class="btn btn-outline-info btn-sm w-100 py-2 fw-semibold" id="pwa-install-btn">
+                    <i class="bi bi-download me-2"></i> Install Aplikasi Portal
+                </button>
+            </div>
         </div>
 
         <?php if (!empty($data['error'])): ?>

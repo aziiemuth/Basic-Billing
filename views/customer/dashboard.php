@@ -10,6 +10,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- PWA Settings -->
+    <link rel="manifest" href="<?php echo URLROOT; ?>/manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ISP Portal">
+    <link rel="apple-touch-icon" href="<?php echo URLROOT; ?>/assets/icon-192.png">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -40,6 +48,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item d-none" id="pwa-install-nav">
+                    <a class="nav-link text-info fw-semibold me-3" href="#" id="pwa-install-btn">
+                        <i class="bi bi-download me-1"></i> Install Aplikasi
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="<?php echo URLROOT; ?>/CustomerAuthController/logout">
                         <i class="bi bi-box-arrow-right"></i> Logout
