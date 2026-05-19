@@ -30,7 +30,7 @@
                     <span class="input-group-text border-end-0 bg-transparent text-secondary">
                         <i class="bi bi-person"></i>
                     </span>
-                    <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" value="<?php echo htmlspecialchars($data['username']); ?>" placeholder="admin" required>
+                    <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" value="<?php echo htmlspecialchars($data['username']); ?>" placeholder="Masukkan username" required>
                 </div>
             </div>
             
@@ -40,7 +40,7 @@
                     <span class="input-group-text border-end-0 bg-transparent text-secondary">
                         <i class="bi bi-key"></i>
                     </span>
-                    <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" placeholder="••••••••" required>
+                    <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" placeholder="Masukkan password" required>
                 </div>
             </div>
 
