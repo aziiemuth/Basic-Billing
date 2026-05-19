@@ -5,6 +5,46 @@ Dokumen ini merupakan panduan lengkap langkah-demi-langkah (*step-by-step*) untu
 
 ---
 
+## 📊 Visualisasi Workflow Sistem Produksi
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Admin as Admin/Sistem
+    actor Pelanggan as Pelanggan RT/RW Net
+    participant App as Aplikasi (zienet.web.id/billingv1)
+    participant MT as Router MikroTik
+    participant Midtrans as Midtrans Gateway
+    participant WA as Fonnte WA Gateway
+
+    %% Alur Registrasi Pelanggan Baru
+    Note over Admin, WA: 1. Alur Registrasi & Invoice Baru
+    Admin->>App: Tambah Pelanggan & Paket Internet
+    App->>MT: Buat Akun PPPoE Secret & Profile
+    MT-->>App: Sukses Membuat Akun MikroTik
+    App->>App: Generate Invoice Tagihan Pertama (Unpaid)
+    App->>WA: Kirim Notifikasi WA Selamat Datang & Invoice Link
+    WA-->>Pelanggan: Notifikasi Tagihan Baru Masuk ke WhatsApp
+
+    %% Alur Pembayaran
+    Note over Pelanggan, WA: 2. Alur Pembayaran Autopilot (Online)
+    Pelanggan->>App: Login ke Customer Portal & Pilih Invoice
+    App->>Midtrans: Request Snap Token Pembayaran
+    Midtrans-->>App: Return Snap Payment URL
+    App->>Pelanggan: Redirect ke Halaman Pembayaran Aman
+    Pelanggan->>Midtrans: Melakukan Pembayaran (e-Wallet/VA/Ritel)
+    Midtrans->>App: Kirim Notifikasi Webhook (Payment Settled)
+    
+    %% Alur Aktivasi Otomatis & Notifikasi
+    Note over App, WA: 3. Reaksi Webhook (Autopilot)
+    App->>App: Catat Transaksi Keuangan & Saldo Arus Kas (Lunas)
+    App->>MT: Aktifkan PPPoE Secret Pelanggan (Enable Secret)
+    App->>WA: Kirim Bukti Lunas / Nota Lunas PDF via WA
+    WA-->>Pelanggan: Terima Pesan WA: Pembayaran Sukses & Internet Aktif!
+```
+
+---
+
 ## 📋 Daftar Isi
 1. [Langkah 1: Konfigurasi Variabel Lingkungan (.env)](#1-konfigurasi-variabel-lingkungan-env)
 2. [Langkah 2: Migrasi & Optimasi Database](#2-migrasi--optimasi-database)
@@ -13,11 +53,15 @@ Dokumen ini merupakan panduan lengkap langkah-demi-langkah (*step-by-step*) untu
 5. [Langkah 5: Konfigurasi API MikroTik untuk Real Production](#5-konfigurasi-api-mikrotik-untuk-real-production)
 6. [Langkah 6: Set Up Otomatisasi (Cron Job di Windows Server)](#6-set-up-otomatisasi-cron-job-di-windows-server)
 7. [Langkah 7: Pengamanan Server XAMPP (Security Hardening)](#7-pengamanan-server-xampp-security-hardening)
+8. [Langkah 8: Konfigurasi Windows Firewall & Apache (Akses Publik)](#8-konfigurasi-windows-firewall--apache-akses-publik)
 
 ---
 
 ## 1. Konfigurasi Variabel Lingkungan (.env)
 File `.env` di direktori utama (`c:\xampp\htdocs\billingv1\.env`) harus diubah total dari konfigurasi testing ke konfigurasi jaringan produksi Anda.
+
+> [!IMPORTANT]
+> Pastikan tidak ada spasi di sekitar tanda `=` saat mengisi variabel pada file `.env`. Untuk nilai yang mengandung spasi atau karakter khusus, gunakan tanda kutip ganda (`"`).
 
 ### ✍️ Parameter yang Wajib Diubah di `.env`:
 ```ini
@@ -96,6 +140,9 @@ Pindahkan data dari database pengujian lokal Anda ke database produksi yang bers
 ## 3. Integrasi Midtrans Payment Gateway (Mode Live)
 Untuk menerima pembayaran otomatis dari pelanggan secara langsung via e-Wallet (Gopay, ShopeePay), Transfer Bank (Virtual Account), atau Gerai Ritel (Alfamart/Indomaret).
 
+> [!NOTE]
+> Midtrans melarang transaksi percobaan (testing) ketika akun sudah diatur dalam mode **Production**. Gunakan pembayaran nominal kecil (misal Rp10.000,-) untuk uji coba transaksi pertama kali di server produksi.
+
 ### 🛠️ Langkah Integrasi:
 1.  Login ke **[Dashboard Midtrans](https://dashboard.midtrans.com/)**.
 2.  Pastikan status di pojok kiri atas telah beralih dari **Sandbox** ke **Production** (Live).
@@ -122,6 +169,9 @@ Digunakan untuk mengirim invoice tagihan otomatis setiap bulan, bukti lunas pemb
 
 ## 5. Konfigurasi API MikroTik untuk Real Production
 Aplikasi memerlukan akses langsung ke MikroTik Anda untuk membuat PPPoE Secret pelanggan baru, memonitor trafik, serta mematikan/mengisolir pelanggan menunggak secara otomatis.
+
+> [!WARNING]
+> Sangat disarankan untuk mengisolasi port API MikroTik (`8728` / `8729`) menggunakan firewall rule di RouterOS agar port tersebut hanya dapat diakses oleh IP publik statis PC Server XAMPP Anda. Ini mencegah serangan brute force pada port API Router.
 
 ### 🛠️ Langkah Konfigurasi:
 1.  **Buka Layanan API MikroTik:**
@@ -195,6 +245,36 @@ Sangat krusial untuk mengamankan server XAMPP Anda karena kini website Anda dapa
         RewriteCond %{HTTPS} off
         RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
         ```
+
+---
+
+## 8. Konfigurasi Windows Firewall & Apache (Akses Publik)
+Agar PC XAMPP lokal Anda dapat diakses secara publik melalui domain `zienet.web.id`, Anda harus membuka port lalu lintas di Windows Firewall dan memastikan modul rewrite Apache aktif.
+
+### 🛠️ Langkah 1: Aktifkan `mod_rewrite` Apache:
+1.  Buka file konfigurasi Apache `httpd.conf` melalui panel kontrol XAMPP (klik tombol **Config** di baris Apache -> pilih `Apache (httpd.conf)`).
+2.  Cari baris berikut:
+    ```apache
+    #LoadModule rewrite_module modules/mod_rewrite.so
+    ```
+3.  Hilangkan tanda pagar (`#`) di depan baris tersebut agar menjadi:
+    ```apache
+    LoadModule rewrite_module modules/mod_rewrite.so
+    ```
+4.  Cari teks `AllowOverride None` di dalam blok direktori utama, lalu ubah menjadi:
+    ```apache
+    AllowOverride All
+    ```
+5.  Simpan file dan **Restart Apache** Anda.
+
+### 🛠️ Langkah 2: Buka Port di Windows Firewall:
+1.  Buka **Windows Defender Firewall with Advanced Security** (cari melalui kolom pencarian Windows).
+2.  Klik **Inbound Rules** di sebelah kiri, lalu klik **New Rule...** di sebelah kanan.
+3.  Pilih jenis rule: **Port** -> Klik **Next**.
+4.  Pilih **TCP** dan isi **Specific local ports** dengan: **`80, 443`** (Port HTTP & HTTPS) -> Klik **Next**.
+5.  Pilih **Allow the connection** -> Klik **Next**.
+6.  Centang seluruh profil (**Domain, Private, Public**) -> Klik **Next**.
+7.  Berikan nama rule: `XAMPP Web Server (HTTP/HTTPS)` -> Klik **Finish**.
 
 ---
 
