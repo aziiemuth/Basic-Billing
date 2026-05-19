@@ -31,6 +31,24 @@ class PaymentModel {
         return $this->db->single();
     }
 
+    public function getHistory($status = 'all') {
+        $sql = "SELECT p.*, i.invoice_number, i.billing_month, i.due_date, c.name AS customer_name, c.customer_id AS customer_code, pg.name AS gateway_name
+                FROM payments p
+                JOIN invoices i ON p.invoice_id = i.id
+                JOIN customers c ON i.customer_id = c.id
+                LEFT JOIN payment_gateways pg ON p.payment_gateway_id = pg.id";
+        if ($status !== 'all') {
+            $sql .= " WHERE p.status = :status";
+        }
+        $sql .= " ORDER BY p.created_at DESC";
+
+        $this->db->query($sql);
+        if ($status !== 'all') {
+            $this->db->bind(':status', $status);
+        }
+        return $this->db->resultSet();
+    }
+
     public function updateWebhookStatus($referenceId, $status, $paymentMethod, $webhookResponse) {
         // Satu query dinamis — tambahkan paid_at hanya saat status = 'success'
         $paidAtClause = ($status === 'success') ? ', paid_at = CURRENT_TIMESTAMP' : '';

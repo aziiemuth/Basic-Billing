@@ -10,10 +10,13 @@ class PaymentController extends Controller {
         $this->paymentModel = $this->model('PaymentModel');
         $this->invoiceModel = $this->model('InvoiceModel');
         $this->customerModel = $this->model('CustomerModel');
-        
-        // Konfigurasi Midtrans
-        \Midtrans\Config::$serverKey = MIDTRANS_SERVER_KEY;
-        \Midtrans\Config::$isProduction = MIDTRANS_IS_PRODUCTION;
+
+        $gateway = $this->model('PaymentGatewayModel')->getActive('Midtrans');
+        $serverKey = $gateway && !empty($gateway->server_key) ? $gateway->server_key : MIDTRANS_SERVER_KEY;
+        $isProduction = $gateway ? $gateway->mode === 'production' : MIDTRANS_IS_PRODUCTION;
+
+        \Midtrans\Config::$serverKey = $serverKey;
+        \Midtrans\Config::$isProduction = $isProduction;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
     }
@@ -61,11 +64,12 @@ class PaymentController extends Controller {
             $paymentUrl = \Midtrans\Snap::createTransaction($params)->redirect_url;
             
             // Simpan percobaan bayar ke database
+            $gateway = $this->model('PaymentGatewayModel')->getActive('Midtrans');
             $paymentData = [
                 'invoice_id' => $invoice->id,
                 'reference_id' => $orderId,
                 'amount' => $invoice->total_amount,
-                'payment_gateway_id' => 1, // Assuming 1 is Midtrans
+                'payment_gateway_id' => $gateway ? $gateway->id : null,
                 'status' => 'pending',
                 'payment_url' => $paymentUrl
             ];

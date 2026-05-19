@@ -39,6 +39,23 @@ class AdminInvoiceController extends Controller {
         $this->view('admin/invoice/manual', $data);
     }
 
+    public function thermal($invoiceId) {
+        $invoice = $this->invoiceModel->getByIdWithDetails($invoiceId);
+        if (!$invoice) {
+            header('Location: ' . URLROOT . '/AdminPaymentHistoryController');
+            exit;
+        }
+
+        $data = [
+            'title' => 'Cetak Tagihan Thermal',
+            'invoice' => $invoice,
+            'items' => $this->invoiceModel->getItems($invoiceId),
+            'settings' => $this->model('SettingsModel')->getSettings()
+        ];
+
+        $this->view('admin/invoice/thermal', $data);
+    }
+
     public function apiGetTargetCustomers() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('Content-Type: application/json');

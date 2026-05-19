@@ -18,6 +18,39 @@ class InvoiceModel {
         return $this->db->single();
     }
 
+    public function getByIdWithDetails($id) {
+        $this->db->query("SELECT i.*, c.name AS customer_name, c.customer_id AS customer_code, c.whatsapp, c.address, pk.name AS package_name
+                          FROM invoices i
+                          JOIN customers c ON i.customer_id = c.id
+                          LEFT JOIN packages pk ON i.package_id = pk.id
+                          WHERE i.id = :id");
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function getItems($invoiceId) {
+        $this->db->query("SELECT * FROM invoice_items WHERE invoice_id = :invoice_id ORDER BY id ASC");
+        $this->db->bind(':invoice_id', $invoiceId);
+        return $this->db->resultSet();
+    }
+
+    public function getAllWithDetails($status = 'all') {
+        $sql = "SELECT i.*, c.name AS customer_name, c.customer_id AS customer_code, pk.name AS package_name
+                FROM invoices i
+                JOIN customers c ON i.customer_id = c.id
+                LEFT JOIN packages pk ON i.package_id = pk.id";
+        if ($status !== 'all') {
+            $sql .= " WHERE i.status = :status";
+        }
+        $sql .= " ORDER BY i.created_at DESC";
+
+        $this->db->query($sql);
+        if ($status !== 'all') {
+            $this->db->bind(':status', $status);
+        }
+        return $this->db->resultSet();
+    }
+
     public function getByInvoiceNumber($invoiceNumber) {
         $this->db->query("SELECT * FROM invoices WHERE invoice_number = :invoice_number");
         $this->db->bind(':invoice_number', $invoiceNumber);

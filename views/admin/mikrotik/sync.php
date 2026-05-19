@@ -279,6 +279,7 @@ document.querySelectorAll('.btn-toggle-pppoe').forEach(function(btn) {
         formData.append('action',    action);
         formData.append('username',  username);
         formData.append('router_id', routerId);
+        formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
         fetch('<?php echo URLROOT; ?>/AdminRouterController/togglePppoe', {
             method: 'POST',

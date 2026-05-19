@@ -24,7 +24,8 @@ class SecurityHelper {
     // Validasi token saat POST
     public static function validateCsrf() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            $token = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? null);
+            if (!$token || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
                 die('CSRF token validation failed. Deteksi kemungkinan serangan (Cross-Site Request Forgery).');
             }
         }

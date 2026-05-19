@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const progressStatus = document.getElementById('progressStatus');
     const countSuccessEl = document.getElementById('countSuccess');
     const countFailedEl = document.getElementById('countFailed');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     let isProcessing = false;
 
@@ -130,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Step 1: Fetch target customers
             const reqTargets = await fetch('<?php echo URLROOT; ?>/AdminInvoiceController/apiGetTargetCustomers', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
                 body: JSON.stringify({ billing_month: billingMonth, package_id: packageId })
             });
             const resTargets = await reqTargets.json();
@@ -166,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const reqBatch = await fetch('<?php echo URLROOT; ?>/AdminInvoiceController/apiGenerateBatch', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
                     body: JSON.stringify({ billing_month: billingMonth, customer_ids: batchIds })
                 });
                 

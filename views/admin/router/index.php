@@ -382,7 +382,10 @@ document.getElementById('btn-confirm-isolate').addEventListener('click', functio
     document.getElementById('isolate-loading').classList.remove('d-none');
     document.getElementById('btn-confirm-isolate').classList.add('d-none');
 
-    fetch('<?php echo URLROOT; ?>/AdminRouterController/isolateOverdue', { method: 'POST' })
+    var formData = new FormData();
+    formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+    fetch('<?php echo URLROOT; ?>/AdminRouterController/isolateOverdue', { method: 'POST', body: formData })
         .then(r => r.json())
         .then(function(data) {
             document.getElementById('isolate-loading').classList.add('d-none');

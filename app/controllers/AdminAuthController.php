@@ -30,6 +30,7 @@ class AdminAuthController extends Controller {
             if ($loggedInUser) {
                 // Bersihkan record kegagalan
                 SecurityHelper::clearLoginAttempts($username);
+                $this->userModel->touchLastLogin($loggedInUser->id);
                 // Create session
                 $this->createUserSession($loggedInUser);
             } else {
