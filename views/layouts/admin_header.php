@@ -20,70 +20,70 @@
         <!-- SIDEBAR -->
         <aside class="sidebar d-flex flex-column border-end border-secondary border-opacity-25 shadow-sm">
             <div class="p-4 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-3">
-                <div class="bg-primary bg-gradient rounded p-2 text-white shadow-sm">
+                <div class="bg-primary bg-gradient rounded p-2 text-white shadow-sm flex-shrink-0">
                     <i class="bi bi-router fs-5"></i>
                 </div>
-                <div>
-                    <h6 class="mb-0 fw-bold text-white">Billing App</h6>
-                    <small class="text-secondary" style="font-size: 0.75rem;">ISP Management</small>
+                <div class="sidebar-brand-text overflow-hidden">
+                    <h6 class="mb-0 fw-bold text-white text-truncate">Billing App</h6>
+                    <small class="text-secondary text-truncate d-block" style="font-size: 0.75rem;">ISP Management</small>
                 </div>
             </div>
 
-            <div class="flex-grow-1 overflow-auto p-3">
-                <div class="small fw-semibold text-secondary mb-2 mt-2 px-2 text-uppercase" style="letter-spacing: 1px;">Utama</div>
+            <div class="flex-grow-1 overflow-auto p-3 sidebar-menu-container">
+                <div class="small fw-semibold text-secondary mb-2 mt-2 px-2 text-uppercase sidebar-group-title" style="letter-spacing: 1px;">Utama</div>
                 <nav class="nav flex-column mb-4">
                     <a href="<?php echo URLROOT; ?>/AdminDashboardController" class="nav-link <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminDashboard') !== false || $_SERVER['REQUEST_URI'] == URLROOT.'/' || $_SERVER['REQUEST_URI'] == URLROOT ? 'active' : ''; ?> fw-medium d-flex align-items-center gap-2">
-                        <i class="bi bi-grid"></i> Dashboard
+                        <i class="bi bi-grid flex-shrink-0"></i> <span>Dashboard</span>
                     </a>
                     <a href="<?php echo URLROOT; ?>/AdminCustomerController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminCustomer') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-people"></i> Pelanggan
+                        <i class="bi bi-people flex-shrink-0"></i> <span>Pelanggan</span>
                     </a>
                     <a href="<?php echo URLROOT; ?>/AdminPackageController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminPackage') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-box-seam"></i> Paket Internet
+                        <i class="bi bi-box-seam flex-shrink-0"></i> <span>Paket Internet</span>
                     </a>
                     <a href="<?php echo URLROOT; ?>/AdminRouterController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminRouter') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-router"></i> Router / Server
+                        <i class="bi bi-router flex-shrink-0"></i> <span>Router / Server</span>
                     </a>
                 </nav>
 
-                <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase" style="letter-spacing: 1px;">Keuangan</div>
+                <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase sidebar-group-title" style="letter-spacing: 1px;">Keuangan</div>
                 <nav class="nav flex-column mb-4">
                     <a href="<?php echo URLROOT; ?>/AdminInvoiceController/generate" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminInvoice/generate') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-receipt"></i> Generate Tagihan (Otomatis)
+                        <i class="bi bi-receipt flex-shrink-0"></i> <span>Generate Tagihan (Otomatis)</span>
                     </a>
                     <a href="<?php echo URLROOT; ?>/AdminInvoiceController/manual" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminInvoice/manual') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-whatsapp"></i> Tagihan Manual (Direct WA)
+                        <i class="bi bi-whatsapp flex-shrink-0"></i> <span>Tagihan Manual (Direct WA)</span>
                     </a>
                     <a href="<?php echo URLROOT; ?>/AdminReportController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminReport') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-graph-up"></i> Laporan & Arus Kas
+                        <i class="bi bi-graph-up flex-shrink-0"></i> <span>Laporan & Arus Kas</span>
                     </a>
                     <a href="<?php echo URLROOT; ?>/AdminPaymentHistoryController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminPaymentHistory') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-clock-history"></i> Histori Pembayaran
+                        <i class="bi bi-clock-history flex-shrink-0"></i> <span>Histori Pembayaran</span>
                     </a>
                 </nav>
 
-                <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase" style="letter-spacing: 1px;">Kelola User Admin</div>
+                <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase sidebar-group-title" style="letter-spacing: 1px;">Kelola User Admin</div>
                 <nav class="nav flex-column mb-4">
                     <a href="<?php echo URLROOT; ?>/AdminUserController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminUser') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-person-gear"></i> User Login
+                        <i class="bi bi-person-gear flex-shrink-0"></i> <span>User Login</span>
                     </a>
                 </nav>
             </div>
 
             <div class="p-3 border-top border-secondary border-opacity-25 mt-auto">
-                <a href="<?php echo URLROOT; ?>/AdminProfileController" class="text-decoration-none">
-                    <div class="d-flex align-items-center gap-2 mb-3 bg-dark bg-opacity-50 p-2 rounded border border-secondary border-opacity-25" style="transition: all 0.2s ease;">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm" style="width: 36px; height: 36px;">
+                <a href="<?php echo URLROOT; ?>/AdminProfileController" class="text-decoration-none d-block">
+                    <div class="d-flex align-items-center gap-2 mb-3 bg-dark bg-opacity-50 p-2 rounded border border-secondary border-opacity-25 overflow-hidden sidebar-user-box" style="transition: all 0.2s ease;">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm flex-shrink-0" style="width: 36px; height: 36px;">
                             <?php echo strtoupper(substr($_SESSION['user_name'] ?? 'A', 0, 1)); ?>
                         </div>
-                        <div class="overflow-hidden">
+                        <div class="overflow-hidden sidebar-user-text">
                             <div class="fw-semibold text-white text-truncate small"><?php echo htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?></div>
-                            <div class="text-info" style="font-size: 0.7rem;"><i class="bi bi-gear-fill me-1"></i>Pengaturan Sistem</div>
+                            <div class="text-info text-truncate" style="font-size: 0.7rem;"><i class="bi bi-gear-fill me-1"></i>Pengaturan Sistem</div>
                         </div>
                     </div>
                 </a>
-                <a href="<?php echo URLROOT; ?>/AdminAuthController/logout" class="btn btn-outline-danger w-100 btn-sm fw-medium d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-box-arrow-right"></i> Logout
+                <a href="<?php echo URLROOT; ?>/AdminAuthController/logout" class="btn btn-outline-danger w-100 btn-sm fw-medium d-flex align-items-center justify-content-center gap-2 sidebar-logout-btn">
+                    <i class="bi bi-box-arrow-right flex-shrink-0"></i> <span>Logout</span>
                 </a>
             </div>
         </aside>
@@ -93,7 +93,7 @@
             <!-- TOPBAR -->
             <header class="d-flex justify-content-between align-items-center p-3 p-md-4 border-bottom border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 50;">
                 <div class="d-flex align-items-center gap-3">
-                    <button id="sidebarToggle" class="btn btn-outline-secondary d-lg-none border-0" aria-label="Toggle Sidebar">
+                    <button id="sidebarToggle" class="btn btn-outline-secondary border-0" aria-label="Toggle Sidebar">
                         <i class="bi bi-list fs-4"></i>
                     </button>
                     <div>

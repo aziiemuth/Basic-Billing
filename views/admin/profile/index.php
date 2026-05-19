@@ -1,5 +1,17 @@
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
+<?php if (isset($_SESSION['flash_message'])): ?>
+    <div class="alert alert-<?php echo $_SESSION['flash_type'] ?? 'info'; ?> alert-dismissible fade show bg-<?php echo $_SESSION['flash_type'] ?? 'info'; ?> bg-opacity-10 border-<?php echo $_SESSION['flash_type'] ?? 'info'; ?> border-opacity-25 text-<?php echo $_SESSION['flash_type'] ?? 'info'; ?> mb-4 shadow-sm" role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        <?php 
+            echo $_SESSION['flash_message']; 
+            unset($_SESSION['flash_message']);
+            unset($_SESSION['flash_type']);
+        ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold text-white mb-1"><i class="bi bi-person-badge me-2 text-primary"></i>Profil & Pengaturan Sistem</h4>
@@ -8,9 +20,10 @@
 </div>
 
 <div class="row g-4">
-    <!-- Kolom Kiri: Profil Admin -->
+    <!-- Kolom Kiri: Profil Admin & Utilitas Pengujian -->
     <div class="col-lg-4">
-        <div class="card glass-card border-0 shadow-sm h-100">
+        <!-- Profil Admin -->
+        <div class="card glass-card border-0 shadow-sm mb-4">
             <div class="card-body p-4 text-center">
                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow-sm" style="width: 80px; height: 80px; font-size: 32px; font-weight: bold;">
                     <?php echo strtoupper(substr($data['adminName'], 0, 1)); ?>
@@ -37,6 +50,26 @@
                 <div class="mt-4">
                     <a href="<?php echo URLROOT; ?>/AdminAuthController/logout" class="btn btn-outline-danger w-100">
                         <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utilitas Pengujian (Testing Dummy Data) -->
+        <div class="card glass-card border-0 shadow-sm">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 p-4">
+                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-database-fill-gear me-2 text-warning"></i>Utilitas Pengujian (Testing)</h6>
+            </div>
+            <div class="card-body p-4 text-center">
+                <p class="text-secondary small text-start mb-3">Gunakan tombol di bawah untuk mengimpor atau menghapus dataset dummy guna menguji fungsionalitas sistem (seperti isolir otomatis, kas keuangan, tagihan, dll.) secara aman.</p>
+                
+                <div class="d-grid gap-2">
+                    <a href="<?php echo URLROOT; ?>/AdminProfileController/importDummyData" class="btn btn-warning fw-medium text-dark d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                        <i class="bi bi-cloud-arrow-down-fill"></i> Impor 5 Data Dummy Testing
+                    </a>
+                    
+                    <a href="<?php echo URLROOT; ?>/AdminProfileController/deleteDummyData" class="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data dummy testing beserta semua invoice, payment, transaksi, dan arus kas terkait? Data asli tidak akan terpengaruh.');">
+                        <i class="bi bi-trash-fill"></i> Hapus Seluruh Data Dummy
                     </a>
                 </div>
             </div>

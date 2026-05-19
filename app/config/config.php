@@ -104,7 +104,7 @@ define('APPROOT', dirname(dirname(dirname(__FILE__))));
 
 // URL Root (Dibuat dinamis agar bisa diakses via localhost maupun IP lokal seperti 192.168.x.x di HP)
 $envUrl = env('URLROOT', '');
-if (empty($envUrl) || $envUrl === 'http://localhost/billing') {
+if (empty($envUrl) || strpos($envUrl, 'localhost') !== false || strpos($envUrl, '127.0.0.1') !== false) {
     $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
     $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
     // Asumsi subfolder adalah /billing jika diakses secara lokal di htdocs
