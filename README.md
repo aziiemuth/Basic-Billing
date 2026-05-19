@@ -7,7 +7,8 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
 ## ✨ Fitur Utama
 
 ### 🧑‍💼 Modul Admin
-- **Dashboard Interaktif**: Statistik jumlah pelanggan, tren pendapatan (Chart.js), dan pantauan status koneksi Mikrotik secara *real-time*.
+
+- **Dashboard Interaktif**: Statistik jumlah pelanggan, tren pendapatan (Chart.js), dan pantauan status koneksi Mikrotik secara _real-time_.
 - **Manajemen Pelanggan**: CRUD data pelanggan, penugasan ke router Mikrotik tertentu, pembuatan secret PPPoE otomatis, dan unggah berkas KTP & Foto Profil.
 - **Manajemen Paket Internet**: Atur kecepatan dan harga paket yang terhubung langsung dengan profile Mikrotik.
 - **Manajemen Router (Multi-Router)**: Mendukung penggunaan lebih dari satu router Mikrotik.
@@ -16,20 +17,23 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
 - **Sistem Pengaturan (Settings)**: Pengaturan identitas perusahaan, pajak, zona waktu, dan peringatan H-x jatuh tempo.
 
 ### 👥 Modul Pelanggan (Customer Portal)
+
 - **Progressive Web App (PWA)**: Dapat diinstal langsung ke layar beranda (Homescreen) HP/Desktop sebagai aplikasi mandiri tanpa melalui App Store, lengkap dengan tombol instalasi interaktif di portal.
 - **Cek Tagihan**: Pelanggan dapat login untuk melihat tagihan aktif dan riwayat pembayaran.
 - **Pembayaran Otomatis**: Integrasi Midtrans memungkinkan pelanggan membayar langsung dengan QRIS, Virtual Account, e-Wallet, dll.
 - **Notifikasi WhatsApp**: Pengingat tagihan dan struk pembayaran otomatis dikirim ke WhatsApp.
 
 ### 🔌 Integrasi & Otomatisasi
-- **Mikrotik RouterOS API**: Pembuatan PPPoE Secret otomatis, *enable/disable* (isolir) pelanggan otomatis saat jatuh tempo, sinkronisasi status.
-- **Payment Gateway (Midtrans)**: Deteksi pembayaran instan (*webhook*) dan langsung melunasi invoice.
+
+- **Mikrotik RouterOS API**: Pembuatan PPPoE Secret otomatis, _enable/disable_ (isolir) pelanggan otomatis saat jatuh tempo, sinkronisasi status.
+- **Payment Gateway (Midtrans)**: Deteksi pembayaran instan (_webhook_) dan langsung melunasi invoice.
 - **WhatsApp Gateway (Fonnte)**: Pengiriman notifikasi tagihan dan pembayaran.
-- **Cron Job**: Eksekusi background untuk generate invoice bulanan, notifikasi WA, dan auto-isolir dengan pengamanan berbasis *Secret Key*.
+- **Cron Job**: Eksekusi background untuk generate invoice bulanan, notifikasi WA, dan auto-isolir dengan pengamanan berbasis _Secret Key_.
 
 ---
 
 ## 💻 Stack Teknologi
+
 - **Backend:** PHP Native (7.4 - 8.x) dengan pendekatan MVC (Model-View-Controller)
 - **Database:** MySQL / MariaDB
 - **Frontend:** HTML5, CSS3 (Glassmorphism), Vanilla JavaScript, PWA (Manifest & Service Worker)
@@ -42,7 +46,7 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
 ## 🚀 Instalasi & Persiapan
 
 1. **Clone/Upload Repository**  
-   Simpan project ini ke dalam direktori root server lokal Anda (misalnya di `htdocs/billing` jika menggunakan XAMPP).
+   Simpan project ini ke dalam direktori root server lokal Anda (misalnya di `htdocs/billingv1` jika menggunakan XAMPP).
 
 2. **Setup Database**
    - Buat database baru di MySQL (misal: `billing_db`).
@@ -51,9 +55,10 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
 3. **Konfigurasi Environment (`.env`)**
    - Salin file `.env.example` (jika ada) menjadi `.env` di folder root project.
    - Sesuaikan konfigurasi berikut:
+
      ```env
      # Konfigurasi Dasar
-     URLROOT=http://localhost/billing # (Gunakan domain Anda di production)
+     URLROOT=http://localhost/billingv1 # (Gunakan domain Anda di production)
      SITENAME="Billing App"
 
      # Konfigurasi Database
@@ -85,30 +90,34 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
      ```
 
 4. **Konfigurasi Folder Uploads**
-   - Pastikan folder `public/uploads/customers/profile/` dan `public/uploads/customers/ktp/` memiliki hak akses tulis (*writable*) `chmod 777` atau *ownership* yang tepat.
+   - Pastikan folder `public/uploads/customers/profile/` dan `public/uploads/customers/ktp/` memiliki hak akses tulis (_writable_) `chmod 777` atau _ownership_ yang tepat.
 
 ---
 
 ## ⚙️ Menjalankan Cron Job
-Untuk menjalankan otomatisasi (generate invoice & isolir pelanggan tunggak), tambahkan perintah berikut ke dalam *Crontab* di server Linux Anda:
+
+Untuk menjalankan otomatisasi (generate invoice & isolir pelanggan tunggak), tambahkan perintah berikut ke dalam _Crontab_ di server Linux Anda:
 
 ```bash
 # Jalankan pengecekan setiap jam 08:00 pagi
 0 8 * * * /usr/bin/php /var/www/html/billing/public/index.php url=CronController/run?key=SecretKeyKuatAnda123!
 ```
-*(Ganti URL dan Path sesuai dengan root instalasi dan `CRON_SECRET` Anda di `.env`).*
+
+_(Ganti URL dan Path sesuai dengan root instalasi dan `CRON_SECRET` Anda di `.env`)._
 
 ---
 
 ## 📱 Mobile-Friendly & Local Development
-Sistem ini menggunakan algoritma **Dynamic URLROOT**. Saat mengembangkan secara lokal, Anda bisa mengakses URL via IP (contoh: `http://192.168.1.x/billing`) menggunakan smartphone di satu jaringan Wi-Fi yang sama, dan sistem UI akan langsung beradaptasi (responsif) tanpa mem-force-redirect Anda kembali ke `localhost`.
+
+Sistem ini menggunakan algoritma **Dynamic URLROOT**. Saat mengembangkan secara lokal, Anda bisa mengakses URL via IP (contoh: `http://[IP_ADDRESS]/billingv1`) menggunakan smartphone di satu jaringan Wi-Fi yang sama, dan sistem UI akan langsung beradaptasi (responsif) tanpa mem-force-redirect Anda kembali ke `localhost`.
 
 ---
 
 ## 🛡️ Keamanan
+
 - Menggunakan `password_hash` & `password_verify` (Bcrypt) untuk otentikasi.
 - Seluruh form menggunakan validasi input & CSRF Token.
-- Pengecekan sesi ketat di *Payment Webhook* & *Midtrans Snap*.
+- Pengecekan sesi ketat di _Payment Webhook_ & _Midtrans Snap_.
 - Filter Ekstensi MIME Ketat untuk upload KTP & Profil demi menghindari serangan injeksi skrip.
 
 ---
