@@ -107,8 +107,18 @@ $envUrl = env('URLROOT', '');
 if (empty($envUrl) || strpos($envUrl, 'localhost') !== false || strpos($envUrl, '127.0.0.1') !== false) {
     $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
     $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
-    // Asumsi subfolder adalah /billing jika diakses secara lokal di htdocs
-    $envUrl = $scheme . '://' . $host . '/billing';
+    
+    // Deteksi subfolder secara dinamis dari URL akses (misal: /billing atau /billingv1)
+    $scriptName = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+    $subfolder = '';
+    if (!empty($scriptName)) {
+        $dir = str_replace('\\', '/', dirname($scriptName));
+        $subfolder = ($dir === '/' || $dir === '\\') ? '' : $dir;
+    } else {
+        $subfolder = '/billingv1'; // Default fallback jika diakses via CLI
+    }
+    
+    $envUrl = $scheme . '://' . $host . $subfolder;
 }
 define('URLROOT', $envUrl);
 

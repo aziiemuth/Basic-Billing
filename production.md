@@ -1,7 +1,7 @@
 # 🚀 Panduan Alur Produksi (Deployment 100% Siap Operasional)
 **Sistem Billing RT/RW Net & Manajemen ISP Terintegrasi MikroTik**
 
-Dokumen ini merupakan panduan lengkap langkah-demi-langkah (*step-by-step*) untuk memigrasikan aplikasi dari lingkungan pengembangan (*development/localhost*) ke server produksi (*production*) menggunakan **XAMPP Windows (24 jam online)** yang terhubung dengan **IP Public, Domain, dan SSL**.
+Dokumen ini merupakan panduan lengkap langkah-demi-langkah (*step-by-step*) untuk memigrasikan aplikasi dari lingkungan pengembangan (*development/localhost*) ke server produksi (*production*) menggunakan **XAMPP Windows (24 jam online)** yang terhubung dengan **IP Public, Domain (zienet.web.id), Subfolder (billingv1), dan SSL**.
 
 ---
 
@@ -17,15 +17,15 @@ Dokumen ini merupakan panduan lengkap langkah-demi-langkah (*step-by-step*) untu
 ---
 
 ## 1. Konfigurasi Variabel Lingkungan (.env)
-File `.env` di direktori utama (`c:\xampp\htdocs\billing\.env`) harus diubah total dari konfigurasi testing ke konfigurasi jaringan produksi Anda.
+File `.env` di direktori utama (`c:\xampp\htdocs\billingv1\.env`) harus diubah total dari konfigurasi testing ke konfigurasi jaringan produksi Anda.
 
 ### ✍️ Parameter yang Wajib Diubah di `.env`:
 ```ini
 # ==========================================
 # 🌐 Konfigurasi Aplikasi Utama
 # ==========================================
-# Ganti dengan domain produksi Anda yang sudah terpasang SSL (HTTPS)
-URLROOT=https://billing.domainanda.com
+# Ganti dengan domain produksi Anda yang sudah terpasang SSL dan menunjuk ke subfolder billingv1
+URLROOT=https://zienet.web.id/billingv1
 SITENAME="RT/RW Net Indonesia"
 
 # ==========================================
@@ -102,10 +102,10 @@ Untuk menerima pembayaran otomatis dari pelanggan secara langsung via e-Wallet (
 3.  Pergi ke menu **Settings -> Access Keys** untuk menyalin **Server Key** dan **Client Key** produksi Anda, lalu tempelkan ke file `.env` Anda.
 4.  **Konfigurasi URL Callback / Webhook (Sangat Penting!):**
     *   Pada Dashboard Midtrans, masuk ke menu **Settings -> Configuration**.
-    *   Pada kolom **Payment Notification URL**, masukkan URL callback sistem Anda:
-        `https://billing.domainanda.com/MidtransWebhookController/callback`
-    *   Klik **Update** di bagian bawah halaman.
-    *   *Catatan:* URL di atas harus menggunakan **HTTPS** yang valid. Midtrans menolak mengirim callback pembayaran ke protokol HTTP biasa demi keamanan transaksi keuangan.
+    *   Pada kolom **Payment Notification URL**, masukkan URL webhook sistem Anda secara presisi (mengacu pada subfolder `/billingv1`, controller `PaymentController` dan method `webhook`):
+        👉 **`https://zienet.web.id/billingv1/PaymentController/webhook`**
+    *   Klik **Update** di bagian bawah halaman dashboard Midtrans.
+    *   *Catatan Penting:* URL di atas harus menggunakan **HTTPS** yang valid (SSL aktif di domain `zienet.web.id`). Midtrans mewajibkan SSL aktif untuk mengirim notifikasi pembayaran demi keamanan pertukaran data finansial.
 
 ---
 
@@ -134,7 +134,7 @@ Aplikasi memerlukan akses langsung ke MikroTik Anda untuk membuat PPPoE Secret p
     *   Buat group baru dengan akses terbatas pada layanan `read`, `write`, dan `api` saja. Hubungkan user `api_billing` ke group tersebut demi memperketat keamanan akses internal Router.
 3.  **Tentukan IP Akses:**
     *   Jika Server XAMPP Anda dan MikroTik berada di bawah satu jaringan lokal yang sama, Anda bisa langsung mengisi `MIKROTIK_HOST` dengan IP LAN MikroTik (misal: `192.168.1.1`).
-    *   Jika lokasinya berbeda, hubungkan Server XAMPP dan MikroTik Anda menggunakan VPN terenkripsi (seperti L2TP/IPsec or WireGuard). Masukkan IP tunnel VPN MikroTik Anda ke variabel `MIKROTIK_HOST`.
+    *   Jika lokasinya berbeda, hubungkan Server XAMPP dan MikroTik Anda menggunakan VPN terenkripsi (seperti L2TP/IPsec atau WireGuard). Masukkan IP tunnel VPN MikroTik Anda ke variabel `MIKROTIK_HOST`.
 
 ---
 
@@ -148,7 +148,7 @@ Karena sistem berjalan pada server **XAMPP Windows**, kita tidak dapat memakai `
         ```bat
         @echo off
         :: Mengirim request aman ke sistem untuk memproses generate tagihan otomatis, cek reminder WA, isolir pelanggan, dan backup database
-        curl -sL "http://localhost/billing/cron/cron_trigger.php?key=KunciAcakSangatKuatDanPanjangDibuatTahun2026!"
+        curl -sL "http://localhost/billingv1/cron/cron_trigger.php?key=KunciAcakSangatKuatDanPanjangDibuatTahun2026!"
         exit
         ```
         *(Sesuaikan isi parameter `key` dengan `CRON_SECRET` yang Anda buat di `.env`)*
@@ -176,7 +176,7 @@ Sangat krusial untuk mengamankan server XAMPP Anda karena kini website Anda dapa
     *   Cari baris `display_errors = On` dan ubah nilainya menjadi **`display_errors = Off`**.
     *   Cari baris `log_errors = On` (pastikan bernilai On) agar error tetap dicatat ke file log internal server demi kebutuhan audit, bukan ditampilkan di hadapan browser pengunjung.
 2.  **Amankan File Rahasia (.env & PHP files):**
-    *   Buka file konfigurasi server Apache (`C:\xampp\apache\conf\httpd.conf` atau file `.htaccess` di direktori root aplikasi `/billing/`).
+    *   Buka file konfigurasi server Apache (`C:\xampp\apache\conf\httpd.conf` atau file `.htaccess` di direktori root aplikasi `/billingv1/`).
     *   Pastikan file konfigurasi `.htaccess` berisi pengaman index direktori untuk memblokir siapapun yang mencoba mengintip file sensitif Anda lewat browser:
         ```apache
         # Nonaktifkan browsing direktori (Index Browsing)
@@ -200,7 +200,7 @@ Sangat krusial untuk mengamankan server XAMPP Anda karena kini website Anda dapa
 
 ## 🏁 Verifikasi Akhir
 Setelah seluruh langkah di atas diselesaikan:
-1.  Akses web dashboard admin Anda dari browser luar atau HP lewat domain: `https://billing.domainanda.com`.
+1.  Akses web dashboard admin Anda dari browser luar atau HP lewat domain: `https://zienet.web.id/billingv1`.
 2.  Pastikan lambang **"Sistem Online"** menyala hijau terang.
 3.  Buka menu **Laporan & Arus Kas** untuk memastikan tidak ada data lama pengujian yang tertinggal.
 4.  Coba daftarkan 1 pelanggan riil pertama Anda, dan periksa apakah PPPoE Secret di MikroTik Anda terbuat secara instan, serta pesan WhatsApp selamat datang dari Fonnte masuk ke HP pelanggan Anda secara otomatis.
