@@ -16,6 +16,7 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
 - **Sistem Pengaturan (Settings)**: Pengaturan identitas perusahaan, pajak, zona waktu, dan peringatan H-x jatuh tempo.
 
 ### 👥 Modul Pelanggan (Customer Portal)
+- **Progressive Web App (PWA)**: Dapat diinstal langsung ke layar beranda (Homescreen) HP/Desktop sebagai aplikasi mandiri tanpa melalui App Store, lengkap dengan tombol instalasi interaktif di portal.
 - **Cek Tagihan**: Pelanggan dapat login untuk melihat tagihan aktif dan riwayat pembayaran.
 - **Pembayaran Otomatis**: Integrasi Midtrans memungkinkan pelanggan membayar langsung dengan QRIS, Virtual Account, e-Wallet, dll.
 - **Notifikasi WhatsApp**: Pengingat tagihan dan struk pembayaran otomatis dikirim ke WhatsApp.
@@ -31,7 +32,7 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
 ## 💻 Stack Teknologi
 - **Backend:** PHP Native (7.4 - 8.x) dengan pendekatan MVC (Model-View-Controller)
 - **Database:** MySQL / MariaDB
-- **Frontend:** HTML5, CSS3 (Glassmorphism), Vanilla JavaScript
+- **Frontend:** HTML5, CSS3 (Glassmorphism), Vanilla JavaScript, PWA (Manifest & Service Worker)
 - **Framework UI:** Bootstrap 5 (Dark Mode)
 - **Library UI:** SweetAlert2 (Toast Notification), Chart.js
 - **API Library:** RouterosAPI (Mikrotik)
