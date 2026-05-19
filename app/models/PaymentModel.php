@@ -68,4 +68,40 @@ class PaymentModel {
         
         return $this->db->execute();
     }
+
+    public function getFilteredPayments($filters = []) {
+        $sql = "SELECT p.*, i.invoice_number, i.billing_month, i.due_date, c.name AS customer_name, c.customer_id AS customer_code, pg.name AS gateway_name
+                FROM payments p
+                JOIN invoices i ON p.invoice_id = i.id
+                JOIN customers c ON i.customer_id = c.id
+                LEFT JOIN payment_gateways pg ON p.payment_gateway_id = pg.id
+                WHERE 1=1";
+        
+        $binds = [];
+        
+        if (!empty($filters['billing_month'])) {
+            $sql .= " AND i.billing_month = :billing_month";
+            $binds[':billing_month'] = $filters['billing_month'];
+        }
+        if (!empty($filters['customer_id']) && $filters['customer_id'] !== 'all') {
+            $sql .= " AND i.customer_id = :customer_id";
+            $binds[':customer_id'] = $filters['customer_id'];
+        }
+        if (!empty($filters['status']) && $filters['status'] !== 'all') {
+            $sql .= " AND p.status = :status";
+            $binds[':status'] = $filters['status'];
+        }
+        if (!empty($filters['payment_method']) && $filters['payment_method'] !== 'all') {
+            $sql .= " AND p.payment_method = :payment_method";
+            $binds[':payment_method'] = $filters['payment_method'];
+        }
+        
+        $sql .= " ORDER BY p.created_at DESC";
+        
+        $this->db->query($sql);
+        foreach ($binds as $param => $val) {
+            $this->db->bind($param, $val);
+        }
+        return $this->db->resultSet();
+    }
 }

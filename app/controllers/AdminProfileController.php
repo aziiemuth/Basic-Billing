@@ -36,8 +36,43 @@ class AdminProfileController extends Controller {
     
     public function updateSettings() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $currentSettings = $this->settingsModel->getSettings();
+            $logoName = $currentSettings->company_logo;
+
+            // Handle logo file upload if present
+            if (isset($_FILES['company_logo']) && $_FILES['company_logo']['error'] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $_FILES['company_logo']['tmp_name'];
+                $fileName = $_FILES['company_logo']['name'];
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $fileMime = mime_content_type($fileTmpPath);
+                $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+                $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+                if (in_array($fileMime, $allowedMimes) && in_array($ext, $allowedExtensions)) {
+                    $uploadDir = dirname(APPROOT) . '/public/uploads/logo/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+
+                    // Delete old logo file if exists and is not default
+                    if (!empty($logoName) && file_exists($uploadDir . $logoName)) {
+                        @unlink($uploadDir . $logoName);
+                    }
+
+                    $logoName = 'logo_' . time() . '.' . $ext;
+                    move_uploaded_file($fileTmpPath, $uploadDir . $logoName);
+                } else {
+                    $_SESSION['flash_message'] = 'Tipe file logo tidak diizinkan. Hanya format JPG, JPEG, PNG, GIF, atau WEBP.';
+                    $_SESSION['flash_type'] = 'danger';
+                    header('Location: ' . URLROOT . '/AdminProfileController');
+                    exit;
+                }
+            }
+
             $data = [
                 'company_name' => trim($_POST['company_name']),
+                'company_logo' => $logoName,
                 'company_address' => trim($_POST['company_address']),
                 'company_whatsapp' => trim($_POST['company_whatsapp']),
                 'company_email' => trim($_POST['company_email']),

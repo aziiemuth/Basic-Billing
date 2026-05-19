@@ -13,9 +13,11 @@ class AdminInvoiceController extends Controller {
 
     public function generate() {
         $packages = $this->packageModel->getAll();
+        $routers = $this->model('MikrotikRouterModel')->getAll();
         $data = [
             'title' => 'Generate Tagihan Massal',
-            'packages' => $packages
+            'packages' => $packages,
+            'routers' => $routers
         ];
         $this->view('admin/invoice/generate', $data);
     }
@@ -63,13 +65,14 @@ class AdminInvoiceController extends Controller {
             $input = json_decode(file_get_contents('php://input'), true);
             $billing_month = isset($input['billing_month']) ? $input['billing_month'] : '';
             $package_id = isset($input['package_id']) ? $input['package_id'] : 'all';
+            $router_id = isset($input['router_id']) ? $input['router_id'] : 'all';
 
             if (empty($billing_month)) {
                 echo json_encode(['status' => 'error', 'message' => 'Bulan tagihan harus dipilih']);
                 exit;
             }
 
-            $customers = $this->customerModel->getCustomersForBilling($package_id);
+            $customers = $this->customerModel->getCustomersForBilling($package_id, $router_id);
             $targets = [];
 
             foreach ($customers as $customer) {

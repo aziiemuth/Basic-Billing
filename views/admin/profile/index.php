@@ -3,7 +3,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold text-white mb-1"><i class="bi bi-person-badge me-2 text-primary"></i>Profil & Pengaturan Sistem</h4>
-        <p class="text-secondary small mb-0">Kelola informasi profil admin dan periksa status koneksi ke server MikroTik.</p>
+        <p class="text-secondary small mb-0">Kelola informasi profil admin, konfigurasi logo usaha, timezone, format mata uang, isolir, notifikasi, dan cek koneksi MikroTik.</p>
     </div>
 </div>
 
@@ -43,8 +43,9 @@
         </div>
     </div>
 
-    <!-- Kolom Kanan: Status MikroTik -->
+    <!-- Kolom Kanan: Status MikroTik & Pengaturan Sistem -->
     <div class="col-lg-8">
+        <!-- 1. Status MikroTik -->
         <div class="card glass-card border-0 shadow-sm mb-4">
             <div class="card-header bg-transparent border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
                 <h6 class="mb-0 text-white fw-bold"><i class="bi bi-router me-2 text-info"></i>Status Koneksi MikroTik (Utama)</h6>
@@ -108,56 +109,83 @@
             </div>
         </div>
 
-        <!-- Form Pengaturan Sistem -->
+        <!-- 2. Form Pengaturan Sistem -->
         <div class="card glass-card border-0 shadow-sm mb-4">
             <div class="card-header bg-transparent border-secondary border-opacity-25 p-4">
-                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-gear-fill me-2 text-primary"></i>Pengaturan Sistem</h6>
+                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-gear-fill me-2 text-primary"></i>Pengaturan Sistem & Profil Bisnis</h6>
             </div>
             <div class="card-body p-4">
-                <form action="<?php echo URLROOT; ?>/AdminProfileController/updateSettings" method="POST">
-    <?php echo SecurityHelper::csrfField(); ?>
+                <form action="<?php echo URLROOT; ?>/AdminProfileController/updateSettings" method="POST" enctype="multipart/form-data">
+                    <?php echo SecurityHelper::csrfField(); ?>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label text-secondary small">Nama Usaha</label>
                             <input type="text" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="company_name" value="<?php echo htmlspecialchars($data['settings']->company_name); ?>" required>
                         </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small">Logo Usaha (Logo)</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <?php if(!empty($data['settings']->company_logo)): ?>
+                                    <div class="bg-dark bg-opacity-50 p-1 rounded border border-secondary border-opacity-25 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                        <img src="<?php echo URLROOT; ?>/public/uploads/logo/<?php echo $data['settings']->company_logo; ?>" alt="Logo Usaha" class="img-fluid rounded" style="max-height: 100%;">
+                                    </div>
+                                <?php else: ?>
+                                    <div class="bg-dark bg-opacity-50 rounded border border-secondary border-opacity-25 d-flex align-items-center justify-content-center text-secondary" style="width: 45px; height: 45px;">
+                                        <i class="bi bi-image" style="font-size: 1.25rem;"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <input type="file" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="company_logo" accept="image/*">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label text-secondary small">Nomor WhatsApp Usaha</label>
+                            <input type="text" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="company_whatsapp" value="<?php echo htmlspecialchars($data['settings']->company_whatsapp); ?>">
+                        </div>
+
                         <div class="col-md-6">
                             <label class="form-label text-secondary small">Email Bisnis</label>
                             <input type="email" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="company_email" value="<?php echo htmlspecialchars($data['settings']->company_email); ?>">
                         </div>
+
                         <div class="col-md-6">
-                            <label class="form-label text-secondary small">Nomor WhatsApp Admin</label>
-                            <input type="text" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="company_whatsapp" value="<?php echo htmlspecialchars($data['settings']->company_whatsapp); ?>">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-secondary small">Timezone</label>
+                            <label class="form-label text-secondary small">Timezone (Wilayah Waktu)</label>
                             <select class="form-select bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="timezone">
                                 <option value="Asia/Jakarta" <?php echo $data['settings']->timezone == 'Asia/Jakarta' ? 'selected' : ''; ?>>Asia/Jakarta (WIB)</option>
                                 <option value="Asia/Makassar" <?php echo $data['settings']->timezone == 'Asia/Makassar' ? 'selected' : ''; ?>>Asia/Makassar (WITA)</option>
                                 <option value="Asia/Jayapura" <?php echo $data['settings']->timezone == 'Asia/Jayapura' ? 'selected' : ''; ?>>Asia/Jayapura (WIT)</option>
                             </select>
                         </div>
-                        <div class="col-12">
-                            <label class="form-label text-secondary small">Alamat Usaha</label>
-                            <textarea class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="company_address" rows="2"><?php echo htmlspecialchars($data['settings']->company_address); ?></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label text-secondary small">Catatan Footer Invoice</label>
-                            <textarea class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="invoice_footer" rows="2"><?php echo htmlspecialchars($data['settings']->invoice_footer); ?></textarea>
-                        </div>
-                        
-                        <div class="col-md-4 mt-4">
+
+                        <div class="col-md-6">
                             <label class="form-label text-secondary small">Format Mata Uang</label>
                             <input type="text" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="currency_format" value="<?php echo htmlspecialchars($data['settings']->currency_format); ?>">
                         </div>
-                        <div class="col-md-4 mt-4">
-                            <label class="form-label text-secondary small">Pengingat WA (H-)</label>
-                            <input type="number" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="wa_reminder_days" value="<?php echo htmlspecialchars($data['settings']->wa_reminder_days); ?>">
+
+                        <div class="col-12">
+                            <label class="form-label text-secondary small">Alamat Usaha Lengkap</label>
+                            <textarea class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="company_address" rows="2"><?php echo htmlspecialchars($data['settings']->company_address); ?></textarea>
                         </div>
-                        <div class="col-md-4 mt-4 d-flex align-items-end">
-                            <div class="form-check form-switch w-100 p-2 rounded bg-dark bg-opacity-25 border border-secondary border-opacity-25">
-                                <input class="form-check-input ms-1" type="checkbox" role="switch" id="auto_isolate" name="auto_isolate" value="1" <?php echo $data['settings']->auto_isolate ? 'checked' : ''; ?>>
-                                <label class="form-check-label ms-2 text-white small" for="auto_isolate">Isolir Otomatis</label>
+                        
+                        <div class="col-12">
+                            <label class="form-label text-secondary small">Catatan Footer Invoice (Footer)</label>
+                            <textarea class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="invoice_footer" rows="2"><?php echo htmlspecialchars($data['settings']->invoice_footer); ?></textarea>
+                        </div>
+
+                        <div class="col-md-6 mt-4">
+                            <label class="form-label text-secondary small">Jadwal Pengingat WA (Reminder Hari Sebelum Jatuh Tempo)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">H-</span>
+                                <input type="number" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="wa_reminder_days" value="<?php echo htmlspecialchars($data['settings']->wa_reminder_days); ?>">
+                                <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">Hari</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mt-4 d-flex align-items-end">
+                            <div class="form-check form-switch w-100 p-3 rounded bg-dark bg-opacity-25 border border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
+                                <label class="form-check-label text-white small" for="auto_isolate">Status Isolir Otomatis Pelanggan</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="auto_isolate" name="auto_isolate" value="1" <?php echo $data['settings']->auto_isolate ? 'checked' : ''; ?>>
                             </div>
                         </div>
                         
@@ -169,7 +197,7 @@
             </div>
         </div>
 
-        <!-- Jika ada multi-router dari database -->
+        <!-- 3. Tambahan Router Database -->
         <?php if (!empty($data['dbRouters'])): ?>
         <div class="card glass-card border-0 shadow-sm">
             <div class="card-header bg-transparent border-secondary border-opacity-25 p-3">

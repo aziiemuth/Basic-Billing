@@ -62,14 +62,8 @@
                     </a>
                 </nav>
 
-                <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase" style="letter-spacing: 1px;">Administrasi</div>
+                <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase" style="letter-spacing: 1px;">Kelola User Admin</div>
                 <nav class="nav flex-column mb-4">
-                    <a href="<?php echo URLROOT; ?>/AdminWhatsappController/broadcast" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminWhatsapp') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-megaphone"></i> Broadcast WhatsApp
-                    </a>
-                    <a href="<?php echo URLROOT; ?>/AdminPaymentGatewayController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminPaymentGateway') !== false ? 'active' : ''; ?>">
-                        <i class="bi bi-credit-card"></i> Payment Gateway
-                    </a>
                     <a href="<?php echo URLROOT; ?>/AdminUserController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminUser') !== false ? 'active' : ''; ?>">
                         <i class="bi bi-person-gear"></i> User Login
                     </a>

@@ -108,4 +108,35 @@ class InvoiceModel {
         $this->db->execute();
         return $this->db->rowCount() > 0;
     }
+
+    public function getFilteredInvoices($filters = []) {
+        $sql = "SELECT i.*, c.name AS customer_name, c.customer_id AS customer_code, pk.name AS package_name
+                FROM invoices i
+                JOIN customers c ON i.customer_id = c.id
+                LEFT JOIN packages pk ON i.package_id = pk.id
+                WHERE 1=1";
+        
+        $binds = [];
+        
+        if (!empty($filters['billing_month'])) {
+            $sql .= " AND i.billing_month = :billing_month";
+            $binds[':billing_month'] = $filters['billing_month'];
+        }
+        if (!empty($filters['customer_id']) && $filters['customer_id'] !== 'all') {
+            $sql .= " AND i.customer_id = :customer_id";
+            $binds[':customer_id'] = $filters['customer_id'];
+        }
+        if (!empty($filters['status']) && $filters['status'] !== 'all') {
+            $sql .= " AND i.status = :status";
+            $binds[':status'] = $filters['status'];
+        }
+        
+        $sql .= " ORDER BY i.created_at DESC";
+        
+        $this->db->query($sql);
+        foreach ($binds as $param => $val) {
+            $this->db->bind($param, $val);
+        }
+        return $this->db->resultSet();
+    }
 }

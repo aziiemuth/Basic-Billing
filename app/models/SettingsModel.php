@@ -14,6 +14,7 @@ class SettingsModel {
     public function update($data) {
         $query = "UPDATE settings SET 
             company_name = :company_name, 
+            company_logo = :company_logo,
             company_address = :company_address, 
             company_whatsapp = :company_whatsapp, 
             company_email = :company_email, 
@@ -26,6 +27,7 @@ class SettingsModel {
 
         $this->db->query($query);
         $this->db->bind(':company_name', $data['company_name']);
+        $this->db->bind(':company_logo', $data['company_logo']);
         $this->db->bind(':company_address', $data['company_address']);
         $this->db->bind(':company_whatsapp', $data['company_whatsapp']);
         $this->db->bind(':company_email', $data['company_email']);

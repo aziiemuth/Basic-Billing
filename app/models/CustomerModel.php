@@ -127,10 +127,13 @@ class CustomerModel {
         return $this->db->execute();
     }
 
-    public function getCustomersForBilling($package_id = null) {
+    public function getCustomersForBilling($package_id = null, $router_id = null) {
         $sql = "SELECT * FROM customers WHERE status = 'active'";
         if ($package_id && $package_id !== 'all') {
             $sql .= " AND package_id = :package_id";
+        }
+        if ($router_id && $router_id !== 'all') {
+            $sql .= " AND mikrotik_router_id = :router_id";
         }
         $sql .= " ORDER BY id ASC";
         
@@ -138,6 +141,9 @@ class CustomerModel {
         
         if ($package_id && $package_id !== 'all') {
             $this->db->bind(':package_id', $package_id);
+        }
+        if ($router_id && $router_id !== 'all') {
+            $this->db->bind(':router_id', $router_id);
         }
         
         return $this->db->resultSet();

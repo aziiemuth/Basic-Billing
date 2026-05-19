@@ -41,6 +41,9 @@ class WhatsappService {
             case 'fonnte':
                 $success = self::sendViaFonnte($phone, $message);
                 break;
+            case 'w4':
+                $success = self::sendViaW4($phone, $message);
+                break;
         }
         
         $status = $success ? 'sent' : 'failed';
@@ -93,6 +96,102 @@ class WhatsappService {
             return isset($result['status']) && $result['status'] === true;
         }
         return false;
+    }
+
+    /**
+     * Driver untuk W4 API Gateway
+     */
+    private static function sendViaW4($phone, $message) {
+        $token = WA_TOKEN;
+        $url = defined('WA_API_URL') ? WA_API_URL : 'https://api.w4gateway.com/send';
+
+        $data = [
+            'phone'   => $phone,
+            'message' => $message,
+            'token'   => $token
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $token,
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode == 200) {
+            $result = json_decode($response, true);
+            return (isset($result['status']) && ($result['status'] === true || $result['status'] === 'success')) 
+                || (isset($result['success']) && $result['success'] == true);
+        }
+        return false;
+    }
+
+    /**
+     * Memasukkan pesan ke antrian (queue)
+     */
+    public static function queue($customerId, $phone, $message, $messageType = 'custom') {
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+        if (substr($phone, 0, 1) === '0') {
+            $phone = '62' . substr($phone, 1);
+        }
+        
+        self::logToDb($customerId, $phone, $messageType, $message, 'pending');
+        return true;
+    }
+
+    /**
+     * Memproses antrian pesan pending secara bertahap (rate-limiting)
+     */
+    public static function processQueue($limit = 10) {
+        $db = new Database();
+        $db->query("SELECT * FROM whatsapp_logs WHERE status = 'pending' ORDER BY id ASC LIMIT :limit");
+        $db->bind(':limit', $limit);
+        $queue = $db->resultSet();
+        
+        if (empty($queue)) return 0;
+        
+        $processed = 0;
+        foreach ($queue as $item) {
+            $success = false;
+            $gateway = defined('WA_GATEWAY') ? WA_GATEWAY : 'fonnte';
+            
+            if (defined('WA_ENABLED') && WA_ENABLED) {
+                switch ($gateway) {
+                    case 'fonnte':
+                        $success = self::sendViaFonnte($item->phone_number, $item->message);
+                        break;
+                    case 'w4':
+                        $success = self::sendViaW4($item->phone_number, $item->message);
+                        break;
+                }
+            }
+            
+            $db->query("UPDATE whatsapp_logs SET status = :status, sent_at = :sent_at, updated_at = NOW() WHERE id = :id");
+            $db->bind(':id', $item->id);
+            $db->bind(':status', $success ? 'sent' : 'failed');
+            $db->bind(':sent_at', $success ? date('Y-m-d H:i:s') : null);
+            $db->execute();
+            
+            $processed++;
+            usleep(1500000); // 1.5s delay
+        }
+        
+        return $processed;
+    }
+
+    /**
+     * Mengantrekan ulang semua pesan yang gagal dikirim
+     */
+    public static function retryFailed() {
+        $db = new Database();
+        $db->query("UPDATE whatsapp_logs SET status = 'pending', sent_at = NULL WHERE status = 'failed'");
+        return $db->execute();
     }
 
     // =========================================================
@@ -170,6 +269,21 @@ class WhatsappService {
                  . "_" . SITENAME . "_";
 
         return self::send($customerId, $phone, $message, 'isolation');
+    }
+
+    /**
+     * Kirim notifikasi aktivasi internet baru
+     */
+    public static function sendActivated($customerId, $phone, $customerName, $packageName) {
+        $message = "🚀 *Layanan Internet Aktif!*\n\n"
+                 . "Halo *{$customerName}*,\n"
+                 . "Pemasangan baru internet Anda telah sukses dilakukan.\n"
+                 . "Paket Layanan: *{$packageName}*\n\n"
+                 . "Selamat menikmati layanan internet tanpa batas dari kami!\n\n"
+                 . "Jika ada kendala koneksi, silakan hubungi Customer Support kami.\n\n"
+                 . "_" . SITENAME . "_";
+
+        return self::send($customerId, $phone, $message, 'activation');
     }
 
     /**

@@ -14,16 +14,43 @@ class AdminReportController extends Controller {
 
         $summary = $this->reportModel->getSummary($month, $year);
         $cashflow = $this->reportModel->getCashflow($month, $year);
+        
+        // Fetch data for charts
+        $incomeTrend = $this->reportModel->getMonthlyIncomeTrend($year);
+        $paymentMethods = $this->reportModel->getPaymentMethodsSummary($month, $year);
+        $customerGrowth = $this->reportModel->getCustomerGrowthSummary();
 
         $data = [
             'title' => 'Laporan Keuangan & Kas',
             'month' => $month,
             'year'  => $year,
             'summary' => $summary,
-            'cashflow' => $cashflow
+            'cashflow' => $cashflow,
+            'incomeTrend' => $incomeTrend,
+            'paymentMethods' => $paymentMethods,
+            'customerGrowth' => $customerGrowth
         ];
 
         $this->view('admin/report/index', $data);
+    }
+    
+    public function pdf() {
+        $month = isset($_GET['month']) ? $_GET['month'] : date('m');
+        $year = isset($_GET['year']) ? $_GET['year'] : date('Y');
+
+        $summary = $this->reportModel->getSummary($month, $year);
+        $cashflow = $this->reportModel->getCashflow($month, $year);
+        
+        $data = [
+            'title' => 'Laporan Keuangan & Kas',
+            'month' => $month,
+            'year'  => $year,
+            'summary' => $summary,
+            'cashflow' => $cashflow,
+            'settings' => $this->model('SettingsModel')->getSettings()
+        ];
+
+        $this->view('admin/report/pdf', $data);
     }
     
     public function export() {

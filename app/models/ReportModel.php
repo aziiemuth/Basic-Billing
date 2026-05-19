@@ -85,4 +85,32 @@ class ReportModel {
         
         return $this->db->resultSet();
     }
+
+    public function getMonthlyIncomeTrend($year) {
+        $sql = "SELECT MONTH(updated_at) as month, SUM(amount) as total 
+                FROM payments 
+                WHERE status = 'success' AND YEAR(updated_at) = :year 
+                GROUP BY MONTH(updated_at) 
+                ORDER BY MONTH(updated_at) ASC";
+        $this->db->query($sql);
+        $this->db->bind(':year', $year);
+        return $this->db->resultSet();
+    }
+
+    public function getPaymentMethodsSummary($month, $year) {
+        $sql = "SELECT COALESCE(payment_method, 'manual') as method, COUNT(*) as count, SUM(amount) as total 
+                FROM payments 
+                WHERE status = 'success' AND MONTH(updated_at) = :month AND YEAR(updated_at) = :year 
+                GROUP BY payment_method";
+        $this->db->query($sql);
+        $this->db->bind(':month', $month);
+        $this->db->bind(':year', $year);
+        return $this->db->resultSet();
+    }
+
+    public function getCustomerGrowthSummary() {
+        $sql = "SELECT status, COUNT(*) as count FROM customers GROUP BY status";
+        $this->db->query($sql);
+        return $this->db->resultSet();
+    }
 }

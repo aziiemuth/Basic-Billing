@@ -39,6 +39,15 @@ function cronLog($message, $logFile) {
 
 cronLog('===== Auto-Isolate Cron Dimulai =====', $logFile);
 
+// ---- Cek Konfigurasi Isolir Otomatis ----
+$db = new Database();
+$db->query("SELECT auto_isolate FROM settings WHERE id = 1");
+$settings = $db->single();
+if (!$settings || !$settings->auto_isolate) {
+    cronLog('INFO: Fitur Isolir Otomatis dinonaktifkan di Pengaturan Sistem. Cron dibatalkan.', $logFile);
+    exit;
+}
+
 // ---- Query Overdue Customers ----
 $customerModel = new CustomerModel();
 $overdueList   = $customerModel->getOverdueCustomers();

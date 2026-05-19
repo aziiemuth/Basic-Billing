@@ -124,12 +124,15 @@ class AdminCustomerController extends Controller {
             if ($this->customerModel->create($data)) {
                 $newCustomer = $this->customerModel->getByCustomerIdString($data['customer_id']);
                 if ($newCustomer) {
+                    $package = $this->model('PackageModel')->getById($data['package_id']);
+                    $profileName = $package ? $package->mikrotik_profile : 'default';
+
                     $this->model('PppoeSecretModel')->create([
                         'customer_id' => $newCustomer->id,
                         'mikrotik_router_id' => $data['mikrotik_router_id'],
                         'username' => trim($_POST['pppoe_username']),
                         'password' => trim($_POST['pppoe_password']),
-                        'profile' => 'default',
+                        'profile' => $profileName,
                         'service' => 'pppoe',
                         'status' => 'enabled'
                     ]);
@@ -137,10 +140,55 @@ class AdminCustomerController extends Controller {
                     // Add PPPoE Secret to Mikrotik
                     $mikrotikService = new MikrotikService();
                     if ($mikrotikService->connect($data['mikrotik_router_id'])) {
-                        $package = $this->model('PackageModel')->getById($data['package_id']);
-                        $profile = $package ? $package->mikrotik_profile : 'default';
-                        $mikrotikService->addPppoeSecret(trim($_POST['pppoe_username']), trim($_POST['pppoe_password']), $profile);
+                        $mikrotikService->addPppoeSecret(trim($_POST['pppoe_username']), trim($_POST['pppoe_password']), $profileName);
                         $mikrotikService->disconnect();
+                    }
+
+                    // --- GENERATE FIRST INVOICE ---
+                    $amount = $data['custom_price'] ? $data['custom_price'] : ($package ? $package->price : 0);
+                    if ($package && $amount > 0) {
+                        $invoice_number = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+                        $billing_month = date('Y-m');
+                        $due_date = date('Y-m-') . str_pad($data['due_date'], 2, '0', STR_PAD_LEFT);
+                        
+                        $invoiceData = [
+                            'invoice_number' => $invoice_number,
+                            'customer_id' => $newCustomer->id,
+                            'package_id' => $package->id,
+                            'billing_month' => $billing_month,
+                            'amount' => $amount,
+                            'discount' => 0,
+                            'total_amount' => $amount,
+                            'issue_date' => date('Y-m-d'),
+                            'due_date' => $due_date,
+                            'status' => 'unpaid'
+                        ];
+
+                        $invoiceModel = $this->model('InvoiceModel');
+                        $invoice_id = $invoiceModel->createInvoice($invoiceData);
+
+                        if ($invoice_id) {
+                            $itemData = [
+                                'invoice_id' => $invoice_id,
+                                'description' => 'Tagihan Internet Paket ' . $package->name . ' - Periode ' . date('F Y'),
+                                'quantity' => 1,
+                                'unit_price' => $amount,
+                                'total_price' => $amount
+                            ];
+                            $invoiceModel->createInvoiceItem($itemData);
+                        }
+                    }
+
+                    // --- SEND WHATSAPP NOTIFICATION ---
+                    if (!empty($data['whatsapp'])) {
+                        // 1. Kirim notifikasi aktivasi internet baru
+                        require_once APPROOT . '/app/libraries/WhatsappService.php';
+                        WhatsappService::sendActivated($newCustomer->id, $data['whatsapp'], $data['name'], $package ? $package->name : 'Internet');
+
+                        // 2. Kirim notifikasi tagihan pertama
+                        if (isset($invoice_number) && isset($amount) && isset($billing_month) && isset($due_date)) {
+                            WhatsappService::sendNewInvoice($newCustomer->id, $data['whatsapp'], $data['name'], $invoice_number, $amount, $billing_month, $due_date);
+                        }
                     }
                 }
                 // Redirect on success

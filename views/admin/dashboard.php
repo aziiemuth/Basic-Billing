@@ -104,7 +104,7 @@
             <div class="card-header bg-transparent border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
                 <div>
                     <h6 class="fw-bold text-white mb-0">Status Router MikroTik</h6>
-                    <small class="text-secondary">Data live dari router belum tersedia. Menampilkan data dummy untuk koneksi PPPoE.</small>
+                    <small class="text-secondary">Koneksi dan statistik real-time dari router aktif Anda.</small>
                 </div>
             </div>
             <div class="card-body p-0">
@@ -114,8 +114,8 @@
                             <tr>
                                 <th class="ps-4 py-3 border-0">Nama Router</th>
                                 <th class="py-3 border-0">IP Host</th>
-                                <th class="py-3 border-0">Koneksi Database</th>
-                                <th class="py-3 border-0 text-end pe-4">Est. PPPoE Aktif</th>
+                                <th class="py-3 border-0">Status Koneksi</th>
+                                <th class="py-3 border-0 text-end pe-4">PPPoE Aktif (Live)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,14 +127,24 @@
                                 <?php foreach($data['routers'] as $router): ?>
                                 <tr>
                                     <td class="ps-4 text-white fw-medium">
-                                        <i class="bi bi-hdd-network text-info me-2"></i> <?php echo $router->name; ?>
+                                        <i class="bi bi-hdd-network text-info me-2"></i> <?php echo htmlspecialchars($router->name); ?>
                                     </td>
-                                    <td class="font-monospace text-secondary"><?php echo $router->host_ip; ?></td>
+                                    <td class="font-monospace text-secondary"><?php echo htmlspecialchars($router->host_ip); ?></td>
                                     <td>
-                                        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill"><i class="bi bi-check-circle"></i> Terhubung</span>
+                                        <?php if(!$router->is_active): ?>
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill"><i class="bi bi-dash-circle"></i> Nonaktif</span>
+                                        <?php elseif($router->is_online): ?>
+                                            <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill"><i class="bi bi-check-circle"></i> Online / Terhubung</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill"><i class="bi bi-x-circle"></i> Offline / Terputus</span>
+                                        <?php endif; ?>
                                     </td>
                                     <td class="text-end pe-4 text-white fw-bold">
-                                        <?php echo rand(10, 50); ?> <span class="text-secondary small fw-normal">Users</span>
+                                        <?php if($router->is_online): ?>
+                                            <span class="text-success"><?php echo $router->active_pppoe_count; ?></span> <span class="text-secondary small fw-normal">Sesi</span>
+                                        <?php else: ?>
+                                            <span class="text-muted">-</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
