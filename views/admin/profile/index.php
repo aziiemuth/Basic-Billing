@@ -1,3 +1,4 @@
+<?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
 <?php if (isset($_SESSION['flash_message'])): ?>

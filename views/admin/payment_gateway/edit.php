@@ -1,3 +1,4 @@
+<?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
 <div class="mb-4">

@@ -1,3 +1,4 @@
+<?php /** @var array $data */ ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>

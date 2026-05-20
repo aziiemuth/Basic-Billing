@@ -1,3 +1,4 @@
+<?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/auth_header.php'; ?>
 
 <div class="auth-container p-4">

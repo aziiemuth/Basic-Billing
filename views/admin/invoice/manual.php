@@ -1,3 +1,4 @@
+<?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
