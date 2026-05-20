@@ -37,7 +37,9 @@
                 <select name="year" class="form-select bg-dark bg-opacity-50 text-white border-secondary border-opacity-25">
                     <?php 
                     $current_year = date('Y');
-                    for($i = $current_year; $i >= $current_year - 5; $i--): ?>
+                    $start_year = 2026;
+                    $end_year = max($current_year, $start_year);
+                    for($i = $end_year; $i >= $start_year; $i--): ?>
                         <option value="<?php echo $i; ?>" <?php echo $data['year'] == $i ? 'selected' : ''; ?>><?php echo $i; ?></option>
                     <?php endfor; ?>
                 </select>
