@@ -44,6 +44,9 @@
                     <a href="<?php echo URLROOT; ?>/AdminRouterController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminRouter') !== false ? 'active' : ''; ?>">
                         <i class="bi bi-router flex-shrink-0"></i> <span>Router / Server</span>
                     </a>
+                    <a href="<?php echo URLROOT; ?>/AdminPppoeController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminPppoe') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-hdd-network flex-shrink-0"></i> <span>Data PPPoE (MikroTik)</span>
+                    </a>
                 </nav>
 
                 <div class="small fw-semibold text-secondary mb-2 px-2 text-uppercase sidebar-group-title" style="letter-spacing: 1px;">Keuangan</div>

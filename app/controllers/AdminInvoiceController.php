@@ -132,7 +132,8 @@ class AdminInvoiceController extends Controller {
                 // Hitung due date
                 $year = substr($billing_month, 0, 4);
                 $month = substr($billing_month, 5, 2);
-                $due_date = $year . '-' . $month . '-' . str_pad($customer->due_date, 2, '0', STR_PAD_LEFT);
+                $dueDay = !empty($customer->due_date) ? intval($customer->due_date) : 20;
+                $due_date = $year . '-' . $month . '-' . str_pad($dueDay, 2, '0', STR_PAD_LEFT);
                 
                 // Jika due date kurang dari hari ini (tanggal penagihan telat di bulan yang sama), 
                 // ini sekadar logic tanggal penagihan. Kita gunakan format standar saja.

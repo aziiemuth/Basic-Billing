@@ -86,7 +86,7 @@ class AdminCustomerController extends Controller {
                 'custom_price' => !empty($_POST['custom_price']) ? trim($_POST['custom_price']) : null,
                 'mikrotik_router_id' => trim($_POST['mikrotik_router_id']),
                 'installation_date' => trim($_POST['installation_date']),
-                'due_date' => trim($_POST['due_date']),
+                'due_date' => (!empty($_POST['due_date']) || $_POST['due_date'] === '0') ? intval($_POST['due_date']) : 0,
                 'status' => trim($_POST['status']),
                 'photo_profile' => null,
                 'photo_ktp' => null
@@ -149,7 +149,8 @@ class AdminCustomerController extends Controller {
                     if ($package && $amount > 0) {
                         $invoice_number = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
                         $billing_month = date('Y-m');
-                        $due_date = date('Y-m-') . str_pad($data['due_date'], 2, '0', STR_PAD_LEFT);
+                        $dueDay = !empty($data['due_date']) ? intval($data['due_date']) : 20;
+                        $due_date = date('Y-m-') . str_pad($dueDay, 2, '0', STR_PAD_LEFT);
                         
                         $invoiceData = [
                             'invoice_number' => $invoice_number,
@@ -283,7 +284,7 @@ class AdminCustomerController extends Controller {
                 'custom_price' => !empty($_POST['custom_price']) ? trim($_POST['custom_price']) : null,
                 'mikrotik_router_id' => trim($_POST['mikrotik_router_id']),
                 'installation_date' => trim($_POST['installation_date']),
-                'due_date' => trim($_POST['due_date']),
+                'due_date' => (!empty($_POST['due_date']) || $_POST['due_date'] === '0') ? intval($_POST['due_date']) : 0,
                 'status' => trim($_POST['status'])
             ];
 

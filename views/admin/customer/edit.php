@@ -102,7 +102,8 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-secondary small fw-medium">Jatuh Tempo (Tanggal)</label>
-                            <input type="number" min="1" max="28" name="due_date" class="form-control bg-dark border-secondary border-opacity-25 text-white" value="<?php echo $data['customer']->due_date; ?>" required>
+                            <input type="number" min="0" max="28" name="due_date" class="form-control bg-dark border-secondary border-opacity-25 text-white" value="<?php echo htmlspecialchars($data['customer']->due_date ?? 0); ?>">
+                            <div class="form-text text-secondary opacity-75 small">Isi 1-28. Isi 0 atau kosong jika tidak ada jatuh tempo (bebas isolasi).</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-secondary small fw-medium">Status Awal</label>

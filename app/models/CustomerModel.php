@@ -183,6 +183,7 @@ class CustomerModel {
                   AND i.status = 'unpaid'
                   AND i.due_date < CURDATE()
                   AND pk.auto_isolate = 1
+                  AND c.due_date > 0
                 GROUP BY c.id, ps.username, ps.mikrotik_router_id, pk.name, pk.auto_isolate
                 ORDER BY c.id ASC";
         $this->db->query($sql);

@@ -61,7 +61,8 @@ class CronController extends Controller {
                 
                 $amount = $customer->custom_price ? $customer->custom_price : $package->price;
                 $invoice_number = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
-                $due_date = date('Y-m-') . str_pad($customer->due_date, 2, '0', STR_PAD_LEFT);
+                $dueDay = !empty($customer->due_date) ? intval($customer->due_date) : 20;
+                $due_date = date('Y-m-') . str_pad($dueDay, 2, '0', STR_PAD_LEFT);
                 $issue_date = date('Y-m-d');
                 
                 // Pastikan due date tidak berada di bulan lalu jika penagihan lambat

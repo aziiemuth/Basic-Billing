@@ -16,6 +16,15 @@
 </div>
 
 <div class="card glass-card border-0 shadow-sm">
+    <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h6 class="fw-bold text-white mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Daftar Pelanggan</h6>
+        <div style="width: 250px;">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-search"></i></span>
+                <input type="text" id="customerSearchInput" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Cari nama pelanggan...">
+            </div>
+        </div>
+    </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-dark table-hover mb-0 align-middle">
@@ -92,7 +101,148 @@
                 </tbody>
             </table>
         </div>
+        <!-- Pagination Footer -->
+        <div class="card-footer bg-transparent border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 flex-wrap gap-2" id="pagination-footer" style="display: none;">
+            <div class="text-secondary small" id="pagination-info">
+                Menampilkan 0 - 0 dari 0 data
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0" id="pagination-controls">
+                    <!-- populated via JS -->
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const itemsPerPage = 15;
+    let currentPage = 1;
+    
+    const rows = Array.from(document.querySelectorAll('tbody tr')).filter(row => {
+        return !(row.cells.length === 1 && row.cells[0].colSpan === 5);
+    });
+    
+    const paginationFooter = document.getElementById('pagination-footer');
+    const paginationInfo = document.getElementById('pagination-info');
+    const paginationControls = document.getElementById('pagination-controls');
+    const searchInput = document.getElementById('customerSearchInput');
+    
+    function renderPagination() {
+        if (rows.length === 0) {
+            if (paginationFooter) paginationFooter.style.display = 'none';
+            return;
+        }
+        
+        // Filter rows based on search input
+        const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
+        const filteredRows = rows.filter(row => {
+            const nameCell = row.cells[1];
+            if (nameCell) {
+                const nameEl = nameCell.querySelector('.text-white.fw-medium.mb-1');
+                const usernameEl = row.cells[2].querySelector('.text-secondary.small');
+                
+                const nameText = nameEl ? nameEl.textContent : '';
+                const usernameText = usernameEl ? usernameEl.textContent : '';
+                
+                return nameText.toLowerCase().includes(searchVal) || usernameText.toLowerCase().includes(searchVal);
+            }
+            return false;
+        });
+        
+        const totalItems = filteredRows.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+        if (currentPage < 1) {
+            currentPage = 1;
+        }
+        
+        // Hide all rows
+        rows.forEach(row => row.style.display = 'none');
+        
+        // Show rows for current page
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, totalItems);
+        
+        for (let i = start; i < end; i++) {
+            filteredRows[i].style.display = '';
+        }
+        
+        // Update pagination info
+        if (totalItems === 0) {
+            paginationInfo.textContent = 'Menampilkan 0 data';
+            if (paginationFooter) paginationFooter.style.display = 'none';
+        } else {
+            paginationInfo.textContent = `Menampilkan ${start + 1} - ${end} dari ${totalItems} data`;
+            if (paginationFooter) paginationFooter.style.display = 'flex';
+        }
+        
+        // Render buttons
+        paginationControls.innerHTML = '';
+        
+        // Prev button
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+        prevLi.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (currentPage > 1) {
+                currentPage--;
+                renderPagination();
+            }
+        });
+        paginationControls.appendChild(prevLi);
+        
+        // Page numbers
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, startPage + 4);
+        if (endPage - startPage < 4) {
+            startPage = Math.max(1, endPage - 4);
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            const pageLi = document.createElement('li');
+            pageLi.className = `page-item ${currentPage === i ? 'active' : ''}`;
+            
+            const activeLinkClass = currentPage === i ? 'bg-primary border-primary text-white' : 'bg-dark border-secondary border-opacity-25 text-white';
+            
+            pageLi.innerHTML = `<a class="page-link ${activeLinkClass}" href="#">${i}</a>`;
+            pageLi.addEventListener('click', function(e) {
+                e.preventDefault();
+                currentPage = i;
+                renderPagination();
+            });
+            paginationControls.appendChild(pageLi);
+        }
+        
+        // Next button
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+        nextLi.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPagination();
+            }
+        });
+        paginationControls.appendChild(nextLi);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            currentPage = 1;
+            renderPagination();
+        });
+    }
+
+    // Initial render
+    renderPagination();
+});
+</script>
 
 <?php require_once APPROOT . '/views/layouts/admin_footer.php'; ?>

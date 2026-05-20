@@ -6,9 +6,6 @@
         <p class="text-secondary small mb-0">Kelola daftar router MikroTik yang terhubung dengan sistem.</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="<?php echo URLROOT; ?>/AdminRouterController/sync" class="btn btn-outline-info btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25">
-            <i class="bi bi-arrow-repeat"></i> Sinkronisasi PPPoE
-        </a>
         <button type="button" id="btn-isolate-overdue" class="btn btn-outline-warning btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25">
             <i class="bi bi-shield-exclamation"></i> Isolasi Menunggak
         </button>
@@ -94,12 +91,6 @@
                                             title="Test Koneksi">
                                         <i class="bi bi-wifi"></i>
                                     </button>
-                                    <!-- Sinkronisasi -->
-                                    <a href="<?php echo URLROOT; ?>/AdminRouterController/sync/<?php echo $router->id; ?>"
-                                       class="btn btn-sm btn-outline-secondary border-opacity-25 text-secondary"
-                                       title="Sinkronisasi PPPoE">
-                                        <i class="bi bi-arrow-repeat"></i>
-                                    </a>
                                     <a href="<?php echo URLROOT; ?>/AdminRouterController/edit/<?php echo $router->id; ?>" class="btn btn-sm btn-outline-warning border-opacity-25 text-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
