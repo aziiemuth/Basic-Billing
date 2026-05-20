@@ -41,6 +41,9 @@ class CustomerDashboardController extends Controller {
             }
         }
         
+        $settingsModel = $this->model('SettingsModel');
+        $settings = $settingsModel->getSettings();
+        
         $data = [
             'title' => 'Customer Portal',
             'customer' => $customer,
@@ -49,7 +52,8 @@ class CustomerDashboardController extends Controller {
             'pppoe' => $pppoe,
             'online_status' => $online_status,
             'uptime' => $uptime,
-            'ip_address' => $ip_address
+            'ip_address' => $ip_address,
+            'settings' => $settings
         ];
         $this->view('customer/dashboard', $data);
     }

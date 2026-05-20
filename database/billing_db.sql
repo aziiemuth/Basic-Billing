@@ -262,7 +262,7 @@ CREATE TABLE `settings` (
 --
 
 INSERT INTO `settings` (`id`, `company_name`, `company_logo`, `company_address`, `company_whatsapp`, `company_email`, `invoice_footer`, `timezone`, `currency_format`, `auto_isolate`, `wa_reminder_days`, `created_at`, `updated_at`) VALUES
-(1, 'RT/RW Net Maju Jaya', NULL, 'Jl. Contoh Alamat No. 123, Kota, Provinsi', '081234567890', 'admin@rtrwnet.local', 'Terima kasih telah menggunakan layanan internet kami.', 'Asia/Jakarta', 'IDR', 1, 3, '2026-05-07 05:16:39', '2026-05-07 05:16:39');
+(1, 'RT/RW Net Maju Jaya', NULL, 'Jl. Contoh Alamat No. 123, Kota, Provinsi', '+62 813-3633-7949', 'admin@rtrwnet.local', 'Terima kasih telah menggunakan layanan internet kami.', 'Asia/Jakarta', 'IDR', 1, 3, '2026-05-07 05:16:39', '2026-05-07 05:16:39');
 
 -- --------------------------------------------------------
 

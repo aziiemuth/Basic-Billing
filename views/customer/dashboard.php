@@ -161,9 +161,35 @@
                                                 <i class="bi bi-printer"></i>
                                             </a>
                                             <?php if($inv->status == 'unpaid'): ?>
-                                                <a href="<?php echo URLROOT; ?>/PaymentController/snap/<?php echo $inv->id; ?>" class="btn btn-sm btn-primary px-3">
+                                                <a href="<?php echo URLROOT; ?>/PaymentController/snap/<?php echo $inv->id; ?>" class="btn btn-sm btn-primary px-3 me-1">
                                                     <i class="bi bi-credit-card"></i> Bayar
                                                 </a>
+                                                <?php 
+                                                $adminWa = '';
+                                                if (!empty($data['settings']->company_whatsapp)) {
+                                                    $cleanNum = preg_replace('/[^0-9]/', '', $data['settings']->company_whatsapp);
+                                                    if (strpos($cleanNum, '0') === 0) {
+                                                        $cleanNum = '62' . substr($cleanNum, 1);
+                                                    }
+                                                    $adminWa = $cleanNum;
+                                                }
+                                                if (!empty($adminWa)): 
+                                                    $periode = date('F Y', strtotime($inv->billing_month . '-01'));
+                                                    $amount_formatted = number_format($inv->total_amount, 0, ',', '.');
+                                                    $waMsg = "Halo Admin, saya ingin konfirmasi pembayaran tagihan internet.\n\n"
+                                                           . "*Detail Tagihan:*\n"
+                                                           . "• No. Tagihan: *{$inv->invoice_number}*\n"
+                                                           . "• Nama Pelanggan: *{$_SESSION['customer_name']}*\n"
+                                                           . "• ID Pelanggan: *{$_SESSION['customer_code']}*\n"
+                                                           . "• Periode: *{$periode}*\n"
+                                                           . "• Total Tagihan: *Rp {$amount_formatted}*\n\n"
+                                                           . "Berikut saya lampirkan bukti pembayaran/transfer saya. Mohon untuk segera dikonfirmasi. Terima kasih!";
+                                                    $waUrl = "https://api.whatsapp.com/send?phone=" . $adminWa . "&text=" . urlencode($waMsg);
+                                                ?>
+                                                    <a href="<?php echo $waUrl; ?>" target="_blank" class="btn btn-sm btn-outline-success px-2" title="Konfirmasi Pembayaran Manual via WhatsApp">
+                                                        <i class="bi bi-whatsapp"></i> Konfirmasi
+                                                    </a>
+                                                <?php endif; ?>
                                             <?php else: ?>
                                                 <button class="btn btn-sm btn-outline-secondary px-3" disabled>
                                                     <i class="bi bi-check-circle"></i> Selesai
