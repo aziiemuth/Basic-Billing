@@ -41,7 +41,12 @@ class MikrotikService {
             $port     = MIKROTIK_PORT;
         }
 
-        $this->api->port     = $port;
+        if (empty($host)) {
+            $this->lastError = 'Host IP MikroTik tidak ditentukan.';
+            return false;
+        }
+
+        $this->api->port     = !empty($port) ? (int)$port : 8728;
         $this->api->timeout  = defined('MIKROTIK_TIMEOUT') ? MIKROTIK_TIMEOUT : 3;
         $this->api->attempts = 1;
         $this->api->delay    = 0;
@@ -50,7 +55,7 @@ class MikrotikService {
             return true;
         }
 
-        $this->lastError = 'Koneksi ke router gagal (' . $host . ':' . $port . '). Periksa IP, port, username, dan password di config.php atau menu Router.';
+        $this->lastError = 'Koneksi ke router gagal (' . $host . ':' . $this->api->port . '). Periksa IP, port, username, dan password di file .env atau menu Router.';
         return false;
     }
 
@@ -60,11 +65,16 @@ class MikrotikService {
      */
     public function connectFromConfig() {
         if (!defined('MIKROTIK_ENABLED') || !MIKROTIK_ENABLED) {
-            $this->lastError = 'Integrasi MikroTik dinonaktifkan (MIKROTIK_ENABLED = false) di config.php.';
+            $this->lastError = 'Integrasi MikroTik dinonaktifkan (MIKROTIK_ENABLED = false) di file .env.';
             return false;
         }
 
-        $this->api->port     = MIKROTIK_PORT;
+        if (empty(MIKROTIK_HOST)) {
+            $this->lastError = 'Host IP MikroTik utama (MIKROTIK_HOST) tidak ditentukan di file .env.';
+            return false;
+        }
+
+        $this->api->port     = !empty(MIKROTIK_PORT) ? (int)MIKROTIK_PORT : 8728;
         $this->api->timeout  = defined('MIKROTIK_TIMEOUT') ? MIKROTIK_TIMEOUT : 3;
         $this->api->attempts = 1;
         $this->api->delay    = 0;
@@ -73,7 +83,7 @@ class MikrotikService {
             return true;
         }
 
-        $this->lastError = 'Gagal terhubung ke router utama (' . MIKROTIK_HOST . ':' . MIKROTIK_PORT . '). Periksa konfigurasi MIKROTIK_* di config.php.';
+        $this->lastError = 'Gagal terhubung ke router utama (' . MIKROTIK_HOST . ':' . $this->api->port . '). Periksa konfigurasi MIKROTIK_* di file .env.';
         return false;
     }
 
@@ -118,8 +128,16 @@ class MikrotikService {
             $source   = 'config';
         }
 
+        if (empty($host)) {
+            return [
+                'success' => false,
+                'message' => 'Konfigurasi IP MikroTik kosong/belum diatur.',
+                'source'  => $source,
+            ];
+        }
+
         $api           = new RouterosAPI();
-        $api->port     = $port;
+        $api->port     = !empty($port) ? (int)$port : 8728;
         $api->timeout  = defined('MIKROTIK_TIMEOUT') ? MIKROTIK_TIMEOUT : 3;
         $api->attempts = 1;
         $api->delay    = 0;
@@ -171,7 +189,7 @@ class MikrotikService {
 
         return [
             'success' => false,
-            'message' => 'Gagal terhubung ke ' . $host . ':' . $port . '. Periksa konfigurasi MIKROTIK_* di config.php.',
+            'message' => 'Gagal terhubung ke ' . $host . ':' . $port . '. Periksa konfigurasi MIKROTIK_* di file .env.',
             'source'  => $source,
         ];
     }

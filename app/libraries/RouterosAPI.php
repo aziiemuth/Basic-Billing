@@ -18,7 +18,7 @@ class RouterosAPI {
     public function connect($ip, $login, $password) {
         for ($ATTEMPT = 1; $ATTEMPT <= $this->attempts; $ATTEMPT++) {
             $this->connected = false;
-            $this->socket = @fsockopen($ip, $this->port, $this->error_no, $this->error_str, $this->timeout);
+            $this->socket = @fsockopen($ip, (int)$this->port, $this->error_no, $this->error_str, (int)$this->timeout);
             if ($this->socket) {
                 socket_set_timeout($this->socket, $this->timeout);
                 $this->write('/login', false);

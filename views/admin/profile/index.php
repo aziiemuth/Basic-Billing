@@ -55,25 +55,6 @@
             </div>
         </div>
 
-        <!-- Utilitas Pengujian (Testing Dummy Data) -->
-        <div class="card glass-card border-0 shadow-sm">
-            <div class="card-header bg-transparent border-secondary border-opacity-25 p-4">
-                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-database-fill-gear me-2 text-warning"></i>Utilitas Pengujian (Testing)</h6>
-            </div>
-            <div class="card-body p-4 text-center">
-                <p class="text-secondary small text-start mb-3">Gunakan tombol di bawah untuk mengimpor atau menghapus dataset dummy guna menguji fungsionalitas sistem (seperti isolir otomatis, kas keuangan, tagihan, dll.) secara aman.</p>
-                
-                <div class="d-grid gap-2">
-                    <a href="<?php echo URLROOT; ?>/AdminProfileController/importDummyData" class="btn btn-warning fw-medium text-dark d-flex align-items-center justify-content-center gap-2 shadow-sm">
-                        <i class="bi bi-cloud-arrow-down-fill"></i> Impor 5 Data Dummy Testing
-                    </a>
-                    
-                    <a href="<?php echo URLROOT; ?>/AdminProfileController/deleteDummyData" class="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2" onclick="return confirm('Apakah Anda yakin ingin menghapus seluruh data dummy testing beserta semua invoice, payment, transaksi, dan arus kas terkait? Data asli tidak akan terpengaruh.');">
-                        <i class="bi bi-trash-fill"></i> Hapus Seluruh Data Dummy
-                    </a>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Kolom Kanan: Status MikroTik & Pengaturan Sistem -->
