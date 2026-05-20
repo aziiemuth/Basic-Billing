@@ -500,12 +500,17 @@ class AdminCustomerController extends Controller {
 
     public function storeImportMikrotik() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $router_id = $_POST['router_id'];
+            $router_id = isset($_POST['router_id']) ? $_POST['router_id'] : null;
             $selected_secrets = isset($_POST['secrets']) ? $_POST['secrets'] : [];
-            $package_id = $_POST['package_id'];
+            $package_id = isset($_POST['package_id']) ? $_POST['package_id'] : '';
             
-            if (empty($selected_secrets) || empty($router_id) || empty($package_id)) {
-                die("Pilih minimal satu pelanggan dan tentukan paket internet default-nya.");
+            if (empty($selected_secrets) || empty($router_id)) {
+                die("Pilih minimal satu pelanggan yang ingin di-import.");
+            }
+            if (empty($package_id)) {
+                $_SESSION['toast_error'] = "Gagal Import: Anda harus menentukan Paket Internet Default / Fallback. Jika belum ada, silakan Sinkronisasi Paket terlebih dahulu.";
+                header('Location: ' . URLROOT . '/AdminCustomerController/importMikrotik?router_id=' . $router_id);
+                exit;
             }
             
             $mikrotikService = new MikrotikService();
@@ -521,12 +526,26 @@ class AdminCustomerController extends Controller {
                 }
             }
             
+            // Fetch packages for auto-matching
+            $packageModel = $this->model('PackageModel');
+            $allPackages = $packageModel->getAll();
+            $packagesByProfile = [];
+            foreach ($allPackages as $pkg) {
+                $packagesByProfile[$pkg->mikrotik_profile] = $pkg->id;
+            }
+            
             $success = 0;
             foreach ($selected_secrets as $username) {
                 if (isset($secretMap[$username])) {
                     $s = $secretMap[$username];
                     
                     $cid = $this->customerModel->generateCustomerId();
+                    
+                    // Auto match package
+                    $matched_package_id = $package_id; // Default fallback
+                    if (isset($s['profile']) && isset($packagesByProfile[$s['profile']])) {
+                        $matched_package_id = $packagesByProfile[$s['profile']];
+                    }
                     
                     // Create customer
                     $customerData = [
@@ -539,7 +558,7 @@ class AdminCustomerController extends Controller {
                         'address' => 'Imported from MikroTik',
                         'latitude' => null,
                         'longitude' => null,
-                        'package_id' => $package_id,
+                        'package_id' => $matched_package_id,
                         'custom_price' => null,
                         'mikrotik_router_id' => $router_id,
                         'installation_date' => date('Y-m-d'),

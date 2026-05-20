@@ -329,6 +329,17 @@ class MikrotikService {
         }
     }
 
+    /**
+     * Get all PPPoE Profiles from MikroTik
+     */
+    public function getAllPppoeProfiles() {
+        try {
+            return $this->api->comm('/ppp/profile/print');
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
     // =========================================================================
     // STATUS & ACTIVE SESSIONS
     // =========================================================================

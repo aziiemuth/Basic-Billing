@@ -5,9 +5,17 @@
         <h4 class="fw-bold text-white mb-1">Manajemen Paket Internet</h4>
         <p class="text-secondary small mb-0">Kelola daftar paket, harga, bandwidth, dan profil MikroTik.</p>
     </div>
-    <a href="<?php echo URLROOT; ?>/AdminPackageController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
-        <i class="bi bi-plus-lg"></i> Tambah Paket
-    </a>
+    <div class="d-flex gap-2">
+        <form action="<?php echo URLROOT; ?>/AdminPackageController/syncMikrotik" method="POST" class="m-0">
+            <?php echo SecurityHelper::csrfField(); ?>
+            <button type="submit" class="btn btn-outline-info btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25" onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span> Menarik data...'; this.disabled=true; this.form.submit();">
+                <i class="bi bi-cloud-arrow-down"></i> Sinkronisasi dari MikroTik
+            </button>
+        </form>
+        <a href="<?php echo URLROOT; ?>/AdminPackageController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
+            <i class="bi bi-plus-lg"></i> Tambah Paket
+        </a>
+    </div>
 </div>
 
 <div class="card glass-card border-0 shadow-sm">

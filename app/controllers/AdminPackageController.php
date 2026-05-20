@@ -110,4 +110,74 @@ class AdminPackageController extends Controller {
             header('Location: ' . URLROOT . '/AdminPackageController');
         }
     }
+
+    public function syncMikrotik() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $router_id = isset($_POST['router_id']) ? $_POST['router_id'] : null;
+            
+            require_once APPROOT . '/app/libraries/MikrotikService.php';
+            $mikrotikService = new MikrotikService();
+            
+            // Connect to either specific router or default
+            $connected = $router_id ? $mikrotikService->connect($router_id) : $mikrotikService->connectDefault();
+            
+            if (!$connected) {
+                $_SESSION['toast_error'] = 'Gagal terhubung ke MikroTik: ' . $mikrotikService->getLastError();
+                header('Location: ' . URLROOT . '/AdminPackageController');
+                exit;
+            }
+            
+            $profiles = $mikrotikService->getAllPppoeProfiles();
+            if (empty($profiles)) {
+                $_SESSION['toast_error'] = 'Tidak ada PPP Profile ditemukan di MikroTik.';
+                header('Location: ' . URLROOT . '/AdminPackageController');
+                exit;
+            }
+            
+            $existingPackages = $this->packageModel->getAll();
+            $existingProfiles = array_column($existingPackages, 'mikrotik_profile');
+            
+            $addedCount = 0;
+            foreach ($profiles as $p) {
+                if (isset($p['name']) && !in_array($p['name'], $existingProfiles)) {
+                    // Extract rate-limit (speed) if available
+                    $speed_download = 0;
+                    $speed_upload = 0;
+                    if (isset($p['rate-limit']) && !empty($p['rate-limit'])) {
+                        // format is Usually rx/tx e.g. "5M/10M" (RX from router perspective is Upload, TX is Download)
+                        $rateParts = explode('/', $p['rate-limit']);
+                        if (count($rateParts) == 2) {
+                            $speed_upload = (int) filter_var($rateParts[0], FILTER_SANITIZE_NUMBER_INT);
+                            $speed_download = (int) filter_var($rateParts[1], FILTER_SANITIZE_NUMBER_INT);
+                        }
+                    }
+
+                    $data = [
+                        'name' => 'Paket ' . $p['name'],
+                        'speed_download' => $speed_download,
+                        'speed_upload' => $speed_upload,
+                        'price' => 0, // Default price
+                        'mikrotik_profile' => $p['name'],
+                        'description' => 'Di-import otomatis dari MikroTik',
+                        'is_active' => 1,
+                        'auto_isolate' => 1
+                    ];
+                    
+                    if ($this->packageModel->create($data)) {
+                        $addedCount++;
+                    }
+                }
+            }
+            
+            if ($addedCount > 0) {
+                $_SESSION['toast_success'] = "Berhasil mensinkronisasi dan menambahkan $addedCount paket baru dari MikroTik. Jangan lupa untuk mengatur harganya!";
+            } else {
+                $_SESSION['toast_success'] = 'Sinkronisasi berhasil. Semua profile MikroTik sudah terdaftar sebagai paket.';
+            }
+            
+            header('Location: ' . URLROOT . '/AdminPackageController');
+        } else {
+            header('Location: ' . URLROOT . '/AdminPackageController');
+        }
+    }
 }

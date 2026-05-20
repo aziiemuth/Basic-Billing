@@ -62,7 +62,7 @@
                 
                 <div class="row mb-4">
                     <div class="col-md-5">
-                        <label class="form-label text-secondary small">Set Paket Default <span class="text-danger">*</span></label>
+                        <label class="form-label text-secondary small">Set Paket Default / Fallback <span class="text-danger">*</span></label>
                         <?php if (empty($data['packages'])): ?>
                             <div class="alert alert-warning border-warning border-opacity-25 bg-warning bg-opacity-10 text-warning rounded-3 p-3 mb-2 small">
                                 <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -74,13 +74,13 @@
                             </select>
                         <?php else: ?>
                             <select name="package_id" class="form-select bg-dark text-white border-secondary border-opacity-25" required>
-                                <option value="">-- Pilih Paket Internet --</option>
+                                <option value="">-- Pilih Paket Fallback --</option>
                                 <?php foreach ($data['packages'] as $package) : ?>
                                     <option value="<?php echo $package->id; ?>"><?php echo $package->name; ?> (Rp <?php echo number_format($package->price, 0, ',', '.'); ?>)</option>
                                 <?php endforeach; ?>
                             </select>
                         <?php endif; ?>
-                        <div class="form-text text-secondary opacity-75 small">Paket ini akan diterapkan ke semua pelanggan yang diimport. Anda bisa mengubahnya nanti.</div>
+                        <div class="form-text text-secondary opacity-75 small"><i class="bi bi-info-circle me-1"></i>Sistem akan memprioritaskan pencocokan otomatis berdasarkan <b>Profile MikroTik</b> masing-masing pelanggan. Paket ini hanya akan digunakan jika profile belum terdaftar di sistem.</div>
                     </div>
                 </div>
 
@@ -197,6 +197,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Pilih minimal satu pelanggan yang ingin diimport!');
                 return;
             }
+            
+            const packageSelect = document.querySelector('select[name="package_id"]');
+            if (packageSelect && packageSelect.disabled) {
+                e.preventDefault();
+                alert('Silakan buat atau sinkronisasi paket internet terlebih dahulu sebelum mengimport pelanggan!');
+                return;
+            }
+            
             if (!confirm(`Anda yakin ingin mengimport ${count} pelanggan ke database?`)) {
                 e.preventDefault();
             } else {
