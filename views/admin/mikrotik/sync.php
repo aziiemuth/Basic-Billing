@@ -5,9 +5,14 @@
         <h4 class="fw-bold text-white mb-1"><i class="bi bi-arrow-repeat me-2 text-info"></i>Sinkronisasi PPPoE MikroTik</h4>
         <p class="text-secondary small mb-0">Pantau status koneksi online/offline pelanggan secara realtime dari MikroTik.</p>
     </div>
-    <a href="<?php echo URLROOT; ?>/AdminRouterController" class="btn btn-outline-secondary btn-sm px-3 border-opacity-25">
-        <i class="bi bi-arrow-left me-1"></i> Kembali
-    </a>
+    <div class="d-flex gap-2">
+        <a href="<?php echo URLROOT; ?>/AdminCustomerController/importMikrotik<?php echo $data['router_id'] ? '?router_id='.$data['router_id'] : ''; ?>" class="btn btn-outline-info btn-sm px-3 border-opacity-25 fw-medium d-flex align-items-center gap-1">
+            <i class="bi bi-cloud-download"></i> Tarik Data (Import) dari MikroTik
+        </a>
+        <a href="<?php echo URLROOT; ?>/AdminRouterController" class="btn btn-outline-secondary btn-sm px-3 border-opacity-25 d-flex align-items-center">
+            <i class="bi bi-arrow-left me-1"></i> Kembali
+        </a>
+    </div>
 </div>
 
 <!-- Filter Router -->
@@ -130,8 +135,18 @@
                     <?php if (empty($data['customers'])): ?>
                     <tr>
                         <td colspan="8" class="text-center py-5 text-secondary">
-                            <i class="bi bi-people fs-1 opacity-25 d-block mb-2"></i>
-                            Belum ada data pelanggan dengan PPPoE.
+                            <i class="bi bi-people fs-1 opacity-25 d-block mb-3"></i>
+                            <h5 class="text-white small fw-bold mb-1">Belum Ada Pelanggan Terdaftar dengan PPPoE</h5>
+                            <p class="text-secondary small mb-3">Halaman ini digunakan untuk memantau status realtime pelanggan yang sudah terdaftar di database billing.</p>
+                            <?php if ($data['router_id']): ?>
+                                <a href="<?php echo URLROOT; ?>/AdminCustomerController/importMikrotik?router_id=<?php echo $data['router_id']; ?>" class="btn btn-info btn-sm px-3 fw-medium">
+                                    <i class="bi bi-cloud-download me-1"></i> Tarik / Import Data PPPoE dari MikroTik Sekarang
+                                </a>
+                            <?php else: ?>
+                                <a href="<?php echo URLROOT; ?>/AdminCustomerController/importMikrotik" class="btn btn-info btn-sm px-3 fw-medium">
+                                    <i class="bi bi-cloud-download me-1"></i> Tarik / Import Data PPPoE dari MikroTik
+                                </a>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php else: ?>

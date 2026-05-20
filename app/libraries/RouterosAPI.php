@@ -125,8 +125,8 @@ class RouterosAPI {
                 $LENGTH = $BYTE;
             }
 
+            $_ = "";
             if ($LENGTH > 0) {
-                $_ = "";
                 $retlen = 0;
                 while ($retlen < $LENGTH) {
                     $toread = $LENGTH - $retlen;
@@ -157,8 +157,14 @@ class RouterosAPI {
         $current = null;
         foreach ($response as $line) {
             if ($line === '!re') {
+                if ($current !== null) {
+                    $parsed[] = $current;
+                }
                 $current = array();
             } elseif ($line === '!trap') {
+                if ($current !== null) {
+                    $parsed[] = $current;
+                }
                 $current = array('!trap' => true);
             } elseif ($line === '!done' || $line === '!fatal') {
                 if ($current !== null) {
@@ -169,11 +175,6 @@ class RouterosAPI {
                 $parts = explode('=', substr($line, 1), 2);
                 if (count($parts) == 2 && $current !== null) {
                     $current[$parts[0]] = $parts[1];
-                }
-            } else {
-                if ($current !== null) {
-                    $parsed[] = $current;
-                    $current = null;
                 }
             }
         }
