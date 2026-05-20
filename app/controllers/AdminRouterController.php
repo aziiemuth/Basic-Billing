@@ -123,18 +123,7 @@ class AdminRouterController extends Controller {
         exit;
     }
 
-    // =========================================================================
-    // AJAX: Test koneksi langsung dari config.php (tanpa perlu router di DB)
-    // =========================================================================
-    public function testConnectionConfig() {
-        header('Content-Type: application/json');
 
-        $mikrotikService = new MikrotikService();
-        $result          = $mikrotikService->testConnection(null); // null = gunakan config
-
-        echo json_encode($result);
-        exit;
-    }
 
     // =========================================================================
     // Halaman Sinkronisasi Status PPPoE

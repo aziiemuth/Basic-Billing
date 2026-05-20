@@ -70,13 +70,13 @@
                                 <div class="text-secondary small"><i class="bi bi-person"></i> <?php echo $customer->username; ?></div>
                                 <?php endif; ?>
                             </td>
-                            <td>
+                            <td class="customer-status-col" data-router-id="<?php echo $customer->mikrotik_router_id; ?>">
                                 <?php if ($customer->status == 'active'): ?>
-                                    <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill">Aktif</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill customer-status-badge">Aktif</span>
                                 <?php elseif ($customer->status == 'inactive'): ?>
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill">Nonaktif</span>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill customer-status-badge">Nonaktif</span>
                                 <?php elseif ($customer->status == 'isolated'): ?>
-                                    <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill">Terisolir</span>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill customer-status-badge">Terisolir</span>
                                 <?php endif; ?>
                             </td>
                             <td class="pe-4 text-end">
@@ -242,6 +242,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial render
     renderPagination();
+
+    // Check router status for all customers
+    const statusCols = document.querySelectorAll('.customer-status-col[data-router-id]');
+    const uniqueRouterIds = new Set();
+    statusCols.forEach(col => {
+        const rId = col.getAttribute('data-router-id');
+        if (rId && rId.trim() !== '') {
+            uniqueRouterIds.add(rId);
+        }
+    });
+
+    uniqueRouterIds.forEach(routerId => {
+        fetch('<?php echo URLROOT; ?>/AdminRouterController/testConnection/' + routerId)
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) {
+                    // Router is dead (offline)
+                    const colsToUpdate = document.querySelectorAll(`.customer-status-col[data-router-id="${routerId}"]`);
+                    colsToUpdate.forEach(col => {
+                        if (!col.querySelector('.router-mati-badge')) {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill ms-1 mt-1 d-inline-block router-mati-badge';
+                            badge.textContent = 'Router Mati';
+                            badge.title = 'Koneksi ke router ini terputus';
+                            col.appendChild(badge);
+                        }
+                    });
+                }
+            })
+            .catch(() => {
+                const colsToUpdate = document.querySelectorAll(`.customer-status-col[data-router-id="${routerId}"]`);
+                colsToUpdate.forEach(col => {
+                    if (!col.querySelector('.router-mati-badge')) {
+                        const badge = document.createElement('span');
+                        badge.className = 'badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill ms-1 mt-1 d-inline-block router-mati-badge';
+                        badge.textContent = 'Router Mati';
+                        badge.title = 'Koneksi ke router ini terputus';
+                        col.appendChild(badge);
+                    }
+                });
+            });
+    });
 });
 </script>
 

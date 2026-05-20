@@ -23,20 +23,9 @@ class AdminInvoiceController extends Controller {
     }
 
     public function manual() {
-        // Hanya ambil pelanggan yang aktif untuk mempermudah list
-        $customers = $this->customerModel->getCustomersForBilling('all');
-        $packages = $this->packageModel->getAll();
-        
-        // Buat map paket untuk mempermudah di view
-        $packageMap = [];
-        foreach($packages as $pkg) {
-            $packageMap[$pkg->id] = $pkg;
-        }
-        
         $data = [
-            'title' => 'Tagihan Manual (Direct WA)',
-            'customers' => $customers,
-            'packageMap' => $packageMap
+            'title'    => 'Tagihan Manual',
+            'invoices' => $this->invoiceModel->getUnpaidInvoicesForManual(),
         ];
         $this->view('admin/invoice/manual', $data);
     }
@@ -255,6 +244,139 @@ class AdminInvoiceController extends Controller {
             'message'   => 'Invoice ditandai lunas.',
             'mikrotik'  => $mtResult,
         ]);
+        exit;
+    }
+
+    // =========================================================================
+    // AJAX: Kirim Notifikasi WA Tagihan Manual via Fonnte API
+    // =========================================================================
+    public function sendManualWA($invoiceId) {
+        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request.']);
+            exit;
+        }
+
+        $invoice = $this->invoiceModel->getById($invoiceId);
+        if (!$invoice) {
+            echo json_encode(['success' => false, 'message' => 'Invoice tidak ditemukan.']);
+            exit;
+        }
+
+        $customer = $this->customerModel->getById($invoice->customer_id);
+        if (!$customer) {
+            echo json_encode(['success' => false, 'message' => 'Pelanggan tidak ditemukan.']);
+            exit;
+        }
+
+        if (empty($customer->whatsapp)) {
+            echo json_encode(['success' => false, 'message' => 'Nomor WhatsApp pelanggan tidak tersedia.']);
+            exit;
+        }
+
+        $ok = WhatsappService::sendNewInvoice(
+            $customer->id,
+            $customer->whatsapp,
+            $customer->name,
+            $invoice->invoice_number,
+            $invoice->total_amount,
+            $invoice->billing_month,
+            $invoice->due_date
+        );
+
+        if ($ok) {
+            echo json_encode(['success' => true, 'message' => 'Pesan tagihan berhasil dikirim ke WhatsApp ' . $customer->name . '.']);
+        } else {
+            // WA_ENABLED = false: pesan masuk antrian pending (tidak error fatal)
+            if (!defined('WA_ENABLED') || !WA_ENABLED) {
+                echo json_encode(['success' => false, 'message' => 'WA Gateway belum aktif. Aktifkan WA_ENABLED=true di .env untuk kirim via Fonnte.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Gagal mengirim WA. Periksa token Fonnte di .env.']);
+            }
+        }
+        exit;
+    }
+
+    // =========================================================================
+    // AJAX: Buat tagihan tunggal untuk satu pelanggan (on-the-fly)
+    // =========================================================================
+    public function generateSingleInvoice($customerId) {
+        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Invalid request.']);
+            exit;
+        }
+
+        $customer = $this->customerModel->getById($customerId);
+        if (!$customer || !in_array($customer->status, ['active', 'isolated'])) {
+            echo json_encode(['success' => false, 'message' => 'Pelanggan tidak valid atau nonaktif.']);
+            exit;
+        }
+
+        $billing_month = date('Y-m');
+
+        // Cegah duplikasi
+        if ($this->invoiceModel->checkInvoiceExists($customer->id, $billing_month)) {
+            echo json_encode(['success' => false, 'message' => 'Tagihan bulan ini sudah pernah dibuat untuk pelanggan ini.']);
+            exit;
+        }
+
+        $package = $this->packageModel->getById($customer->package_id);
+        if (!$package) {
+            echo json_encode(['success' => false, 'message' => 'Paket pelanggan tidak valid.']);
+            exit;
+        }
+
+        $amount = $customer->custom_price ? $customer->custom_price : $package->price;
+        $invoice_number = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+        
+        $year = substr($billing_month, 0, 4);
+        $month = substr($billing_month, 5, 2);
+        $dueDay = !empty($customer->due_date) ? intval($customer->due_date) : 20;
+        $due_date = $year . '-' . $month . '-' . str_pad($dueDay, 2, '0', STR_PAD_LEFT);
+        $issue_date = date('Y-m-d');
+
+        $invoiceData = [
+            'invoice_number' => $invoice_number,
+            'customer_id' => $customer->id,
+            'package_id' => $package->id,
+            'billing_month' => $billing_month,
+            'amount' => $amount,
+            'discount' => 0,
+            'total_amount' => $amount,
+            'issue_date' => $issue_date,
+            'due_date' => $due_date,
+            'status' => 'unpaid'
+        ];
+
+        $invoice_id = $this->invoiceModel->createInvoice($invoiceData);
+
+        if ($invoice_id) {
+            $itemData = [
+                'invoice_id' => $invoice_id,
+                'description' => 'Tagihan Internet Paket ' . $package->name . ' - Periode ' . date('F Y', strtotime($billing_month . '-01')),
+                'quantity' => 1,
+                'unit_price' => $amount,
+                'total_price' => $amount
+            ];
+            $this->invoiceModel->createInvoiceItem($itemData);
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Invoice berhasil dibuat.',
+                'invoice' => [
+                    'id' => $invoice_id,
+                    'invoice_number' => $invoice_number,
+                    'total_amount' => $amount,
+                    'due_date' => $due_date,
+                    'billing_month' => $billing_month,
+                    'package_name' => $package->name,
+                    'amount_formatted' => number_format($amount, 0, ',', '.')
+                ]
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Gagal menyimpan invoice ke database.']);
+        }
         exit;
     }
 

@@ -139,4 +139,43 @@ class InvoiceModel {
         }
         return $this->db->resultSet();
     }
+
+    /**
+     * Ambil semua pelanggan aktif & isolated beserta info invoice unpaid terbarunya.
+     * Jika tidak ada invoice unpaid, invoice_id / id bernilai null (belum digenerate).
+     */
+    public function getUnpaidInvoicesForManual() {
+        $sql = "SELECT c.id AS customer_id_db,
+                       c.name AS customer_name,
+                       c.customer_id AS customer_code,
+                       c.whatsapp,
+                       c.status AS customer_status,
+                       c.custom_price,
+                       c.due_date AS customer_due_day,
+                       pk.name AS package_name,
+                       pk.price AS package_price,
+                       i.id AS id,
+                       i.invoice_number,
+                       i.total_amount,
+                       i.due_date,
+                       i.billing_month,
+                       i.status AS invoice_status
+                FROM customers c
+                LEFT JOIN packages pk ON pk.id = c.package_id
+                LEFT JOIN (
+                    SELECT i1.*
+                    FROM invoices i1
+                    WHERE i1.status = 'unpaid'
+                      AND i1.id = (
+                          SELECT MAX(i2.id)
+                          FROM invoices i2
+                          WHERE i2.customer_id = i1.customer_id
+                            AND i2.status = 'unpaid'
+                      )
+                ) i ON i.customer_id = c.id
+                WHERE c.status IN ('active', 'isolated')
+                ORDER BY (i.id IS NULL) ASC, i.due_date ASC, c.name ASC";
+        $this->db->query($sql);
+        return $this->db->resultSet();
+    }
 }

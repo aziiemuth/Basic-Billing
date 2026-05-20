@@ -96,14 +96,16 @@ Sistem Billing Internet Service Provider (ISP) / RT/RW Net berbasis **PHP Native
 
 ## ⚙️ Menjalankan Cron Job
 
-Untuk menjalankan otomatisasi (generate invoice & isolir pelanggan tunggak), tambahkan perintah berikut ke dalam _Crontab_ di server Linux Anda:
+Untuk menjalankan otomatisasi (generate invoice, kirim whatsapp reminder, auto-isolir pelanggan menunggak, dan backup database), tambahkan perintah `curl` berikut ke dalam _Crontab_ di server Linux Anda:
 
 ```bash
-# Jalankan pengecekan setiap jam 08:00 pagi
-0 8 * * * /usr/bin/php /var/www/html/billing/public/index.php url=CronController/run?key=SecretKeyKuatAnda123!
+# Jalankan tugas harian otomatis setiap hari jam 08:00 pagi
+0 8 * * * curl -sL "http://localhost/billingv1/CronController/run?key=SecretKeyKuatAnda123!" > /dev/null
 ```
 
-_(Ganti URL dan Path sesuai dengan root instalasi dan `CRON_SECRET` Anda di `.env`)._
+Atau jika menggunakan Windows Server, Anda dapat mendaftarkan batch script bawaan di folder `cron/` pada Windows Task Scheduler (lihat panduan lengkap di [production.md](file:///c:/xampp/htdocs/billingv1/production.md)).
+
+_(Ganti domain/host dan token key `CRON_SECRET` sesuai dengan file `.env` Anda)._
 
 ---
 

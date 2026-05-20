@@ -191,28 +191,55 @@ Aplikasi memerlukan akses langsung ke MikroTik Anda untuk membuat PPPoE Secret p
 ## 6. Set Up Otomatisasi (Cron Job di Windows Server)
 Karena sistem berjalan pada server **XAMPP Windows**, kita tidak dapat memakai `crontab` bawaan Linux. Kita akan menggunakan **Windows Task Scheduler** bawaan Windows Server yang bekerja memicu otomatisasi billing Anda 24 jam penuh.
 
-### 🛠️ Langkah Pembuatan:
-1.  **Buat File Pemicu (Batch Script):**
-    *   Buat file baru di server Anda dengan nama `run_billing_cron.bat` (Anda bisa menyimpannya di direktori `C:\xampp\htdocs\run_billing_cron.bat`).
-    *   Isi file tersebut dengan baris perintah pemicu curl berikut:
+Sistem menyediakan dua cara untuk menjalankan otomatisasi:
+
+---
+
+### Opsi A: Menggunakan Batch Script bawaan (Rekomendasi - Lebih Stabil & Tanpa Timeout)
+
+Aplikasi telah dilengkapi dengan file Batch (`.bat`) siap pakai di dalam folder `cron/` yang memicu eksekusi PHP CLI secara langsung.
+
+#### 1. Rutinitas Harian (`cron/run_daily_tasks.bat`)
+Menjalankan otomatisasi tagihan bulanan, sinkronisasi status isolir PPPoE, kirim pengingat tagihan WA H-x jatuh tempo, dan backup database otomatis.
+*   **Waktu Eksekusi**: 1x sehari (disarankan dini hari, misal pukul **02:00 AM**).
+*   **Program/Script**: Arahkan Windows Task Scheduler ke file:
+    👉 `C:\xampp\htdocs\billingv1\cron\run_daily_tasks.bat`
+
+#### 2. Pemrosesan Antrean WA (`cron/run_frequent_queue.bat`)
+Mengirimkan antrean pesan WhatsApp dari database ke Fonnte API secara berkala agar pengiriman lancar dan tidak terblokir.
+*   **Waktu Eksekusi**: Setiap **5** atau **10 menit** sekali (24 jam non-stop).
+*   **Program/Script**: Arahkan Windows Task Scheduler ke file:
+    👉 `C:\xampp\htdocs\billingv1\cron\run_frequent_queue.bat`
+
+---
+
+### Opsi B: Menggunakan Unified HTTP URL Trigger (Alternatif via Web Request/Curl)
+
+Jika Anda ingin memicu seluruh tugas harian di atas menggunakan satu request web (misalnya dipicu dari uptime monitoring atau curl dari server lain), gunakan unified URL controller.
+
+1.  **Buat File Batch Pemicu (`run_billing_cron.bat`):**
+    *   Simpan file di direktori `C:\xampp\htdocs\run_billing_cron.bat`.
+    *   Isi file tersebut dengan perintah `curl` berikut:
         ```bat
         @echo off
-        :: Mengirim request aman ke sistem untuk memproses generate tagihan otomatis, cek reminder WA, isolir pelanggan, dan backup database
-        curl -sL "http://localhost/billingv1/cron/cron_trigger.php?key=KunciAcakSangatKuatDanPanjangDibuatTahun2026!"
+        :: Mengirim request ke unified controller untuk memproses seluruh tugas harian
+        curl -sL "http://localhost/billingv1/CronController/run?key=KunciAcakSangatKuatDanPanjangDibuatTahun2026!"
         exit
         ```
-        *(Sesuaikan isi parameter `key` dengan `CRON_SECRET` yang Anda buat di `.env`)*
+        *(Sesuaikan token `key` dengan nilai `CRON_SECRET` di file `.env`)*
+
 2.  **Konfigurasi Windows Task Scheduler:**
-    *   Buka **Task Scheduler** di OS Windows Server Anda (cari lewat Start Menu).
+    *   Buka **Task Scheduler** di OS Windows Server Anda.
     *   Klik **Create Basic Task** di panel kanan.
-    *   **Name:** `Sistem Billing RT/RW Net Cronjob`
-    *   **Trigger:** Pilih **Daily** (Harian). Atur waktu eksekusi pada jam sibuk yang sepi, misalnya pukul **01:00 AM** dini hari.
-    *   **Action:** Pilih **Start a Program**.
-    *   **Program/script:** Klik *Browse* dan arahkan ke file `run_billing_cron.bat` yang Anda buat pada langkah 1.
+    *   **Name**: `Sistem Billing Harian (HTTP Trigger)`
+    *   **Trigger**: Pilih **Daily** (Harian). Atur waktu eksekusi pada jam sepi, misalnya pukul **02:00 AM**.
+    *   **Action**: Pilih **Start a Program**.
+    *   **Program/script**: Arahkan ke file `C:\xampp\htdocs\run_billing_cron.bat` yang Anda buat di atas.
     *   Klik **Finish**.
-3.  **Optimasi Eksekusi 24 Jam:**
-    *   Klik dua kali pada tugas yang baru saja Anda buat untuk membuka pengaturannya.
-    *   Pada tab **General**, pilih opsi **Run whether user is logged on or not** dan centang **Run with highest privileges** agar skrip tetap berjalan meskipun Windows sedang terkunci atau admin log out.
+
+3.  **Optimasi Eksekusi di Windows Server:**
+    *   Klik dua kali pada tugas yang baru saja Anda buat di Task Scheduler.
+    *   Pada tab **General**, pilih opsi **Run whether user is logged on or not** dan centang **Run with highest privileges** agar skrip tetap berjalan meskipun Windows Server sedang terkunci atau admin sedang log out.
     *   Pada tab **Settings**, centang **If the running task does not end when requested, force it to stop**.
 
 ---

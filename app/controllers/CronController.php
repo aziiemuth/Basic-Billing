@@ -174,6 +174,11 @@ class CronController extends Controller {
             $mikrotikService = new MikrotikService();
             if ($mikrotikService->connect($router_id)) {
                 foreach ($customers as $c) {
+                    // Lewati pelanggan yang sudah terisolir untuk mencegah notifikasi WA duplikat
+                    if ($c->status === 'isolated') {
+                        continue;
+                    }
+
                     if ($mikrotikService->disablePppoeSecret($c->pppoe_username)) {
                         $customerModel->updateStatus($c->id, 'isolated');
                         
@@ -184,7 +189,7 @@ class CronController extends Controller {
                         $db->bind(':username', $c->pppoe_username);
                         $db->execute();
                         
-                        // Notifikasi WA isolir
+                        // Notifikasi WA isolir (hanya ke pelanggan yang baru diisolir)
                         if (!empty($c->whatsapp)) {
                             require_once APPROOT . '/app/libraries/WhatsappService.php';
                             WhatsappService::sendIsolated($c->id, $c->whatsapp, $c->name);
@@ -195,6 +200,7 @@ class CronController extends Controller {
                 $mikrotikService->disconnect();
             }
         }
+
         echo "       >> Berhasil mengisolasi $count pelanggan menunggak.\n";
     }
 

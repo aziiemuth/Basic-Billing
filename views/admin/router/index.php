@@ -15,27 +15,6 @@
     </div>
 </div>
 
-<!-- === KARTU KONFIGURASI DARI config.php === -->
-<div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, rgba(13,110,253,0.08), rgba(13,202,240,0.05)); border: 1px solid rgba(13,110,253,0.15) !important; backdrop-filter: blur(10px);">
-    <div class="card-body p-4">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-25" style="width:48px;height:48px;">
-                    <i class="bi bi-router-fill text-primary fs-4"></i>
-                </div>
-                <div>
-                    <div class="text-white fw-bold fs-6">Router Utama (Sistem Config)</div>
-                    <div class="text-secondary small">RouterOS utama yang dikonfigurasi secara aman melalui variabel lingkungan `.env`.</div>
-                </div>
-            </div>
-            <div class="d-flex align-items-center gap-3">
-                <button type="button" id="btn-test-config" class="btn btn-primary px-4 fw-medium rounded-pill shadow-sm">
-                    <i class="bi bi-wifi me-1"></i> Test Koneksi Config
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="card glass-card border-0 shadow-sm">
     <div class="card-body p-0">
@@ -74,11 +53,13 @@
                             <td><span class="font-monospace text-info bg-info bg-opacity-10 px-2 py-1 rounded border border-info border-opacity-25"><?php echo htmlspecialchars($router->host_ip); ?></span></td>
                             <td class="text-white"><?php echo htmlspecialchars($router->api_username); ?></td>
                             <td><?php echo htmlspecialchars($router->api_port); ?></td>
-                            <td class="text-center">
+                            <td class="text-center router-status-col" data-router-id="<?php echo $router->id; ?>" data-is-active="<?php echo $router->is_active; ?>">
                                 <?php if ($router->is_active): ?>
-                                    <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill">Aktif</span>
+                                    <span class="text-secondary small">
+                                        <span class="spinner-border spinner-border-sm me-1 text-info" role="status" style="width: 12px; height: 12px;"></span>Checking...
+                                    </span>
                                 <?php else: ?>
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill">Nonaktif</span>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill">Mati</span>
                                 <?php endif; ?>
                             </td>
                             <td class="pe-4 text-end">
@@ -240,60 +221,22 @@
 </div>
 
 <script>
-// ---- Test Koneksi dari Config ----
-document.getElementById('btn-test-config').addEventListener('click', function() {
-    var modal = new bootstrap.Modal(document.getElementById('modalTestConn'));
-    document.querySelector('#modalTestConn .modal-title').innerHTML = '<i class="bi bi-gear-fill me-2"></i>Test Koneksi — config.php';
-    document.getElementById('test-conn-loading').classList.remove('d-none');
-    document.getElementById('test-conn-result').classList.add('d-none');
-    document.getElementById('test-conn-success').classList.add('d-none');
-    document.getElementById('test-conn-error').classList.add('d-none');
-    modal.show();
-
-    fetch('<?php echo URLROOT; ?>/AdminRouterController/testConnectionConfig')
-        .then(r => r.json())
-        .then(function(data) {
-            document.getElementById('test-conn-loading').classList.add('d-none');
-            document.getElementById('test-conn-result').classList.remove('d-none');
-            if (data.success) {
-                document.getElementById('test-conn-success').classList.remove('d-none');
-                document.getElementById('tc-host').textContent    = data.host + ':' + data.port + ' (via ' + (data.source || 'config') + ')';
-                document.getElementById('tc-identity').textContent = data.identity || '-';
-                document.getElementById('tc-version').textContent  = data.version  || '-';
-                document.getElementById('tc-uptime').textContent   = data.uptime   || '-';
-                
-                // Render profiles
-                var profilesHtml = '';
-                if (data.profiles && data.profiles.length > 0) {
-                    data.profiles.forEach(function(p) {
-                        profilesHtml += '<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1 m-1 rounded font-monospace">' + p + '</span>';
-                    });
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.router-status-col[data-is-active="1"]').forEach(function(col) {
+        var routerId = col.dataset.routerId;
+        fetch('<?php echo URLROOT; ?>/AdminRouterController/testConnection/' + routerId)
+            .then(r => r.json())
+            .then(function(data) {
+                if (data.success) {
+                    col.innerHTML = '<span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill">Aktif</span>';
                 } else {
-                    profilesHtml = '<span class="text-secondary small">Tidak ada profile</span>';
+                    col.innerHTML = '<span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill">Mati</span>';
                 }
-                document.getElementById('tc-profiles').innerHTML = profilesHtml;
-
-                // Render interfaces
-                var interfacesHtml = '';
-                if (data.interfaces && data.interfaces.length > 0) {
-                    data.interfaces.forEach(function(i) {
-                        interfacesHtml += '<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 py-1 m-1 rounded font-monospace">' + i + '</span>';
-                    });
-                } else {
-                    interfacesHtml = '<span class="text-secondary small">Tidak ada interface</span>';
-                }
-                document.getElementById('tc-interfaces').innerHTML = interfacesHtml;
-            } else {
-                document.getElementById('test-conn-error').classList.remove('d-none');
-                document.getElementById('tc-error-msg').textContent = data.message;
-            }
-        })
-        .catch(function(e) {
-            document.getElementById('test-conn-loading').classList.add('d-none');
-            document.getElementById('test-conn-result').classList.remove('d-none');
-            document.getElementById('test-conn-error').classList.remove('d-none');
-            document.getElementById('tc-error-msg').textContent = 'Request error: ' + e.message;
-        });
+            })
+            .catch(function() {
+                col.innerHTML = '<span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill">Mati</span>';
+            });
+    });
 });
 
 // ---- Test Koneksi per Router (dari DB) ----

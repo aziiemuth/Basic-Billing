@@ -7,18 +7,15 @@ class PaymentController extends Controller {
     private $customerModel;
 
     public function __construct() {
-        $this->paymentModel = $this->model('PaymentModel');
-        $this->invoiceModel = $this->model('InvoiceModel');
+        $this->paymentModel  = $this->model('PaymentModel');
+        $this->invoiceModel  = $this->model('InvoiceModel');
         $this->customerModel = $this->model('CustomerModel');
 
-        $gateway = $this->model('PaymentGatewayModel')->getActive('Midtrans');
-        $serverKey = $gateway && !empty($gateway->server_key) ? $gateway->server_key : MIDTRANS_SERVER_KEY;
-        $isProduction = $gateway ? $gateway->mode === 'production' : MIDTRANS_IS_PRODUCTION;
-
-        \Midtrans\Config::$serverKey = $serverKey;
-        \Midtrans\Config::$isProduction = $isProduction;
-        \Midtrans\Config::$isSanitized = true;
-        \Midtrans\Config::$is3ds = true;
+        // Konfigurasi Midtrans langsung dari .env — tidak perlu tabel payment_gateways
+        \Midtrans\Config::$serverKey    = MIDTRANS_SERVER_KEY;
+        \Midtrans\Config::$isProduction = MIDTRANS_IS_PRODUCTION;
+        \Midtrans\Config::$isSanitized  = true;
+        \Midtrans\Config::$is3ds        = true;
     }
 
     // Dipanggil saat pelanggan menekan tombol bayar
@@ -60,23 +57,22 @@ class PaymentController extends Controller {
         );
 
         try {
-            // Get Snap Payment Page URL
+            // Buat Snap Payment Page URL via Midtrans
             $paymentUrl = \Midtrans\Snap::createTransaction($params)->redirect_url;
-            
-            // Simpan percobaan bayar ke database
-            $gateway = $this->model('PaymentGatewayModel')->getActive('Midtrans');
+
+            // Simpan percobaan pembayaran ke database
             $paymentData = [
-                'invoice_id' => $invoice->id,
-                'reference_id' => $orderId,
-                'amount' => $invoice->total_amount,
-                'payment_gateway_id' => $gateway ? $gateway->id : null,
-                'status' => 'pending',
-                'payment_url' => $paymentUrl
+                'invoice_id'         => $invoice->id,
+                'reference_id'       => $orderId,
+                'amount'             => $invoice->total_amount,
+                'payment_gateway_id' => null, // Konfigurasi via .env
+                'status'             => 'pending',
+                'payment_url'        => $paymentUrl,
             ];
-            
+
             $this->paymentModel->create($paymentData);
-            
-            // Redirect ke halaman Midtrans
+
+            // Redirect ke halaman pembayaran Midtrans
             header('Location: ' . $paymentUrl);
             exit;
             

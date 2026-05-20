@@ -133,6 +133,17 @@
                     </table>
                 </div>
             </div>
+            <!-- Pagination Footer -->
+            <div class="card-footer bg-transparent border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 flex-wrap gap-2 pagination-footer" style="display: none;">
+                <div class="text-secondary small pagination-info">
+                    Menampilkan 0 - 0 dari 0 data
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0 pagination-controls">
+                        <!-- populated via JS -->
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 
@@ -185,6 +196,17 @@
                     </table>
                 </div>
             </div>
+            <!-- Pagination Footer -->
+            <div class="card-footer bg-transparent border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 flex-wrap gap-2 pagination-footer" style="display: none;">
+                <div class="text-secondary small pagination-info">
+                    Menampilkan 0 - 0 dari 0 data
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0 pagination-controls">
+                        <!-- populated via JS -->
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 
@@ -228,6 +250,17 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <!-- Pagination Footer -->
+            <div class="card-footer bg-transparent border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 flex-wrap gap-2 pagination-footer" style="display: none;">
+                <div class="text-secondary small pagination-info">
+                    Menampilkan 0 - 0 dari 0 data
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0 pagination-controls">
+                        <!-- populated via JS -->
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -281,9 +314,128 @@
                     </table>
                 </div>
             </div>
+            <!-- Pagination Footer -->
+            <div class="card-footer bg-transparent border-secondary border-opacity-25 d-flex justify-content-between align-items-center py-3 flex-wrap gap-2 pagination-footer" style="display: none;">
+                <div class="text-secondary small pagination-info">
+                    Menampilkan 0 - 0 dari 0 data
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm mb-0 pagination-controls">
+                        <!-- populated via JS -->
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 
 </div>
+
+<script>
+function paginateTable(containerId, itemsPerPage) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const tbody = container.querySelector('tbody');
+    if (!tbody) return;
+
+    // Filter out rows that are empty placeholders
+    const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => {
+        const textCenterTd = row.querySelector('td.text-center');
+        return !textCenterTd || row.cells.length > 1;
+    });
+
+    if (rows.length === 0) return;
+
+    const footer = container.querySelector('.pagination-footer');
+    const info = container.querySelector('.pagination-info');
+    const controls = container.querySelector('.pagination-controls');
+
+    let currentPage = 1;
+
+    function render() {
+        const totalItems = rows.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        rows.forEach(r => r.style.display = 'none');
+
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, totalItems);
+
+        for (let i = start; i < end; i++) {
+            rows[i].style.display = '';
+        }
+
+        if (info) {
+            info.textContent = `Menampilkan ${start + 1} - ${end} dari ${totalItems} data`;
+        }
+
+        if (footer) {
+            footer.style.display = totalItems > itemsPerPage ? 'flex' : 'none';
+        }
+
+        if (controls) {
+            controls.innerHTML = '';
+
+            // Prev
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+            prevLi.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    render();
+                }
+            });
+            controls.appendChild(prevLi);
+
+            // Pages
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageLi = document.createElement('li');
+                pageLi.className = `page-item ${currentPage === i ? 'active' : ''}`;
+                const activeLinkClass = currentPage === i ? 'bg-primary border-primary text-white' : 'bg-dark border-secondary border-opacity-25 text-white';
+                pageLi.innerHTML = `<a class="page-link ${activeLinkClass}" href="#">${i}</a>`;
+                pageLi.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage = i;
+                    render();
+                });
+                controls.appendChild(pageLi);
+            }
+
+            // Next
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+            nextLi.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    render();
+                }
+            });
+            controls.appendChild(nextLi);
+        }
+    }
+
+    render();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    paginateTable('payments', 15);
+    paginateTable('invoices', 15);
+    paginateTable('customerLogs', 15);
+    paginateTable('whatsappLogs', 15);
+});
+</script>
 
 <?php require_once APPROOT . '/views/layouts/admin_footer.php'; ?>

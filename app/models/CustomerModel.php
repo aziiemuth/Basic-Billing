@@ -220,4 +220,18 @@ class CustomerModel {
         }
         return $this->db->resultSet();
     }
+    /**
+     * Get isolated customers who still have at least one unpaid invoice.
+     * Digunakan untuk broadcast WA agar tidak mengirim ke pelanggan yang sudah bayar.
+     */
+    public function getIsolatedWithUnpaidInvoices() {
+        $sql = "SELECT DISTINCT c.*
+                FROM customers c
+                INNER JOIN invoices i ON i.customer_id = c.id
+                WHERE c.status = 'isolated'
+                  AND i.status = 'unpaid'
+                ORDER BY c.name ASC";
+        $this->db->query($sql);
+        return $this->db->resultSet();
+    }
 }

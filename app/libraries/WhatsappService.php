@@ -6,8 +6,8 @@
  * Cara pakai:
  * 1. Daftar di https://fonnte.com
  * 2. Dapatkan token device dari dashboard Fonnte
- * 3. Isi WA_TOKEN di app/config/config.php
- * 4. Ubah WA_ENABLED menjadi true di config.php
+ * 3. Isi WA_TOKEN di file .env
+ * 4. Ubah WA_ENABLED menjadi true di file .env
  */
 class WhatsappService {
 
@@ -206,14 +206,14 @@ class WhatsappService {
         $tahun = date('Y', strtotime($billingMonth . '-01'));
         $nominal = 'Rp ' . number_format($amount, 0, ',', '.');
 
-        $message = "✅ *Pembayaran Berhasil!*\n\n"
+        $message = "*Pembayaran Berhasil*\n\n"
                  . "Halo *{$customerName}*,\n"
                  . "Kami telah menerima pembayaran tagihan internet Anda.\n\n"
-                 . "📋 *Detail Pembayaran:*\n"
+                 . "Detail Pembayaran:\n"
                  . "No. Invoice : {$invoiceNumber}\n"
                  . "Periode     : {$bulan} {$tahun}\n"
                  . "Nominal     : {$nominal}\n\n"
-                 . "🌐 Internet Anda sudah *aktif kembali*.\n"
+                 . "Internet Anda sudah aktif kembali.\n"
                  . "Terima kasih telah membayar tepat waktu!\n\n"
                  . "_" . SITENAME . "_";
 
@@ -229,12 +229,12 @@ class WhatsappService {
         $nominal = 'Rp ' . number_format($amount, 0, ',', '.');
         $jatuhTempo = date('d F Y', strtotime($dueDate));
 
-        $message = "📄 *Tagihan Internet Baru*\n\n"
+        $message = "*Tagihan Internet Baru*\n\n"
                  . "Halo *{$customerName}*,\n"
                  . "Tagihan internet Anda untuk bulan *{$bulan} {$tahun}* telah terbit.\n\n"
-                 . "💰 Nominal   : {$nominal}\n"
-                 . "📅 Jatuh Tempo : {$jatuhTempo}\n"
-                 . "🔢 No. Invoice : {$invoiceNumber}\n\n"
+                 . "Nominal     : {$nominal}\n"
+                 . "Jatuh Tempo : {$jatuhTempo}\n"
+                 . "No. Invoice : {$invoiceNumber}\n\n"
                  . "Silakan lakukan pembayaran sebelum tanggal jatuh tempo untuk menghindari pemutusan layanan.\n\n"
                  . "_" . SITENAME . "_";
 
@@ -248,7 +248,7 @@ class WhatsappService {
         $nominal = 'Rp ' . number_format($amount, 0, ',', '.');
         $jatuhTempo = date('d F Y', strtotime($dueDate));
 
-        $message = "⏰ *Pengingat Tagihan*\n\n"
+        $message = "*Pengingat Tagihan*\n\n"
                  . "Halo *{$customerName}*,\n"
                  . "Tagihan internet Anda sebesar *{$nominal}* akan jatuh tempo pada *{$jatuhTempo}*.\n\n"
                  . "Segera lakukan pembayaran agar internet Anda tetap aktif.\n\n"
@@ -261,9 +261,9 @@ class WhatsappService {
      * Kirim notifikasi akun diisolir
      */
     public static function sendIsolated($customerId, $phone, $customerName) {
-        $message = "⛔ *Layanan Internet Dinonaktifkan*\n\n"
+        $message = "*Layanan Internet Dinonaktifkan*\n\n"
                  . "Halo *{$customerName}*,\n"
-                 . "Layanan internet Anda telah kami *nonaktifkan sementara* karena terdapat tagihan yang belum dibayar.\n\n"
+                 . "Layanan internet Anda telah kami nonaktifkan sementara karena terdapat tagihan yang belum dibayar.\n\n"
                  . "Segera lakukan pembayaran untuk mengaktifkan kembali layanan Anda.\n\n"
                  . "Jika ada pertanyaan, silakan hubungi kami.\n\n"
                  . "_" . SITENAME . "_";
@@ -275,7 +275,7 @@ class WhatsappService {
      * Kirim notifikasi aktivasi internet baru
      */
     public static function sendActivated($customerId, $phone, $customerName, $packageName) {
-        $message = "🚀 *Layanan Internet Aktif!*\n\n"
+        $message = "*Layanan Internet Aktif!*\n\n"
                  . "Halo *{$customerName}*,\n"
                  . "Pemasangan baru internet Anda telah sukses dilakukan.\n"
                  . "Paket Layanan: *{$packageName}*\n\n"
