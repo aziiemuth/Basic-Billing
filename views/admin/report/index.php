@@ -1,4 +1,7 @@
-<?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
+<?php
+/** @var array $data */
+require_once APPROOT . '/views/layouts/admin_header.php';
+?>
 
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -65,7 +68,7 @@
     <div class="col-md-3">
         <div class="card bg-danger bg-opacity-10 border-danger border-opacity-25 shadow-sm h-100 card-hover-animation">
             <div class="card-body p-4 text-center">
-                <div class="mb-2"><i class="bi-exclamation-octagon text-danger" style="font-size: 2rem;"></i></div>
+                <div class="mb-2"><i class="bi bi-exclamation-octagon text-danger" style="font-size: 2rem;"></i></div>
                 <h6 class="text-danger fw-bold">Total Tunggakan</h6>
                 <h3 class="fw-bold text-white mb-0">Rp <?php echo number_format($data['summary']['tunggakan'], 0, ',', '.'); ?></h3>
             </div>

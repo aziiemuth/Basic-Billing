@@ -1,4 +1,7 @@
-<?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
+<?php
+/** @var array $data */
+require_once APPROOT . '/views/layouts/admin_header.php';
+?>
 
 <!-- STAT CARDS ROW -->
 <div class="row g-4 mb-4">

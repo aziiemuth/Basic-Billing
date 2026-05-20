@@ -1,3 +1,4 @@
+<?php /** @var array $data */ ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -15,7 +16,7 @@
         
         .summary-box { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
         .summary-card { border: 1px solid #ddd; border-radius: 6px; padding: 12px; text-align: center; background: #fafafa; }
-        .summary-card h4 { margin: 0 0 5px 0; font-size: 11px; text-uppercase; color: #666; letter-spacing: 0.5px; }
+        .summary-card h4 { margin: 0 0 5px 0; font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 0.5px; }
         .summary-card p { margin: 0; font-size: 16px; font-weight: bold; color: #111; }
         .summary-card p.income { color: #198754; }
         .summary-card p.debt { color: #dc3545; }
