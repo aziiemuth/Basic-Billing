@@ -1,16 +1,40 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Billing App UI Loaded');
 
+    // ── THEME TOGGLE ──────────────────────────────────────
+    const html = document.documentElement;
+    const THEME_KEY = 'billingapp_theme';
+
+    // Terapkan tema tersimpan (atau default dark)
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    // Sync Bootstrap data-bs-theme
+    html.setAttribute('data-bs-theme', savedTheme === 'light' ? 'light' : 'dark');
+
+    const themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            html.setAttribute('data-bs-theme', next === 'light' ? 'light' : 'dark');
+            localStorage.setItem(THEME_KEY, next);
+        });
+    }
+    // ──────────────────────────────────────────────────────
+
+
     // SweetAlert2 Toast configuration
     if (typeof Swal !== 'undefined') {
+        const isDark = (localStorage.getItem('billingapp_theme') || 'dark') === 'dark';
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
-            background: '#1e293b', // Match glassmorphism dark theme
-            color: '#f8fafc',
+            background: isDark ? '#1e293b' : '#ffffff',
+            color: isDark ? '#f8fafc' : '#1e293b',
             iconColor: '#38bdf8',
             customClass: {
                 popup: 'border border-secondary border-opacity-25 shadow-lg rounded-3'

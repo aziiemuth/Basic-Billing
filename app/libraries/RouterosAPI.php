@@ -7,9 +7,9 @@ class RouterosAPI {
     public $debug = false;
     public $connected = false;
     public $port = 8728;
-    public $timeout = 3;
-    public $attempts = 5;
-    public $delay = 3;
+    public $timeout = 10;
+    public $attempts = 3;
+    public $delay = 2;
 
     private $socket;
     private $error_no;

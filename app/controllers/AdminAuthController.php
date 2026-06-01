@@ -6,6 +6,10 @@ class AdminAuthController extends Controller {
         $this->userModel = $this->model('User');
     }
 
+    public function index() {
+        $this->login();
+    }
+
     public function login() {
         AuthAdminMiddleware::redirectIfAuthenticated();
 

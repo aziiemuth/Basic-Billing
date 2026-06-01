@@ -187,14 +187,7 @@
                                             <span class="d-none d-xl-inline">Tunai</span>
                                         </button>
 
-                                        <!-- 3. Bayar Online (Midtrans) -->
-                                        <a href="<?php echo URLROOT; ?>/PaymentController/snap/<?php echo $inv->id; ?>"
-                                           class="btn btn-sm btn-outline-primary border-opacity-25 d-flex align-items-center gap-1 btn-online-link"
-                                           title="Proses Pembayaran Online via Midtrans"
-                                           target="_blank">
-                                            <i class="bi bi-credit-card"></i>
-                                            <span class="d-none d-xl-inline">Online</span>
-                                        </a>
+
                                     <?php else: ?>
                                         <!-- Jika belum ada invoice -->
                                         <button class="btn btn-sm btn-warning d-flex align-items-center gap-1 px-3"
@@ -501,13 +494,7 @@ function generateInvoice(customerId, btn) {
                         <i class="bi bi-cash-coin"></i>
                         <span class="d-none d-xl-inline">Tunai</span>
                     </button>
-                    <a href="${URLROOT}/PaymentController/snap/${data.invoice.id}"
-                       class="btn btn-sm btn-outline-primary border-opacity-25 d-flex align-items-center gap-1 btn-online-link"
-                       title="Proses Pembayaran Online via Midtrans"
-                       target="_blank">
-                        <i class="bi bi-credit-card"></i>
-                        <span class="d-none d-xl-inline">Online</span>
-                    </a>
+
                 </div>
             `;
         } else {

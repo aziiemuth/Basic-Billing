@@ -78,7 +78,7 @@ class PaymentController extends Controller {
             
         } catch (\Exception $e) {
             error_log('Error Midtrans: ' . $e->getMessage());
-            die('Gagal memproses pembayaran melalui Midtrans. Silakan hubungi Administrator atau coba beberapa saat lagi.');
+            die('Gagal memproses pembayaran melalui Midtrans. Detail Error: ' . $e->getMessage());
         }
     }
 
@@ -158,11 +158,28 @@ class PaymentController extends Controller {
                 $pppoe = $pppoeModel->getByCustomerId($customer->id);
                 
                 if ($pppoe) {
+                    // Enable PPPoE di MikroTik
                     $mikrotikService = new MikrotikService();
                     if ($mikrotikService->connect($customer->mikrotik_router_id)) {
                         $mikrotikService->enablePppoeSecret($pppoe->username);
                         $mikrotikService->disconnect();
                     }
+                    
+                    // Update status pppoe_secrets di database → 'enabled'
+                    $pppoeModel->updateByCustomerId([
+                        'customer_id'       => $customer->id,
+                        'mikrotik_router_id'=> $pppoe->mikrotik_router_id,
+                        'username'          => $pppoe->username,
+                        'password'          => $pppoe->password,
+                        'profile'           => $pppoe->profile,
+                        'service'           => $pppoe->service,
+                        'status'            => 'enabled',
+                    ]);
+                }
+                
+                // Update status customer di database → 'active'
+                if ($customer->status === 'isolated') {
+                    $this->customerModel->updateStatus($customer->id, 'active');
                 }
             }
         }

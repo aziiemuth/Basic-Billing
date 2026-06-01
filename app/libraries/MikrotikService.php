@@ -411,19 +411,26 @@ class MikrotikService {
         $activeSessions = $this->getAllActiveSessions();
         $secrets        = $this->getAllPppoeSecrets();
 
+        // Build case-insensitive active sessions map
+        $activeSessionsMap = [];
+        foreach ($activeSessions as $name => $sess) {
+            $activeSessionsMap[strtolower(trim($name))] = $sess;
+        }
+
         $result = [];
         foreach ($secrets as $secret) {
             if (!isset($secret['name'])) continue;
             $uname          = $secret['name'];
+            $unameKey       = strtolower(trim($uname));
             $isDisabled     = isset($secret['disabled']) && $secret['disabled'] === 'true';
-            $isOnline       = isset($activeSessions[$uname]);
+            $isOnline       = isset($activeSessionsMap[$unameKey]);
 
             $result[$uname] = [
                 'disabled' => $isDisabled,
                 'online'   => $isOnline,
                 'profile'  => isset($secret['profile']) ? $secret['profile'] : '-',
-                'uptime'   => $isOnline && isset($activeSessions[$uname]['uptime']) ? $activeSessions[$uname]['uptime'] : '-',
-                'address'  => $isOnline && isset($activeSessions[$uname]['address']) ? $activeSessions[$uname]['address'] : '-',
+                'uptime'   => $isOnline && isset($activeSessionsMap[$unameKey]['uptime']) ? $activeSessionsMap[$unameKey]['uptime'] : '-',
+                'address'  => $isOnline && isset($activeSessionsMap[$unameKey]['address']) ? $activeSessionsMap[$unameKey]['address'] : '-',
             ];
         }
         return $result;

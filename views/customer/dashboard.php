@@ -151,21 +151,17 @@
                                                 <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">LUNAS</span>
                                             <?php elseif($inv->status == 'unpaid'): ?>
                                                 <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25">BELUM LUNAS</span>
-                                            <?php elseif($inv->status == 'expired'): ?>
-                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">KEDALUWARSA</span>
                                             <?php else: ?>
                                                 <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25"><?php echo strtoupper($inv->status); ?></span>
                                             <?php endif; ?>
                                         </td>
                                         <td class="pe-4 text-end text-nowrap">
-                                            <a href="<?php echo URLROOT; ?>/CustomerDashboardController/invoice/<?php echo $inv->id; ?>" target="_blank" class="btn btn-sm btn-outline-info px-2 me-1" title="Cetak Invoice">
-                                                <i class="bi bi-printer"></i>
-                                            </a>
                                             <?php if($inv->status == 'unpaid'): ?>
-                                                <a href="<?php echo URLROOT; ?>/PaymentController/snap/<?php echo $inv->id; ?>" class="btn btn-sm btn-primary px-3 me-1">
+                                                <a href="<?php echo URLROOT; ?>/PaymentController/snap/<?php echo $inv->id; ?>" class="btn btn-sm btn-primary px-3">
                                                     <i class="bi bi-credit-card"></i> Bayar
                                                 </a>
-                                                <?php 
+                                            <?php elseif($inv->status == 'paid'): ?>
+                                                <?php
                                                 $adminWa = '';
                                                 if (!empty($data['settings']->company_whatsapp)) {
                                                     $cleanNum = preg_replace('/[^0-9]/', '', $data['settings']->company_whatsapp);
@@ -174,26 +170,30 @@
                                                     }
                                                     $adminWa = $cleanNum;
                                                 }
-                                                if (!empty($adminWa)): 
+                                                if (!empty($adminWa)):
                                                     $periode = date('F Y', strtotime($inv->billing_month . '-01'));
                                                     $amount_formatted = number_format($inv->total_amount, 0, ',', '.');
-                                                    $waMsg = "Halo Admin, saya ingin konfirmasi pembayaran tagihan internet.\n\n"
+                                                    $waMsg = "Halo Admin, saya sudah melakukan pembayaran tagihan internet.\n\n"
                                                            . "*Detail Tagihan:*\n"
                                                            . "• No. Tagihan: *{$inv->invoice_number}*\n"
                                                            . "• Nama Pelanggan: *{$_SESSION['customer_name']}*\n"
                                                            . "• ID Pelanggan: *{$_SESSION['customer_code']}*\n"
                                                            . "• Periode: *{$periode}*\n"
                                                            . "• Total Tagihan: *Rp {$amount_formatted}*\n\n"
-                                                           . "Berikut saya lampirkan bukti pembayaran/transfer saya. Mohon untuk segera dikonfirmasi. Terima kasih!";
+                                                           . "Terima kasih!";
                                                     $waUrl = "https://api.whatsapp.com/send?phone=" . $adminWa . "&text=" . urlencode($waMsg);
                                                 ?>
-                                                    <a href="<?php echo $waUrl; ?>" target="_blank" class="btn btn-sm btn-outline-success px-2" title="Konfirmasi Pembayaran Manual via WhatsApp">
+                                                    <a href="<?php echo $waUrl; ?>" target="_blank" class="btn btn-sm btn-outline-success px-3">
                                                         <i class="bi bi-whatsapp"></i> Konfirmasi
                                                     </a>
+                                                <?php else: ?>
+                                                    <button class="btn btn-sm btn-outline-secondary px-3" disabled>
+                                                        <i class="bi bi-check-circle"></i> Lunas
+                                                    </button>
                                                 <?php endif; ?>
                                             <?php else: ?>
                                                 <button class="btn btn-sm btn-outline-secondary px-3" disabled>
-                                                    <i class="bi bi-check-circle"></i> Selesai
+                                                    <i class="bi bi-dash-circle"></i> <?php echo strtoupper($inv->status); ?>
                                                 </button>
                                             <?php endif; ?>
                                         </td>

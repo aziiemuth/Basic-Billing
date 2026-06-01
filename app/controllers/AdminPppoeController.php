@@ -51,13 +51,20 @@ class AdminPppoeController extends Controller {
                     ];
                 }
                 
+                // Build case-insensitive active sessions map
+                $activeSessionsMap = [];
+                foreach ($activeSessions as $name => $sess) {
+                    $activeSessionsMap[strtolower(trim($name))] = $sess;
+                }
+
                 // Merge Data
                 foreach ($rawSecrets as $s) {
                     if (isset($s['name'])) {
                         $username = $s['name'];
+                        $usernameKey = strtolower(trim($username));
                         $is_in_db = isset($dbMap[$username]);
                         
-                        $is_online = isset($activeSessions[$username]);
+                        $is_online = isset($activeSessionsMap[$usernameKey]);
                         
                         $secrets[] = [
                             'username' => $username,
@@ -68,9 +75,9 @@ class AdminPppoeController extends Controller {
                             'customer_id' => $is_in_db ? $dbMap[$username]['customer_id'] : null,
                             'customer_name' => $is_in_db ? $dbMap[$username]['customer_name'] : null,
                             'is_online' => $is_online,
-                            'uptime' => $is_online && isset($activeSessions[$username]['uptime']) ? $activeSessions[$username]['uptime'] : '-',
-                            'ip_address' => $is_online && isset($activeSessions[$username]['address']) ? $activeSessions[$username]['address'] : '-',
-                            'caller_id' => $is_online && isset($activeSessions[$username]['caller-id']) ? $activeSessions[$username]['caller-id'] : '-'
+                            'uptime' => $is_online && isset($activeSessionsMap[$usernameKey]['uptime']) ? $activeSessionsMap[$usernameKey]['uptime'] : '-',
+                            'ip_address' => $is_online && isset($activeSessionsMap[$usernameKey]['address']) ? $activeSessionsMap[$usernameKey]['address'] : '-',
+                            'caller_id' => $is_online && isset($activeSessionsMap[$usernameKey]['caller-id']) ? $activeSessionsMap[$usernameKey]['caller-id'] : '-'
                         ];
                     }
                 }

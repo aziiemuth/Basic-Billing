@@ -17,7 +17,7 @@
 <div class="card glass-card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
         <form method="GET" action="<?php echo URLROOT; ?>/AdminPppoeController" class="row g-3 align-items-end">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label class="text-secondary small mb-1">Pilih Router MikroTik</label>
                 <select name="router_id" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25" onchange="this.form.submit()">
                     <option value="">-- Pilih Router --</option>
@@ -28,16 +28,25 @@
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-3">
+                <label class="text-secondary small mb-1">Status PPPoE</label>
+                <select id="pppoeStatusFilter" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25">
+                    <option value="">Semua Status</option>
+                    <option value="online">Hanya Online</option>
+                    <option value="offline">Hanya Offline</option>
+                    <option value="disabled">Hanya Disabled</option>
+                </select>
+            </div>
+            <div class="col-md-4">
                 <label class="text-secondary small mb-1">Cari PPPoE Username</label>
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-search"></i></span>
-                    <input type="text" id="pppoeSearchInput" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Ketik nama atau username PPPoE...">
+                    <input type="text" id="pppoeSearchInput" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Ketik nama atau username...">
                 </div>
             </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-info btn-sm px-4 fw-medium w-100">
-                    <i class="bi bi-arrow-repeat me-1"></i> Refresh Data
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-info btn-sm px-2 fw-medium w-100">
+                    <i class="bi bi-arrow-repeat me-1"></i> Refresh
                 </button>
             </div>
         </form>
@@ -172,20 +181,16 @@
                                 </td>
                                 <td class="text-center">
                                     <?php if ($s['is_in_db']): ?>
-                                        <a href="<?php echo URLROOT; ?>/AdminCustomerController/edit/<?php echo $s['customer_id']; ?>" class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 text-decoration-none">
-                                            <i class="bi bi-person-check me-1"></i> Terhubung
-                                        </a>
+                                        <a href="<?php echo URLROOT; ?>/AdminCustomerController/edit/<?php echo $s['customer_id']; ?>" class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 text-decoration-none d-inline-flex align-items-center"><i class="bi bi-person-check me-1"></i> Terhubung</a>
                                     <?php else: ?>
-                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25">
-                                            <i class="bi bi-person-x me-1"></i> Belum Import
-                                        </span>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 d-inline-flex align-items-center"><i class="bi bi-person-x me-1"></i> Belum Import</span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-center">
                                     <?php if ($s['is_online']): ?>
-                                        <span class="badge bg-success text-white px-2 py-1 rounded-pill shadow-sm" style="font-size: 0.7rem;"><i class="bi bi-activity"></i> ONLINE</span>
+                                        <span class="badge bg-success text-white px-2 py-1 rounded-pill shadow-sm d-inline-flex align-items-center" style="font-size: 0.7rem;"><i class="bi bi-activity me-1"></i> ONLINE</span>
                                     <?php else: ?>
-                                        <span class="badge bg-secondary text-white px-2 py-1 rounded-pill opacity-50" style="font-size: 0.7rem;">OFFLINE</span>
+                                        <span class="badge bg-secondary text-white px-2 py-1 rounded-pill opacity-50 d-inline-flex align-items-center" style="font-size: 0.7rem;">OFFLINE</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
@@ -345,6 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const paginationInfo = document.getElementById('pagination-info');
     const paginationControls = document.getElementById('pagination-controls');
     const searchInput = document.getElementById('pppoeSearchInput');
+    const statusFilter = document.getElementById('pppoeStatusFilter');
     
     function renderPagination() {
         if (rows.length === 0) {
@@ -352,15 +358,38 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Filter rows based on search input
+        // Filter rows based on search and status inputs
         const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
+        const statusVal = statusFilter ? statusFilter.value : '';
+        
         const filteredRows = rows.filter(row => {
+            // Check search filter
             const usernameCell = row.cells[1];
+            let matchesSearch = false;
             if (usernameCell) {
                 const usernameText = usernameCell.querySelector('.text-white.fw-bold').textContent || '';
-                return usernameText.toLowerCase().includes(searchVal);
+                matchesSearch = usernameText.toLowerCase().includes(searchVal);
             }
-            return false;
+            if (!matchesSearch) return false;
+
+            // Check status filter
+            if (statusVal) {
+                if (statusVal === 'online' || statusVal === 'offline') {
+                    const statusCell = row.cells[4];
+                    if (statusCell) {
+                        const statusText = statusCell.textContent.toLowerCase();
+                        if (!statusText.includes(statusVal)) return false;
+                    }
+                } else if (statusVal === 'disabled') {
+                    const actionCell = row.cells[6];
+                    if (actionCell) {
+                        const toggleInput = actionCell.querySelector('.pppoe-toggle');
+                        if (toggleInput && toggleInput.checked) return false;
+                    }
+                }
+            }
+
+            return true;
         });
         
         const totalItems = filteredRows.length;
@@ -447,6 +476,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (searchInput) {
         searchInput.addEventListener('keyup', function() {
+            currentPage = 1;
+            renderPagination();
+        });
+    }
+
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
             currentPage = 1;
             renderPagination();
         });

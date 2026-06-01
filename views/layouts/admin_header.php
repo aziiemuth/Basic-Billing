@@ -1,6 +1,6 @@
 <?php /** @var array $data */ ?>
 <!DOCTYPE html>
-<html lang="id" data-bs-theme="dark">
+<html lang="id" data-bs-theme="dark" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,15 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/style.css">
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/style.css?v=<?php echo time(); ?>">
+    <!-- Anti-FOUC: terapkan tema sebelum render -->
+    <script>
+        (function(){
+            var t = localStorage.getItem('billingapp_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+            document.documentElement.setAttribute('data-bs-theme', t === 'light' ? 'light' : 'dark');
+        })();
+    </script>
 </head>
 <body class="admin-layout">
     <div class="d-flex h-100 wrapper">
@@ -75,6 +83,15 @@
             </div>
 
             <div class="p-3 border-top border-secondary border-opacity-25 mt-auto">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" title="Ganti Tema" aria-label="Toggle Dark/Light Mode"
+                    class="w-100 btn btn-sm mb-3 d-flex align-items-center justify-content-center gap-2"
+                    style="background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--body-color);">
+                    <i class="bi bi-sun-fill icon-dark"></i>
+                    <i class="bi bi-moon-stars-fill icon-light"></i>
+                    <span class="icon-dark">Mode Terang</span>
+                    <span class="icon-light">Mode Gelap</span>
+                </button>
                 <a href="<?php echo URLROOT; ?>/AdminProfileController" class="text-decoration-none d-block">
                     <div class="d-flex align-items-center gap-2 mb-3 bg-dark bg-opacity-50 p-2 rounded border border-secondary border-opacity-25 overflow-hidden sidebar-user-box" style="transition: all 0.2s ease;">
                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm flex-shrink-0" style="width: 36px; height: 36px;">
@@ -95,9 +112,9 @@
         <!-- MAIN CONTENT WRAPPER -->
         <main class="main-content flex-grow-1 bg-transparent">
             <!-- TOPBAR -->
-            <header class="d-flex justify-content-between align-items-center p-3 p-md-4 border-bottom border-secondary border-opacity-25" style="background: rgba(255,255,255,0.02); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 50;">
+            <header class="topbar d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
-                    <button id="sidebarToggle" class="btn btn-outline-secondary border-0" aria-label="Toggle Sidebar">
+                    <button id="sidebarToggle" class="btn btn-outline-secondary border-0 d-lg-none" aria-label="Toggle Sidebar">
                         <i class="bi bi-list fs-4"></i>
                     </button>
                     <div>
@@ -105,7 +122,7 @@
                         <p class="text-secondary small mb-0 d-none d-md-block">Selamat datang kembali, <?php echo htmlspecialchars($_SESSION['user_name'] ?? ''); ?>!</p>
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2 gap-md-3">
                     <div class="d-inline-flex align-items-center gap-2 px-2 py-1 px-md-3 rounded-pill" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
                         <span class="spinner-grow spinner-grow-sm text-success" style="width: 8px; height: 8px;" role="status" aria-hidden="true"></span>
                         <span class="text-success small fw-semibold d-none d-sm-inline">Sistem Online</span>
@@ -114,4 +131,4 @@
             </header>
 
             <!-- PAGE CONTENT -->
-            <div class="p-4">
+            <div class="page-content">

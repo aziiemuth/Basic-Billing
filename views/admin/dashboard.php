@@ -4,67 +4,69 @@ require_once APPROOT . '/views/layouts/admin_header.php';
 ?>
 
 <!-- STAT CARDS ROW -->
-<div class="row g-4 mb-4">
-    <div class="col-12 col-sm-6 col-xl-3">
+<div class="row g-3 g-xl-4 mb-4">
+    <div class="col-6 col-lg-3">
         <div class="card glass-card h-100 border-0 shadow-sm">
-            <div class="card-body p-4 d-flex align-items-center gap-3">
-                <div class="bg-primary bg-opacity-10 text-primary rounded p-3 d-flex align-items-center justify-content-center">
-                    <i class="bi bi-people fs-3"></i>
+            <div class="card-body p-3 p-xl-4 d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 gap-sm-3">
+                <div class="stat-icon bg-primary text-white shadow-sm flex-shrink-0">
+                    <i class="bi bi-people"></i>
                 </div>
-                <div>
-                    <h3 class="fw-bold text-white mb-1"><?php echo $data['customerStats']->total; ?></h3>
-                    <p class="text-secondary small mb-1">Total Pelanggan</p>
-                    <span class="text-success small fw-medium d-flex align-items-center gap-1">
+                <div class="min-w-0 w-100">
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo $data['customerStats']->total; ?></div>
+                    <p class="text-secondary small mb-1 lh-sm text-truncate" title="Total Pelanggan">Total Pelanggan</p>
+                    <div class="text-success text-truncate" style="font-size:0.75rem;">
                         <i class="bi bi-check-circle"></i> <?php echo $data['customerStats']->active; ?> Aktif
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-6 col-lg-3">
         <div class="card glass-card h-100 border-0 shadow-sm">
-            <div class="card-body p-4 d-flex align-items-center gap-3">
-                <div class="bg-success bg-opacity-10 text-success rounded p-3 d-flex align-items-center justify-content-center">
-                    <i class="bi bi-wallet2 fs-3"></i>
+            <div class="card-body p-3 p-xl-4 d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 gap-sm-3">
+                <div class="stat-icon bg-success bg-opacity-25 text-success shadow-sm flex-shrink-0">
+                    <i class="bi bi-wallet2"></i>
                 </div>
-                <div>
-                    <h3 class="fw-bold text-white mb-1" style="font-size: 1.5rem;">Rp <?php echo number_format($data['revenueThisMonth'], 0, ',', '.'); ?></h3>
-                    <p class="text-secondary small mb-1">Pendapatan Bulan Ini</p>
-                    <span class="text-success small fw-medium d-flex align-items-center gap-1">
+                <div class="min-w-0 w-100">
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1rem, 2.5vw, 1.4rem);">
+                        Rp <?php echo number_format($data['revenueThisMonth'], 0, ',', '.'); ?>
+                    </div>
+                    <p class="text-secondary small mb-1 lh-sm text-truncate" title="Pendapatan Bulan Ini">Pendapatan Bulan Ini</p>
+                    <div class="text-success text-truncate" style="font-size:0.75rem;">
                         <i class="bi bi-arrow-up-right"></i> Terbayar
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-6 col-lg-3">
         <div class="card glass-card h-100 border-0 shadow-sm">
-            <div class="card-body p-4 d-flex align-items-center gap-3">
-                <div class="bg-warning bg-opacity-10 text-warning rounded p-3 d-flex align-items-center justify-content-center">
-                    <i class="bi bi-receipt fs-3"></i>
+            <div class="card-body p-3 p-xl-4 d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 gap-sm-3">
+                <div class="stat-icon bg-warning bg-opacity-25 text-warning shadow-sm flex-shrink-0">
+                    <i class="bi bi-receipt"></i>
                 </div>
-                <div>
-                    <h3 class="fw-bold text-white mb-1"><?php echo $data['unpaidInvoices']; ?></h3>
-                    <p class="text-secondary small mb-1">Tagihan Belum Bayar</p>
-                    <span class="text-warning small fw-medium d-flex align-items-center gap-1">
+                <div class="min-w-0 w-100">
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo $data['unpaidInvoices']; ?></div>
+                    <p class="text-secondary small mb-1 lh-sm text-truncate" title="Tagihan Belum Bayar">Tagihan Belum Bayar</p>
+                    <div class="text-warning text-truncate" style="font-size:0.75rem;">
                         <i class="bi bi-exclamation-circle"></i> Menunggu
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-xl-3">
+    <div class="col-6 col-lg-3">
         <div class="card glass-card h-100 border-0 shadow-sm">
-            <div class="card-body p-4 d-flex align-items-center gap-3">
-                <div class="bg-danger bg-opacity-10 text-danger rounded p-3 d-flex align-items-center justify-content-center">
-                    <i class="bi bi-wifi-off fs-3"></i>
+            <div class="card-body p-3 p-xl-4 d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2 gap-sm-3">
+                <div class="stat-icon bg-danger bg-opacity-25 text-danger shadow-sm flex-shrink-0">
+                    <i class="bi bi-wifi-off"></i>
                 </div>
-                <div>
-                    <h3 class="fw-bold text-white mb-1"><?php echo ($data['customerStats']->inactive + $data['customerStats']->isolated); ?></h3>
-                    <p class="text-secondary small mb-1">Pelanggan Off/Isolir</p>
-                    <span class="text-danger small fw-medium d-flex align-items-center gap-1">
+                <div class="min-w-0 w-100">
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo ($data['customerStats']->inactive + $data['customerStats']->isolated); ?></div>
+                    <p class="text-secondary small mb-1 lh-sm text-truncate" title="Pelanggan Off/Isolir">Pelanggan Off/Isolir</p>
+                    <div class="text-danger text-truncate" style="font-size:0.75rem;">
                         <i class="bi bi-dash-circle"></i> Perlu ditindak
-                    </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -76,11 +78,11 @@ require_once APPROOT . '/views/layouts/admin_header.php';
     <!-- Payment Chart -->
     <div class="col-12 col-lg-8">
         <div class="card glass-card border-0 shadow-sm h-100">
-            <div class="card-header bg-transparent border-secondary border-opacity-25 p-4">
-                <h6 class="fw-bold text-white mb-0">Tren Pendapatan (6 Bulan Terakhir)</h6>
+            <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25">
+                <h6 class="fw-bold mb-0">Tren Pendapatan (6 Bulan Terakhir)</h6>
             </div>
-            <div class="card-body p-4">
-                <canvas id="revenueChart" style="min-height: 300px;"></canvas>
+            <div class="card-body">
+                <canvas id="revenueChart" style="min-height: clamp(180px, 30vw, 300px);"></canvas>
             </div>
         </div>
     </div>
@@ -88,11 +90,11 @@ require_once APPROOT . '/views/layouts/admin_header.php';
     <!-- Customer Statistics -->
     <div class="col-12 col-lg-4">
         <div class="card glass-card border-0 shadow-sm h-100">
-            <div class="card-header bg-transparent border-secondary border-opacity-25 p-4">
-                <h6 class="fw-bold text-white mb-0">Statistik Pelanggan</h6>
+            <div class="card-header bg-transparent border-bottom border-secondary border-opacity-25">
+                <h6 class="fw-bold mb-0">Statistik Pelanggan</h6>
             </div>
-            <div class="card-body p-4 d-flex flex-column align-items-center justify-content-center">
-                <div style="position: relative; height: 250px; width: 100%;">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <div style="position: relative; height: clamp(180px, 30vw, 250px); width: 100%;">
                     <canvas id="customerChart"></canvas>
                 </div>
             </div>
@@ -135,11 +137,11 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                                     <td class="font-monospace text-secondary"><?php echo htmlspecialchars($router->host_ip); ?></td>
                                     <td>
                                         <?php if(!$router->is_active): ?>
-                                            <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill"><i class="bi bi-dash-circle"></i> Nonaktif</span>
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill d-inline-flex align-items-center"><i class="bi bi-dash-circle me-1"></i> Nonaktif</span>
                                         <?php elseif($router->is_online): ?>
-                                            <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill"><i class="bi bi-check-circle"></i> Online / Terhubung</span>
+                                            <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill d-inline-flex align-items-center"><i class="bi bi-check-circle me-1"></i> Online / Terhubung</span>
                                         <?php else: ?>
-                                            <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill"><i class="bi bi-x-circle"></i> Offline / Terputus</span>
+                                            <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill d-inline-flex align-items-center"><i class="bi bi-x-circle me-1"></i> Offline / Terputus</span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-end pe-4 text-white fw-bold">
