@@ -418,7 +418,7 @@ function generateInvoice(customerId, btn) {
     btn.disabled  = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
 
-    fetch(URLROOT + '/AdminInvoiceController/generateSingleInvoice/' + customerId, {
+    fetch(APP_URLROOT + '/AdminInvoiceController/generateSingleInvoice/' + customerId, {
         method:  'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN, 'Content-Type': 'application/json' },
     })
@@ -522,7 +522,7 @@ function sendManualWA(invoiceId, phone, name, customerId, pkg, amount, invoiceNu
         btn.disabled  = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
 
-        fetch(URLROOT + '/AdminInvoiceController/sendManualWA/' + invoiceId, {
+        fetch(APP_URLROOT + '/AdminInvoiceController/sendManualWA/' + invoiceId, {
             method:  'POST',
             headers: { 'X-CSRF-Token': CSRF_TOKEN, 'Content-Type': 'application/json' },
         })
@@ -578,7 +578,7 @@ document.getElementById('btn-confirm-paid').addEventListener('click', function (
     btn.disabled  = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Memproses...';
 
-    fetch(URLROOT + '/AdminInvoiceController/markAsPaid/' + invoiceId, {
+    fetch(APP_URLROOT + '/AdminInvoiceController/markAsPaid/' + invoiceId, {
         method:  'POST',
         headers: { 'X-CSRF-Token': CSRF_TOKEN, 'Content-Type': 'application/json' },
     })
