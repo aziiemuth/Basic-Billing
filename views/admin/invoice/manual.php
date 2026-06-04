@@ -221,7 +221,7 @@
 <!-- ====== Modal: Konfirmasi Tandai Lunas Tunai ====== -->
 <div class="modal fade" id="modalMarkPaid" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0" style="background:#1a1a2e; border:1px solid rgba(255,255,255,0.1) !important;">
+        <div class="modal-content bg-dark border border-warning border-opacity-25">
             <div class="modal-header border-secondary border-opacity-25">
                 <h6 class="modal-title text-white fw-bold">
                     <i class="bi bi-cash-coin text-warning me-2"></i>Konfirmasi Pembayaran Tunai
