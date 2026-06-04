@@ -28,7 +28,7 @@
         </div>
         <?php endif; ?>
 
-        <form action="<?php echo URLROOT; ?>/CustomerAuthController/login" method="POST" data-ajax="true">
+        <form action="<?php echo URLROOT; ?>/CustomerAuthController/login" method="POST">
             <?php echo SecurityHelper::csrfField(); ?>
             <div class="mb-3">
                 <label for="identifier" class="form-label text-secondary small fw-medium">ID Pelanggan / Username</label>

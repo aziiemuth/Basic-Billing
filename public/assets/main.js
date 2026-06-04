@@ -81,8 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
             
-            // Example Fetch API call (Currently we'll just simulate network delay, then submit normally or process JSON)
-            // If the backend returns JSON, we handle it here.
             fetch(actionUrl, {
                 method: 'POST',
                 body: formData,
@@ -91,14 +89,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .then(response => {
-                // If the response is a redirect (e.g. successful login), the browser handles it automatically if it's not a JSON response.
-                // For this native PHP setup without full REST API, we can just submit the form normally after a tiny delay 
-                // if we don't want to change the backend logic to return JSON.
-                // Let's actually submit it normally for auth to work seamlessly with existing PHP session redirects.
-                setTimeout(() => {
-                    form.removeAttribute('data-ajax'); // prevent loop
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    // Fallback to normal submission if it's not a redirect
+                    form.removeAttribute('data-ajax');
                     form.submit();
-                }, 500);
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -106,6 +103,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.innerHTML = originalBtnText;
             });
         });
+    });
+
+    // Handle loading spinner for standard form submissions (non-AJAX)
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (e.defaultPrevented) return;
+        if (form.getAttribute('data-ajax') === 'true') return;
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            // Check if button already has a spinner to avoid duplicate triggers
+            if (submitBtn.querySelector('.spinner-border')) return;
+
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+            setTimeout(() => {
+                submitBtn.disabled = true;
+            }, 0);
+        }
     });
 
     // Mobile Sidebar Toggle

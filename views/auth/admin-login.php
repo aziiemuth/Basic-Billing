@@ -23,7 +23,7 @@
         </div>
         <?php endif; ?>
 
-        <form action="<?php echo URLROOT; ?>/AdminAuthController/login" method="POST" data-ajax="true">
+        <form action="<?php echo URLROOT; ?>/AdminAuthController/login" method="POST">
             <?php echo SecurityHelper::csrfField(); ?>
             <div class="mb-3">
                 <label for="username" class="form-label text-secondary small fw-medium">Username</label>
