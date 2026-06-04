@@ -15,16 +15,19 @@
             <div class="card-body p-4">
                 <form action="<?php echo URLROOT; ?>/AdminRouterController/update/<?php echo $data['router']->id; ?>" method="POST">
     <?php echo SecurityHelper::csrfField(); ?>
+                    <!-- Fake inputs to prevent browser autofill -->
+                    <input type="text" name="prevent_autofill_username" style="display:none;" />
+                    <input type="password" name="prevent_autofill_password" style="display:none;" />
                     
                     <h6 class="text-white fw-bold mb-3 border-bottom border-secondary border-opacity-25 pb-2">Informasi Umum</h6>
                     <div class="row mb-4">
                         <div class="col-md-6 mb-3">
                             <label class="form-label text-secondary small mb-1">Nama Router <span class="text-danger">*</span></label>
-                            <input type="text" name="name" class="form-control bg-dark border-secondary border-opacity-25 text-white" required value="<?php echo htmlspecialchars($data['router']->name); ?>">
+                            <input type="text" name="name" class="form-control bg-dark border-secondary border-opacity-25 text-white" required value="<?php echo htmlspecialchars($data['router']->name); ?>" autocomplete="off">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label text-secondary small mb-1">Host IP <span class="text-danger">*</span></label>
-                            <input type="text" name="host_ip" class="form-control bg-dark border-secondary border-opacity-25 text-white" required value="<?php echo htmlspecialchars($data['router']->host_ip); ?>">
+                            <input type="text" name="host_ip" class="form-control bg-dark border-secondary border-opacity-25 text-white" required value="<?php echo htmlspecialchars($data['router']->host_ip); ?>" autocomplete="off">
                         </div>
                     </div>
 
@@ -32,16 +35,16 @@
                     <div class="row mb-4">
                         <div class="col-md-4 mb-3">
                             <label class="form-label text-secondary small mb-1">API Username <span class="text-danger">*</span></label>
-                            <input type="text" name="api_username" class="form-control bg-dark border-secondary border-opacity-25 text-white" required value="<?php echo htmlspecialchars($data['router']->api_username); ?>">
+                            <input type="text" name="api_username" class="form-control bg-dark border-secondary border-opacity-25 text-white" required value="<?php echo htmlspecialchars($data['router']->api_username); ?>" autocomplete="off">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label text-secondary small mb-1">API Password</label>
-                            <input type="password" name="api_password" class="form-control bg-dark border-secondary border-opacity-25 text-white" placeholder="Kosongkan jika tidak diubah">
+                            <input type="password" name="api_password" class="form-control bg-dark border-secondary border-opacity-25 text-white" placeholder="Kosongkan jika tidak diubah" autocomplete="new-password">
                             <div class="form-text text-secondary small">Isi hanya jika ingin mengganti password API.</div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label text-secondary small mb-1">API Port</label>
-                            <input type="number" name="api_port" class="form-control bg-dark border-secondary border-opacity-25 text-white" value="<?php echo htmlspecialchars($data['router']->api_port); ?>">
+                            <input type="number" name="api_port" class="form-control bg-dark border-secondary border-opacity-25 text-white" value="<?php echo htmlspecialchars($data['router']->api_port); ?>" autocomplete="off">
                         </div>
                     </div>
 

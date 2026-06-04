@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.append('csrf_token', csrfMeta.getAttribute('content'));
             }
 
-            fetch('<?php echo URLROOT; ?>/AdminPppoeController/togglePppoe', {
+            fetch(APP_URLROOT + '/AdminPppoeController/togglePppoe', {
                 method: 'POST',
                 body: formData
             })

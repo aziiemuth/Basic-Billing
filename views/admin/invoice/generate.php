@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Step 1: Fetch target customers matching filters
-            const reqTargets = await fetch('<?php echo URLROOT; ?>/AdminInvoiceController/apiGetTargetCustomers', {
+            const reqTargets = await fetch(APP_URLROOT + '/AdminInvoiceController/apiGetTargetCustomers', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
                 body: JSON.stringify({ billing_month: billingMonth, package_id: packageId, router_id: routerId })
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = 0; i < total; i += batchSize) {
                 const batchIds = targets.slice(i, i + batchSize);
                 
-                const reqBatch = await fetch('<?php echo URLROOT; ?>/AdminInvoiceController/apiGenerateBatch', {
+                const reqBatch = await fetch(APP_URLROOT + '/AdminInvoiceController/apiGenerateBatch', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
                     body: JSON.stringify({ billing_month: billingMonth, customer_ids: batchIds })

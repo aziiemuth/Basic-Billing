@@ -21,6 +21,9 @@
             document.documentElement.setAttribute('data-theme', t);
             document.documentElement.setAttribute('data-bs-theme', t === 'light' ? 'light' : 'dark');
         })();
+
+        // Define dynamic base path for AJAX calls to prevent CORS errors on localhost/mobile
+        const APP_URLROOT = '<?php echo rtrim(parse_url(URLROOT, PHP_URL_PATH) ?: "", "/"); ?>';
     </script>
 </head>
 <body class="admin-layout">

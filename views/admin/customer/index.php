@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     uniqueRouterIds.forEach(routerId => {
-        fetch('<?php echo URLROOT; ?>/AdminRouterController/testConnection/' + routerId)
+        fetch(APP_URLROOT + '/AdminRouterController/testConnection/' + routerId)
             .then(r => r.json())
             .then(data => {
                 if (!data.success) {

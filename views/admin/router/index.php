@@ -225,7 +225,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.router-status-col[data-is-active="1"]').forEach(function(col) {
         var routerId = col.dataset.routerId;
-        fetch('<?php echo URLROOT; ?>/AdminRouterController/testConnection/' + routerId)
+        fetch(APP_URLROOT + '/AdminRouterController/testConnection/' + routerId)
             .then(r => r.json())
             .then(function(data) {
                 if (data.success) {
@@ -255,7 +255,7 @@ document.querySelectorAll('.btn-test-conn').forEach(function(btn) {
 
         modal.show();
 
-        fetch('<?php echo URLROOT; ?>/AdminRouterController/testConnection/' + routerId)
+        fetch(APP_URLROOT + '/AdminRouterController/testConnection/' + routerId)
             .then(r => r.json())
             .then(function(data) {
                 document.getElementById('test-conn-loading').classList.add('d-none');
@@ -320,7 +320,7 @@ document.getElementById('btn-confirm-isolate').addEventListener('click', functio
     var formData = new FormData();
     formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-    fetch('<?php echo URLROOT; ?>/AdminRouterController/isolateOverdue', { method: 'POST', body: formData })
+    fetch(APP_URLROOT + '/AdminRouterController/isolateOverdue', { method: 'POST', body: formData })
         .then(r => r.json())
         .then(function(data) {
             document.getElementById('isolate-loading').classList.add('d-none');

@@ -265,8 +265,8 @@
 document.getElementById('btn-load-router').addEventListener('click', function() {
     var val = document.getElementById('router-select').value;
     var url = val
-        ? '<?php echo URLROOT; ?>/AdminRouterController/sync/' + val
-        : '<?php echo URLROOT; ?>/AdminRouterController/sync';
+        ? APP_URLROOT + '/AdminRouterController/sync/' + val
+        : APP_URLROOT + '/AdminRouterController/sync';
     window.location.href = url;
 });
 
@@ -297,7 +297,7 @@ document.querySelectorAll('.btn-toggle-pppoe').forEach(function(btn) {
         formData.append('router_id', routerId);
         formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
-        fetch('<?php echo URLROOT; ?>/AdminRouterController/togglePppoe', {
+        fetch(APP_URLROOT + '/AdminRouterController/togglePppoe', {
             method: 'POST',
             body: formData
         })

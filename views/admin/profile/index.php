@@ -264,7 +264,7 @@ document.getElementById('btn-retest-mt').addEventListener('click', function() {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Loading...';
     
-    fetch('<?php echo URLROOT; ?>/AdminProfileController/testMikrotik')
+    fetch(APP_URLROOT + '/AdminProfileController/testMikrotik')
         .then(r => r.json())
         .then(data => {
             btn.disabled = false;
@@ -312,7 +312,7 @@ document.querySelectorAll('.btn-test-db-router').forEach(btn => {
         this.disabled = true;
         this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
         
-        fetch('<?php echo URLROOT; ?>/AdminProfileController/testRouter/' + id)
+        fetch(APP_URLROOT + '/AdminProfileController/testRouter/' + id)
             .then(r => r.json())
             .then(data => {
                 this.disabled = false;
