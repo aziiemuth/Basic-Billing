@@ -1,6 +1,6 @@
 <?php /** @var array $data */ ?>
 <!DOCTYPE html>
-<html lang="id" data-bs-theme="dark">
+<html lang="id" data-bs-theme="light" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="<?php echo URLROOT; ?>/assets/style.css?v=<?php echo time(); ?>">
     
     <!-- PWA Settings -->
     <link rel="manifest" href="<?php echo URLROOT; ?>/manifest.json">
@@ -19,40 +21,56 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ISP Portal">
     <link rel="apple-touch-icon" href="<?php echo URLROOT; ?>/assets/icon-192.png">
+
+    <!-- Anti-FOUC: terapkan tema sebelum render -->
+    <script>
+        (function(){
+            var t = localStorage.getItem('billingapp_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
+            document.documentElement.setAttribute('data-bs-theme', t === 'light' ? 'light' : 'dark');
+        })();
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: var(--body-bg);
+            color: var(--body-color);
         }
         .navbar-glass {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--topbar-bg) !important;
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border) !important;
         }
         .card-glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--card-bg) !important;
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border) !important;
             border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: var(--glass-shadow);
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top">
+<nav class="navbar navbar-expand-lg navbar-glass sticky-top">
     <div class="container">
         <a class="navbar-brand fw-bold" href="#">ISP Portal</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item d-none" id="pwa-install-nav">
                     <a class="nav-link text-info fw-semibold me-3" href="#" id="pwa-install-btn">
                         <i class="bi bi-download me-1"></i> Install Aplikasi
                     </a>
+                </li>
+                <!-- Theme Toggle Button -->
+                <li class="nav-item me-3">
+                    <button id="themeToggleBtn" class="btn border-0" title="Ganti Tema" aria-label="Toggle Dark/Light Mode" style="width: 40px !important; height: 40px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; background: none !important; color: var(--body-color) !important; border-radius: 50% !important;">
+                        <i class="bi bi-sun-fill icon-dark fs-5 text-warning"></i>
+                        <i class="bi bi-moon-stars-fill icon-light fs-5 text-info"></i>
+                    </button>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="<?php echo URLROOT; ?>/CustomerAuthController/logout">

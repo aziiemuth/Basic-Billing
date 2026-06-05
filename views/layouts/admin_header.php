@@ -1,6 +1,6 @@
 <?php /** @var array $data */ ?>
 <!DOCTYPE html>
-<html lang="id" data-bs-theme="dark" data-theme="dark">
+<html lang="id" data-bs-theme="light" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
     <!-- Anti-FOUC: terapkan tema sebelum render -->
     <script>
         (function(){
-            var t = localStorage.getItem('billingapp_theme') || 'dark';
+            var t = localStorage.getItem('billingapp_theme') || 'light';
             document.documentElement.setAttribute('data-theme', t);
             document.documentElement.setAttribute('data-bs-theme', t === 'light' ? 'light' : 'dark');
         })();

@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const html = document.documentElement;
     const THEME_KEY = 'billingapp_theme';
 
-    // Terapkan tema tersimpan (atau default dark)
-    const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+    // Terapkan tema tersimpan (atau default light)
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
     html.setAttribute('data-theme', savedTheme);
     // Sync Bootstrap data-bs-theme
     html.setAttribute('data-bs-theme', savedTheme === 'light' ? 'light' : 'dark');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeBtn = document.getElementById('themeToggleBtn');
     if (themeBtn) {
         themeBtn.addEventListener('click', function() {
-            const current = html.getAttribute('data-theme') || 'dark';
+            const current = html.getAttribute('data-theme') || 'light';
             const next = current === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', next);
             html.setAttribute('data-bs-theme', next === 'light' ? 'light' : 'dark');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // SweetAlert2 Toast configuration
     if (typeof Swal !== 'undefined') {
-        const isDark = (localStorage.getItem('billingapp_theme') || 'dark') === 'dark';
+        const isDark = (localStorage.getItem('billingapp_theme') || 'light') === 'dark';
         const Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
