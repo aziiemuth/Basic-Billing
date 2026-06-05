@@ -319,7 +319,7 @@ document.querySelectorAll('.btn-toggle-pppoe').forEach(function(btn) {
 function showToast(message, type) {
     var toast    = document.getElementById('sync-toast');
     var toastBody = document.getElementById('sync-toast-body');
-    toast.className   = 'toast align-items-center border-0 text-white bg-' + (type === 'success' ? 'success' : 'danger') + ' bg-opacity-90';
+    toast.className   = 'toast align-items-center border-0 text-white bg-' + (type === 'success' ? 'success' : 'danger');
     toastBody.textContent = message;
     new bootstrap.Toast(toast, {delay: 3000}).show();
 }

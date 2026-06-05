@@ -222,7 +222,7 @@
                     Menampilkan 0 - 0 dari 0 data
                 </div>
                 <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm mb-0" id="pagination-controls">
+                    <ul class="pagination pagination-sm mb-0 gap-1" id="pagination-controls">
                         <!-- populated via JS -->
                     </ul>
                 </nav>
@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Prev button
         const prevLi = document.createElement('li');
         prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+        prevLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
         prevLi.addEventListener('click', function(e) {
             e.preventDefault();
             if (currentPage > 1) {
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const activeLinkClass = currentPage === i ? 'bg-primary border-primary text-white' : 'bg-dark border-secondary border-opacity-25 text-white';
             
-            pageLi.innerHTML = `<a class="page-link ${activeLinkClass}" href="#">${i}</a>`;
+            pageLi.innerHTML = `<a class="page-link rounded ${activeLinkClass}" href="#">${i}</a>`;
             pageLi.addEventListener('click', function(e) {
                 e.preventDefault();
                 currentPage = i;
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Next button
         const nextLi = document.createElement('li');
         nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+        nextLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
         nextLi.addEventListener('click', function(e) {
             e.preventDefault();
             if (currentPage < totalPages) {

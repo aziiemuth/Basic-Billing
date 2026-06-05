@@ -210,7 +210,7 @@
                 Menampilkan 0 - 0 dari 0 data
             </div>
             <nav aria-label="Page navigation">
-                <ul class="pagination pagination-sm mb-0" id="pagination-controls">
+                <ul class="pagination pagination-sm mb-0 gap-1" id="pagination-controls">
                     <!-- populated via JS -->
                 </ul>
             </nav>
@@ -221,19 +221,19 @@
 <!-- ====== Modal: Konfirmasi Tandai Lunas Tunai ====== -->
 <div class="modal fade" id="modalMarkPaid" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark border border-warning border-opacity-25">
+        <div class="modal-content border border-warning border-opacity-25">
             <div class="modal-header border-secondary border-opacity-25">
-                <h6 class="modal-title text-white fw-bold">
+                <h6 class="modal-title fw-bold">
                     <i class="bi bi-cash-coin text-warning me-2"></i>Konfirmasi Pembayaran Tunai
                 </h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p class="text-secondary mb-3">
                     Tandai invoice pelanggan berikut sebagai <strong class="text-success">LUNAS</strong>?
                 </p>
                 <div class="bg-dark bg-opacity-50 rounded p-3 border border-secondary border-opacity-25">
-                    <div class="text-white fw-semibold" id="modal-customer-name">-</div>
+                    <div class="fw-semibold" id="modal-customer-name">-</div>
                     <div class="text-warning mt-1" id="modal-invoice-amount">-</div>
                 </div>
                 <div class="alert alert-info bg-info bg-opacity-10 text-info border border-info border-opacity-25 p-3 rounded mt-3 mb-0 small">
@@ -255,13 +255,13 @@
 
 <!-- ====== Toast Notifikasi ====== -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
-    <div id="liveToast" class="toast border-0 shadow-lg" role="alert" aria-live="assertive" data-bs-delay="5000">
-        <div class="toast-header border-0" id="toast-header" style="background:rgba(30,30,50,0.95);">
+    <div id="liveToast" class="toast border-0 shadow-lg text-white" role="alert" aria-live="assertive" data-bs-delay="5000">
+        <div class="toast-header border-0 text-white bg-transparent" id="toast-header">
             <i class="me-2" id="toast-icon"></i>
-            <strong class="me-auto text-white" id="toast-title">Notifikasi</strong>
+            <strong class="me-auto" id="toast-title">Notifikasi</strong>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
         </div>
-        <div class="toast-body text-secondary small" id="toast-body" style="background:rgba(20,20,40,0.95);">-</div>
+        <div class="toast-body small" id="toast-body">-</div>
     </div>
 </div>
 
@@ -335,7 +335,7 @@ function renderPagination() {
         // Prev button
         const prevLi = document.createElement('li');
         prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
+        prevLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
         prevLi.addEventListener('click', function(e) {
             e.preventDefault();
             if (currentPage > 1) {
@@ -358,7 +358,7 @@ function renderPagination() {
             
             const activeLinkClass = currentPage === i ? 'bg-primary border-primary text-white' : 'bg-dark border-secondary border-opacity-25 text-white';
             
-            pageLi.innerHTML = `<a class="page-link ${activeLinkClass}" href="#">${i}</a>`;
+            pageLi.innerHTML = `<a class="page-link rounded ${activeLinkClass}" href="#">${i}</a>`;
             pageLi.addEventListener('click', function(e) {
                 e.preventDefault();
                 currentPage = i;
@@ -370,7 +370,7 @@ function renderPagination() {
         // Next button
         const nextLi = document.createElement('li');
         nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
+        nextLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
         nextLi.addEventListener('click', function(e) {
             e.preventDefault();
             if (currentPage < totalPages) {
@@ -397,15 +397,29 @@ document.addEventListener('DOMContentLoaded', function () {
 // ---- Toast Helper ----
 function showToast(type, title, message) {
     const toastEl = document.getElementById('liveToast');
+    const toastHeader = document.getElementById('toast-header');
     document.getElementById('toast-title').textContent = title;
     document.getElementById('toast-body').textContent  = message;
 
-    const iconMap = {
-        success: 'bi bi-check-circle-fill text-success',
-        warning: 'bi bi-exclamation-triangle-fill text-warning',
-        error:   'bi bi-x-circle-fill text-danger',
-    };
-    document.getElementById('toast-icon').className = iconMap[type] || iconMap.error;
+    let bgClass = 'bg-primary';
+    let iconClass = 'bi-info-circle-fill text-white';
+
+    if (type === 'success') {
+        bgClass = 'bg-success';
+        iconClass = 'bi-check-circle-fill text-white';
+    } else if (type === 'warning') {
+        bgClass = 'bg-warning';
+        iconClass = 'bi-exclamation-triangle-fill text-white';
+    } else if (type === 'error') {
+        bgClass = 'bg-danger';
+        iconClass = 'bi-x-circle-fill text-white';
+    }
+
+    toastEl.className = 'toast border-0 shadow-lg text-white ' + bgClass;
+    if (toastHeader) {
+        toastHeader.className = 'toast-header border-0 text-white bg-transparent';
+    }
+    document.getElementById('toast-icon').className = iconClass + ' me-2';
 
     bootstrap.Toast.getOrCreateInstance(toastEl).show();
 }

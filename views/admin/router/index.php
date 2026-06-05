@@ -1,5 +1,6 @@
 <?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
+<?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -7,9 +8,6 @@
         <p class="text-secondary small mb-0">Kelola daftar router MikroTik yang terhubung dengan sistem.</p>
     </div>
     <div class="d-flex gap-2">
-        <button type="button" id="btn-isolate-overdue" class="btn btn-outline-warning btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25">
-            <i class="bi bi-shield-exclamation"></i> Isolasi Menunggak
-        </button>
         <a href="<?php echo URLROOT; ?>/AdminRouterController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
             <i class="bi bi-plus-lg"></i> Tambah Router
         </a>
@@ -96,10 +94,10 @@
 <!-- Modal Test Koneksi -->
 <div class="modal fade" id="modalTestConn" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark border border-secondary border-opacity-25">
+        <div class="modal-content border border-secondary border-opacity-25">
             <div class="modal-header border-secondary border-opacity-25">
-                <h5 class="modal-title text-white"><i class="bi bi-wifi me-2"></i>Test Koneksi Router</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title"><i class="bi bi-wifi me-2"></i>Test Koneksi Router</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div id="test-conn-loading" class="text-center py-3">
@@ -113,7 +111,7 @@
                                 <i class="bi bi-check-lg text-success fs-4"></i>
                             </div>
                             <div>
-                                <div class="text-white fw-bold">Koneksi Berhasil!</div>
+                                <div class="fw-bold">Koneksi Berhasil!</div>
                                 <div class="text-secondary small" id="tc-host">-</div>
                             </div>
                         </div>
@@ -121,13 +119,13 @@
                             <div class="col-6">
                                 <div class="glass-card rounded p-3">
                                     <div class="text-secondary small">Identity</div>
-                                    <div class="text-white fw-medium" id="tc-identity">-</div>
+                                    <div class="fw-medium" id="tc-identity">-</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="glass-card rounded p-3">
                                     <div class="text-secondary small">RouterOS Version</div>
-                                    <div class="text-white fw-medium" id="tc-version">-</div>
+                                    <div class="fw-medium" id="tc-version">-</div>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -139,13 +137,13 @@
                             <div class="col-12 mt-2">
                                 <div class="glass-card rounded p-3">
                                     <div class="text-info fw-bold small mb-2"><i class="bi bi-person-badge-fill me-1"></i>PPPoE Profiles (untuk MIKROTIK_PROFILE)</div>
-                                    <div id="tc-profiles" class="d-flex flex-wrap gap-1 text-white small">-</div>
+                                    <div id="tc-profiles" class="d-flex flex-wrap gap-1 small">-</div>
                                 </div>
                             </div>
                             <div class="col-12 mt-2">
                                 <div class="glass-card rounded p-3">
                                     <div class="text-warning fw-bold small mb-2"><i class="bi bi-hdd-network-fill me-1"></i>Interfaces (untuk MIKROTIK_INTERFACE)</div>
-                                    <div id="tc-interfaces" class="d-flex flex-wrap gap-1 text-white small">-</div>
+                                    <div id="tc-interfaces" class="d-flex flex-wrap gap-1 small">-</div>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +154,7 @@
                                 <i class="bi bi-x-lg text-danger fs-4"></i>
                             </div>
                             <div>
-                                <div class="text-white fw-bold">Koneksi Gagal</div>
+                                <div class="fw-bold">Koneksi Gagal</div>
                                 <div class="text-danger small" id="tc-error-msg">-</div>
                             </div>
                         </div>
@@ -165,57 +163,6 @@
             </div>
             <div class="modal-footer border-secondary border-opacity-25">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Isolasi Overdue -->
-<div class="modal fade" id="modalIsolateOverdue" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark border border-warning border-opacity-25">
-            <div class="modal-header border-warning border-opacity-25">
-                <h5 class="modal-title text-warning"><i class="bi bi-shield-exclamation me-2"></i>Isolasi Pelanggan Menunggak</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div id="isolate-confirm" class="">
-                    <p class="text-white">Tindakan ini akan <strong class="text-warning">menonaktifkan (disable)</strong> akun PPPoE semua pelanggan yang memiliki tagihan overdue secara otomatis.</p>
-                    <p class="text-secondary small">Hanya pelanggan dengan paket <strong>auto_isolate = aktif</strong> yang akan diproses.</p>
-                </div>
-                <div id="isolate-loading" class="d-none text-center py-3">
-                    <div class="spinner-border text-warning" role="status"></div>
-                    <p class="text-secondary mt-2 mb-0">Memproses isolasi, mohon tunggu...</p>
-                </div>
-                <div id="isolate-result" class="d-none">
-                    <div class="row g-2 mb-3">
-                        <div class="col-4 text-center">
-                            <div class="glass-card rounded p-2">
-                                <div class="text-success fs-4 fw-bold" id="ir-success">0</div>
-                                <div class="text-secondary small">Berhasil</div>
-                            </div>
-                        </div>
-                        <div class="col-4 text-center">
-                            <div class="glass-card rounded p-2">
-                                <div class="text-danger fs-4 fw-bold" id="ir-failed">0</div>
-                                <div class="text-secondary small">Gagal</div>
-                            </div>
-                        </div>
-                        <div class="col-4 text-center">
-                            <div class="glass-card rounded p-2">
-                                <div class="text-secondary fs-4 fw-bold" id="ir-skipped">0</div>
-                                <div class="text-secondary small">Dilewati</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="ir-details" class="small" style="max-height:200px;overflow-y:auto;"></div>
-                </div>
-            </div>
-            <div class="modal-footer border-secondary border-opacity-25">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-warning" id="btn-confirm-isolate">
-                    <i class="bi bi-shield-exclamation me-1"></i> Ya, Isolasi Sekarang
-                </button>
             </div>
         </div>
     </div>
@@ -301,48 +248,6 @@ document.querySelectorAll('.btn-test-conn').forEach(function(btn) {
                 document.getElementById('tc-error-msg').textContent = 'Request error: ' + e.message;
             });
     });
-});
-
-// ---- Isolasi Overdue ----
-document.getElementById('btn-isolate-overdue').addEventListener('click', function() {
-    document.getElementById('isolate-confirm').classList.remove('d-none');
-    document.getElementById('isolate-loading').classList.add('d-none');
-    document.getElementById('isolate-result').classList.add('d-none');
-    document.getElementById('btn-confirm-isolate').classList.remove('d-none');
-    new bootstrap.Modal(document.getElementById('modalIsolateOverdue')).show();
-});
-
-document.getElementById('btn-confirm-isolate').addEventListener('click', function() {
-    document.getElementById('isolate-confirm').classList.add('d-none');
-    document.getElementById('isolate-loading').classList.remove('d-none');
-    document.getElementById('btn-confirm-isolate').classList.add('d-none');
-
-    var formData = new FormData();
-    formData.append('csrf_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-
-    fetch(APP_URLROOT + '/AdminRouterController/isolateOverdue', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(function(data) {
-            document.getElementById('isolate-loading').classList.add('d-none');
-            document.getElementById('isolate-result').classList.remove('d-none');
-            document.getElementById('ir-success').textContent  = data.success  || 0;
-            document.getElementById('ir-failed').textContent   = data.failed   || 0;
-            document.getElementById('ir-skipped').textContent  = data.skipped  || 0;
-
-            var detailsHtml = '';
-            if (data.details && data.details.length > 0) {
-                data.details.forEach(function(d) {
-                    var color = d.status === 'isolated' ? 'text-success' : (d.status === 'failed' ? 'text-danger' : 'text-secondary');
-                    var icon  = d.status === 'isolated' ? '✓' : (d.status === 'failed' ? '✗' : '–');
-                    detailsHtml += '<div class="' + color + ' mb-1">' + icon + ' ' + d.name + (d.pppoe ? ' (' + d.pppoe + ')' : '') + (d.reason ? ' — ' + d.reason : '') + '</div>';
-                });
-            }
-            document.getElementById('ir-details').innerHTML = detailsHtml || '<span class="text-secondary">Tidak ada detail.</span>';
-        })
-        .catch(function(e) {
-            document.getElementById('isolate-loading').classList.add('d-none');
-            alert('Error: ' + e.message);
-        });
 });
 </script>
 

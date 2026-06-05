@@ -481,7 +481,10 @@ header.topbar .text-secondary { color: var(--muted) !important; }
   .table thead { font-size: 0.7rem; }
 
   /* Buttons full-width on mobile */
-  .btn-mobile-full { width: 100% !important; }
+  .btn-mobile-full { width: 100% !important; justify-content: center; }
+  .btn { white-space: normal; height: auto; text-align: center; }
+  .btn i { flex-shrink: 0; }
+  .d-flex.gap-2 { flex-wrap: wrap; }
 
   /* Hide less important columns */
   .d-xs-none { display: none !important; }

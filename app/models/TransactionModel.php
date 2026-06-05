@@ -6,9 +6,21 @@ class TransactionModel {
         $this->db = new Database;
     }
 
-    public function recordPaymentSuccess($payment_id, $invoice_id, $amount) {
+    public function recordPaymentSuccess($payment_id, $invoice_id, $amount, $payment_method = 'tunai') {
         $date = date('Y-m-d');
-        $desc = "Pembayaran tagihan (Invoice ID: " . $invoice_id . ")";
+        
+        // Coba cari payment method dari tabel payments jika tidak ditentukan sebagai tunai
+        if ($payment_id) {
+            $this->db->query("SELECT payment_method FROM payments WHERE id = :pid");
+            $this->db->bind(':pid', $payment_id);
+            $payData = $this->db->single();
+            if ($payData && $payData->payment_method) {
+                $payment_method = $payData->payment_method;
+            }
+        }
+        
+        $methodLabel = strtoupper($payment_method);
+        $desc = "Pembayaran tagihan (Invoice ID: " . $invoice_id . ") - " . $methodLabel;
         
         // 1. Insert into transactions
         $this->db->query("INSERT INTO transactions (invoice_id, payment_id, type, amount, description, transaction_date) 

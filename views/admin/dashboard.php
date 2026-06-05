@@ -12,10 +12,10 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                     <i class="bi bi-people"></i>
                 </div>
                 <div class="min-w-0 w-100">
-                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo $data['customerStats']->total; ?></div>
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" id="stat-total-customer" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo $data['customerStats']->total; ?></div>
                     <p class="text-secondary small mb-1 lh-sm text-truncate" title="Total Pelanggan">Total Pelanggan</p>
                     <div class="text-success text-truncate" style="font-size:0.75rem;">
-                        <i class="bi bi-check-circle"></i> <?php echo $data['customerStats']->active; ?> Aktif
+                        <i class="bi bi-check-circle"></i> <span id="stat-active-customer"><?php echo $data['customerStats']->active; ?></span> Aktif
                     </div>
                 </div>
             </div>
@@ -28,7 +28,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                     <i class="bi bi-wallet2"></i>
                 </div>
                 <div class="min-w-0 w-100">
-                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1rem, 2.5vw, 1.4rem);">
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" id="stat-revenue" style="font-size: clamp(1rem, 2.5vw, 1.4rem);">
                         Rp <?php echo number_format($data['revenueThisMonth'], 0, ',', '.'); ?>
                     </div>
                     <p class="text-secondary small mb-1 lh-sm text-truncate" title="Pendapatan Bulan Ini">Pendapatan Bulan Ini</p>
@@ -46,7 +46,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                     <i class="bi bi-receipt"></i>
                 </div>
                 <div class="min-w-0 w-100">
-                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo $data['unpaidInvoices']; ?></div>
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" id="stat-unpaid" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo $data['unpaidInvoices']; ?></div>
                     <p class="text-secondary small mb-1 lh-sm text-truncate" title="Tagihan Belum Bayar">Tagihan Belum Bayar</p>
                     <div class="text-warning text-truncate" style="font-size:0.75rem;">
                         <i class="bi bi-exclamation-circle"></i> Menunggu
@@ -62,7 +62,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                     <i class="bi bi-wifi-off"></i>
                 </div>
                 <div class="min-w-0 w-100">
-                    <div class="stat-number text-wrap text-break lh-sm mb-1" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo ($data['customerStats']->inactive + $data['customerStats']->isolated); ?></div>
+                    <div class="stat-number text-wrap text-break lh-sm mb-1" id="stat-off-customer" style="font-size: clamp(1.2rem, 3vw, 1.6rem);"><?php echo ($data['customerStats']->inactive + $data['customerStats']->isolated); ?></div>
                     <p class="text-secondary small mb-1 lh-sm text-truncate" title="Pelanggan Off/Isolir">Pelanggan Off/Isolir</p>
                     <div class="text-danger text-truncate" style="font-size:0.75rem;">
                         <i class="bi bi-dash-circle"></i> Perlu ditindak
@@ -123,7 +123,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                                 <th class="py-3 border-0 text-end pe-4">PPPoE Aktif (Live)</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="router-table-body">
                             <?php if(empty($data['routers'])): ?>
                                 <tr>
                                     <td colspan="4" class="text-center py-4 text-secondary">Belum ada router terdaftar.</td>
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const inactiveCustomers = <?php echo $data['customerStats']->inactive ?? 0; ?>;
     const isolatedCustomers = <?php echo $data['customerStats']->isolated ?? 0; ?>;
 
-    new Chart(ctxCustomer, {
+    window.customerChart = new Chart(ctxCustomer, {
         type: 'doughnut',
         data: {
             labels: ['Aktif', 'Nonaktif', 'Terisolir'],
@@ -269,6 +269,62 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
+
+    // AJAX Polling for Real-Time Updates
+    setInterval(function() {
+        fetch(APP_URLROOT + '/AdminDashboardController/ajaxData')
+            .then(response => response.json())
+            .then(data => {
+                // Update stats
+                document.getElementById('stat-total-customer').textContent = data.customerStats.total;
+                document.getElementById('stat-active-customer').textContent = data.customerStats.active;
+                document.getElementById('stat-revenue').textContent = 'Rp ' + data.revenueThisMonth;
+                document.getElementById('stat-unpaid').textContent = data.unpaidInvoices;
+                document.getElementById('stat-off-customer').textContent = data.customerStats.inactive + data.customerStats.isolated;
+
+                // Update Doughnut Chart (Customer Stats)
+                window.customerChart.data.datasets[0].data = [
+                    data.customerStats.active,
+                    data.customerStats.inactive,
+                    data.customerStats.isolated
+                ];
+                window.customerChart.update();
+
+                // Update Router Table
+                const tbody = document.getElementById('router-table-body');
+                if(data.routers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-secondary">Belum ada router terdaftar.</td></tr>';
+                } else {
+                    let html = '';
+                    data.routers.forEach(router => {
+                        html += `<tr>
+                                    <td class="ps-4 text-white fw-medium">
+                                        <i class="bi bi-hdd-network text-info me-2"></i> ${router.name}
+                                    </td>
+                                    <td class="font-monospace text-secondary">${router.host_ip}</td>
+                                    <td>`;
+                        if (!router.is_active) {
+                            html += `<span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill d-inline-flex align-items-center"><i class="bi bi-dash-circle me-1"></i> Nonaktif</span>`;
+                        } else if (router.is_online) {
+                            html += `<span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill d-inline-flex align-items-center"><i class="bi bi-check-circle me-1"></i> Online / Terhubung</span>`;
+                        } else {
+                            html += `<span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill d-inline-flex align-items-center"><i class="bi bi-x-circle me-1"></i> Offline / Terputus</span>`;
+                        }
+                        html += `   </td>
+                                    <td class="text-end pe-4 text-white fw-bold">`;
+                        if (router.is_online) {
+                            html += `<span class="text-success">${router.active_pppoe_count}</span> <span class="text-secondary small fw-normal">Sesi</span>`;
+                        } else {
+                            html += `<span class="text-muted">-</span>`;
+                        }
+                        html += `   </td>
+                                </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                }
+            })
+            .catch(error => console.error('Error fetching dashboard data:', error));
+    }, 15000); // Poll every 15 seconds
 });
 </script>
 

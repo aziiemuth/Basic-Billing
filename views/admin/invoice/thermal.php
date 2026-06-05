@@ -38,7 +38,7 @@
 <body>
     <div class="no-print">
         <button class="btn-print" onclick="window.print()"><i class="bi bi-printer"></i> Cetak Struk</button>
-        <button class="btn-back" onclick="window.history.back()">Kembali</button>
+        <button class="btn-back" onclick="if(window.history.length > 1) { window.history.back(); } else { window.close(); }">Kembali</button>
     </div>
     
     <div class="receipt">

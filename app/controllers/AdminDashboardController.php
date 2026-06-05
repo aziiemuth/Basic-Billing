@@ -42,4 +42,46 @@ class AdminDashboardController extends Controller {
         ];
         $this->view('admin/dashboard', $data);
     }
+
+    public function ajaxData() {
+        $dashboardModel = $this->model('DashboardModel');
+
+        $customerStats = $dashboardModel->getCustomerStats();
+        $unpaidInvoices = $dashboardModel->getInvoiceStats();
+        $revenueThisMonth = $dashboardModel->getRevenueThisMonth();
+        $routers = $dashboardModel->getRouters();
+
+        require_once APPROOT . '/app/libraries/MikrotikService.php';
+        $mikrotikService = new MikrotikService();
+        
+        $routersData = [];
+        foreach ($routers as $router) {
+            $routerInfo = [
+                'name' => $router->name,
+                'host_ip' => $router->host_ip,
+                'is_active' => $router->is_active,
+                'is_online' => false,
+                'active_pppoe_count' => 0
+            ];
+            
+            if ($router->is_active) {
+                if ($mikrotikService->connect($router->id)) {
+                    $routerInfo['is_online'] = true;
+                    $activeSessions = $mikrotikService->getAllActiveSessions();
+                    $routerInfo['active_pppoe_count'] = is_array($activeSessions) ? count($activeSessions) : 0;
+                    $mikrotikService->disconnect();
+                }
+            }
+            $routersData[] = $routerInfo;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'customerStats' => $customerStats,
+            'unpaidInvoices' => $unpaidInvoices,
+            'revenueThisMonth' => number_format($revenueThisMonth, 0, ',', '.'),
+            'routers' => $routersData
+        ]);
+        exit;
+    }
 }
