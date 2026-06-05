@@ -124,14 +124,14 @@
         <div class="modal-content glass-card border-secondary border-opacity-25">
             <form action="<?php echo URLROOT; ?>/AdminCustomerController/bulkUpdateDueDate" method="POST">
                 <?php echo SecurityHelper::csrfField(); ?>
-                <div class="modal-header border-secondary border-opacity-25">
-                    <h5 class="modal-title text-white fw-bold" id="bulkUpdateModalLabel"><i class="bi bi-calendar-check text-warning me-2"></i>Atur Jatuh Tempo Masal</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title fw-bold" id="bulkUpdateModalLabel"><i class="bi bi-calendar-check text-warning me-2"></i>Atur Jatuh Tempo Masal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="package_id" class="form-label text-secondary small">Pilih Paket Internet <span class="text-danger">*</span></label>
-                        <select class="form-select bg-dark text-white border-secondary border-opacity-25" id="package_id" name="package_id" required>
+                        <label for="package_id" class="form-label fw-medium small">Pilih Paket Internet <span class="text-danger">*</span></label>
+                        <select class="form-select" id="package_id" name="package_id" required>
                             <option value="">-- Pilih Paket Internet --</option>
                             <?php if (isset($data['packages']) && !empty($data['packages'])): ?>
                                 <?php foreach($data['packages'] as $pkg): ?>
@@ -139,15 +139,15 @@
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </select>
-                        <div class="form-text text-secondary opacity-75">Seluruh pelanggan pada paket ini akan diperbarui tanggal jatuh temponya.</div>
+                        <div class="form-text opacity-75">Seluruh pelanggan pada paket ini akan diperbarui tanggal jatuh temponya.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="due_date" class="form-label text-secondary small">Tanggal Jatuh Tempo <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control bg-dark text-white border-secondary border-opacity-25" id="due_date" name="due_date" min="1" max="28" required placeholder="Contoh: 20">
-                        <div class="form-text text-secondary opacity-75">Masukkan angka 1 sampai 28.</div>
+                        <label for="due_date" class="form-label fw-medium small">Tanggal Jatuh Tempo <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="due_date" name="due_date" min="1" max="28" required placeholder="Contoh: 20">
+                        <div class="form-text opacity-75">Masukkan angka 1 sampai 28.</div>
                     </div>
                 </div>
-                <div class="modal-footer border-secondary border-opacity-25">
+                <div class="modal-footer border-top">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-warning text-dark fw-medium"><i class="bi bi-save me-1"></i> Simpan Perubahan</button>
                 </div>
