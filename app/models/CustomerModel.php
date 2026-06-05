@@ -160,6 +160,16 @@ class CustomerModel {
     }
 
     /**
+     * Bulk update due date based on package_id
+     */
+    public function bulkUpdateDueDateByPackage($package_id, $due_date) {
+        $this->db->query('UPDATE customers SET due_date = :due_date WHERE package_id = :package_id');
+        $this->db->bind(':due_date', $due_date);
+        $this->db->bind(':package_id', $package_id);
+        return $this->db->execute();
+    }
+
+    /**
      * Get customers with overdue invoices (unpaid & past due date).
      * Returns customers that are active or isolated, not inactive.
      */

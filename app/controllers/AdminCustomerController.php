@@ -10,13 +10,36 @@ class AdminCustomerController extends Controller {
 
     public function index() {
         $customers = $this->customerModel->getAll();
+        $packages = $this->model('PackageModel')->getAll();
         
         $data = [
             'title' => 'Manajemen Pelanggan',
-            'customers' => $customers
+            'customers' => $customers,
+            'packages' => $packages
         ];
         
         $this->view('admin/customer/index', $data);
+    }
+
+    public function bulkUpdateDueDate() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $package_id = isset($_POST['package_id']) ? trim($_POST['package_id']) : '';
+            $due_date = isset($_POST['due_date']) ? intval($_POST['due_date']) : 0;
+
+            if (empty($package_id)) {
+                $_SESSION['toast_error'] = 'Silakan pilih paket internet terlebih dahulu.';
+            } elseif ($due_date < 1 || $due_date > 28) {
+                $_SESSION['toast_error'] = 'Tanggal jatuh tempo harus antara 1 sampai 28.';
+            } else {
+                if ($this->customerModel->bulkUpdateDueDateByPackage($package_id, $due_date)) {
+                    $_SESSION['toast_success'] = 'Tanggal jatuh tempo berhasil diperbarui secara massal.';
+                } else {
+                    $_SESSION['toast_error'] = 'Gagal memperbarui tanggal jatuh tempo.';
+                }
+            }
+        }
+        header('Location: ' . URLROOT . '/AdminCustomerController');
+        exit;
     }
 
     public function create() {
