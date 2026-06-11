@@ -25,16 +25,26 @@
 <div class="card glass-card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
         <div class="row align-items-center g-3">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <input type="text" id="searchInput"
                        class="form-control bg-dark text-white border-secondary border-opacity-25"
                        placeholder="Cari nama, ID pelanggan, atau nomor WA...">
             </div>
-            <div class="col-md-7 text-md-end">
+            <div class="col-md-3">
+                <select id="packageFilter" class="form-select bg-dark text-white border-secondary border-opacity-25">
+                    <option value="all">Semua Paket</option>
+                    <?php if (!empty($data['packages'])): ?>
+                        <?php foreach ($data['packages'] as $pkg): ?>
+                            <option value="<?php echo $pkg->id; ?>"><?php echo htmlspecialchars($pkg->name); ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+            </div>
+            <div class="col-md-5 text-md-end">
                 <span class="text-secondary small">
                     <i class="bi bi-info-circle me-1"></i>
                     Menampilkan pelanggan <strong class="text-white">aktif &amp; terisolir</strong>.
-                    Total pelanggan: <strong class="text-white"><?php echo count($data['invoices']); ?></strong>.
+                    Total: <strong class="text-white"><?php echo count($data['invoices']); ?></strong>.
                 </span>
             </div>
         </div>
@@ -88,7 +98,7 @@
                                 $dueDateFormatted = date('d M Y', strtotime($dueDateVal)) . ' (Estimasi)';
                             }
                         ?>
-                        <tr class="invoice-row" id="row-cust-<?php echo $inv->customer_id_db; ?>" data-invoice-id="<?php echo $inv->id ?? ''; ?>">
+                        <tr class="invoice-row" id="row-cust-<?php echo $inv->customer_id_db; ?>" data-invoice-id="<?php echo $inv->id ?? ''; ?>" data-package-id="<?php echo $inv->package_id ?? ''; ?>">
                             <!-- Pelanggan -->
                             <td class="ps-4">
                                 <div class="fw-medium text-white inv-name"><?php echo htmlspecialchars($inv->customer_name); ?></div>
@@ -280,6 +290,7 @@ const paginationFooter = document.getElementById('pagination-footer');
 const paginationInfo = document.getElementById('pagination-info');
 const paginationControls = document.getElementById('pagination-controls');
 const searchInput = document.getElementById('searchInput');
+const packageFilter = document.getElementById('packageFilter');
 
 function renderPagination() {
     if (rows.length === 0) {
@@ -287,15 +298,22 @@ function renderPagination() {
         return;
     }
     
-    // Filter rows based on search input
+    // Filter rows based on search input and package
     const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
+    const selectedPackage = packageFilter ? packageFilter.value : 'all';
+    
     const filteredRows = rows.filter(row => {
         // Skip if row is removed
         if (!row.parentNode) return false;
         const name = row.querySelector('.inv-name')?.textContent.toLowerCase() ?? '';
         const code = row.querySelector('.inv-code')?.textContent.toLowerCase() ?? '';
         const wa   = row.querySelector('.inv-wa')?.textContent.toLowerCase()   ?? '';
-        return name.includes(searchVal) || code.includes(searchVal) || wa.includes(searchVal);
+        const packageId = row.getAttribute('data-package-id');
+        
+        const matchesSearch = name.includes(searchVal) || code.includes(searchVal) || wa.includes(searchVal);
+        const matchesPackage = selectedPackage === 'all' || packageId === selectedPackage;
+        
+        return matchesSearch && matchesPackage;
     });
     
     const totalItems = filteredRows.length;
@@ -384,6 +402,12 @@ function renderPagination() {
 
 if (searchInput) {
     searchInput.addEventListener('keyup', function () {
+        currentPage = 1;
+        renderPagination();
+    });
+}
+if (packageFilter) {
+    packageFilter.addEventListener('change', function() {
         currentPage = 1;
         renderPagination();
     });

@@ -153,6 +153,7 @@ class InvoiceModel {
                        c.custom_price,
                        c.due_date AS customer_due_day,
                        pk.name AS package_name,
+                       pk.id AS package_id,
                        pk.price AS package_price,
                        i.id AS id,
                        i.invoice_number,

@@ -26,6 +26,7 @@ class AdminInvoiceController extends Controller {
         $data = [
             'title'    => 'Tagihan Manual',
             'invoices' => $this->invoiceModel->getUnpaidInvoicesForManual(),
+            'packages' => $this->packageModel->getAll()
         ];
         $this->view('admin/invoice/manual', $data);
     }

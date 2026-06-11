@@ -122,7 +122,7 @@
             </div>
             <div class="d-flex align-items-center gap-3">
                 <div>
-                    <select name="package_id" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25" style="width: 200px;" required>
+                    <select name="package_id" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25" style="width: 200px;">
                         <option value="">-- Pilih Paket Fallback --</option>
                         <?php foreach ($data['packages'] as $package) : ?>
                             <option value="<?php echo $package->id; ?>"><?php echo htmlspecialchars($package->name); ?></option>
@@ -258,12 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const packageSelect = document.querySelector('select[name="package_id"]');
-            if (packageSelect && packageSelect.value === '' && packageSelect.options.length === 1) {
-                e.preventDefault();
-                alert('Anda harus Sinkronisasi Paket Internet terlebih dahulu sebelum meng-import pelanggan!');
-                return;
-            }
+            // package_id is optional now
             
             if (!confirm(`Anda yakin ingin meng-import ${count} akun PPPoE ini ke database Billing?`)) {
                 e.preventDefault();

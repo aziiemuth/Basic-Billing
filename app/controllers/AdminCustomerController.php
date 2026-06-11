@@ -453,16 +453,8 @@ class AdminCustomerController extends Controller {
                 $pppoe = $this->model('PppoeSecretModel')->getByCustomerId($id);
                 
                 if ($this->customerModel->delete($id)) {
-                    // Remove PPPoE Secret from Mikrotik
-                    if ($pppoe) {
-                        $mikrotikService = new MikrotikService();
-                        if ($mikrotikService->connect($customer->mikrotik_router_id)) {
-                            $mikrotikService->removePppoeSecret($pppoe->username);
-                            $mikrotikService->disconnect();
-                        }
-                    }
-
-                    $_SESSION['toast_success'] = 'Pelanggan berhasil dihapus';
+                    // PPPoE is NOT removed from Mikrotik per user request
+                    $_SESSION['toast_success'] = 'Pelanggan berhasil dihapus (Data MikroTik tetap aman)';
                     header('Location: ' . URLROOT . '/AdminCustomerController');
                     exit;
                 } else {
@@ -531,11 +523,7 @@ class AdminCustomerController extends Controller {
             if (empty($selected_secrets) || empty($router_id)) {
                 die("Pilih minimal satu pelanggan yang ingin di-import.");
             }
-            if (empty($package_id)) {
-                $_SESSION['toast_error'] = "Gagal Import: Anda harus menentukan Paket Internet Default / Fallback. Jika belum ada, silakan Sinkronisasi Paket terlebih dahulu.";
-                header('Location: ' . URLROOT . '/AdminCustomerController/importMikrotik?router_id=' . $router_id);
-                exit;
-            }
+            // package_id is optional now as it will auto-create if needed
             
             $mikrotikService = new MikrotikService();
             if (!$mikrotikService->connect($router_id)) {
@@ -565,10 +553,49 @@ class AdminCustomerController extends Controller {
                     
                     $cid = $this->customerModel->generateCustomerId();
                     
-                    // Auto match package
+                    // Auto match package or auto create
                     $matched_package_id = $package_id; // Default fallback
-                    if (isset($s['profile']) && isset($packagesByProfile[$s['profile']])) {
-                        $matched_package_id = $packagesByProfile[$s['profile']];
+                    if (isset($s['profile']) && !empty($s['profile'])) {
+                        if (isset($packagesByProfile[$s['profile']])) {
+                            $matched_package_id = $packagesByProfile[$s['profile']];
+                        } else {
+                            // Auto-create package
+                            $newPkgData = [
+                                'name' => 'Paket ' . $s['profile'],
+                                'speed_download' => 0,
+                                'speed_upload' => 0,
+                                'price' => 0,
+                                'mikrotik_profile' => $s['profile'],
+                                'description' => 'Dibuat otomatis dari MikroTik',
+                                'is_active' => 1,
+                                'auto_isolate' => 1
+                            ];
+                            if ($packageModel->create($newPkgData)) {
+                                $newPkgId = $packageModel->getLastInsertId();
+                                $packagesByProfile[$s['profile']] = $newPkgId;
+                                $matched_package_id = $newPkgId;
+                            }
+                        }
+                    }
+                    
+                    // If still empty (e.g. no profile and no fallback), we create a default fallback package
+                    if (empty($matched_package_id)) {
+                        $newPkgData = [
+                            'name' => 'Default Package',
+                            'speed_download' => 0,
+                            'speed_upload' => 0,
+                            'price' => 0,
+                            'mikrotik_profile' => 'default',
+                            'description' => 'Paket Default Fallback',
+                            'is_active' => 1,
+                            'auto_isolate' => 1
+                        ];
+                        if ($packageModel->create($newPkgData)) {
+                            $newPkgId = $packageModel->getLastInsertId();
+                            $matched_package_id = $newPkgId;
+                            $packagesByProfile['default'] = $newPkgId;
+                            $package_id = $newPkgId; // Update fallback for next iterations
+                        }
                     }
                     
                     // Create customer

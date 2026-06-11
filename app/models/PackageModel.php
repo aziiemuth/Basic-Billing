@@ -32,6 +32,10 @@ class PackageModel {
         return $this->db->execute();
     }
 
+    public function getLastInsertId() {
+        return $this->db->lastInsertId();
+    }
+
     public function update($data) {
         $this->db->query('UPDATE packages SET name = :name, speed_download = :speed_download, speed_upload = :speed_upload, price = :price, mikrotik_profile = :mikrotik_profile, description = :description, is_active = :is_active, auto_isolate = :auto_isolate WHERE id = :id');
 
