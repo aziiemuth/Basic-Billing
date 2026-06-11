@@ -61,23 +61,9 @@
     <?php echo SecurityHelper::csrfField(); ?>
                 <input type="hidden" name="router_id" value="<?php echo htmlspecialchars($data['router_id']); ?>">
                 
-                <div class="row mb-4">
-                    <div class="col-md-5">
-                        <label class="form-label text-secondary small">Set Paket Default / Fallback (Opsional)</label>
-                        <?php if (empty($data['packages'])): ?>
-                            <select name="package_id" class="form-select bg-dark text-white border-secondary border-opacity-25">
-                                <option value="">-- Pilih Paket Internet --</option>
-                            </select>
-                        <?php else: ?>
-                            <select name="package_id" class="form-select bg-dark text-white border-secondary border-opacity-25">
-                                <option value="">-- Pilih Paket Fallback --</option>
-                                <?php foreach ($data['packages'] as $package) : ?>
-                                    <option value="<?php echo $package->id; ?>"><?php echo $package->name; ?> (Rp <?php echo number_format($package->price, 0, ',', '.'); ?>)</option>
-                                <?php endforeach; ?>
-                            </select>
-                        <?php endif; ?>
-                        <div class="form-text text-secondary opacity-75 small"><i class="bi bi-info-circle me-1"></i>Sistem akan otomatis mencocokkan atau membuat paket baru berdasarkan <b>Profile MikroTik</b> pelanggan. Paket ini hanya digunakan sebagai fallback.</div>
-                    </div>
+                <div class="alert bg-info bg-opacity-10 border border-info border-opacity-25 text-info mb-4 p-3 rounded-3">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <strong>Informasi Paket:</strong> Sistem akan secara otomatis mencocokkan atau membuat paket internet baru berdasarkan <strong>Profile MikroTik</strong> pelanggan yang diimport.
                 </div>
 
                 <div class="table-responsive bg-dark rounded border border-secondary border-opacity-25 mb-4">
