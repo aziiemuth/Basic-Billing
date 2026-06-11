@@ -9,9 +9,7 @@
         <button type="button" class="btn btn-outline-warning btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25" data-bs-toggle="modal" data-bs-target="#bulkUpdateModal">
             <i class="bi bi-calendar-check"></i> Atur Jatuh Tempo Masal
         </button>
-        <a href="<?php echo URLROOT; ?>/AdminCustomerController/importMikrotik" class="btn btn-outline-info btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25">
-            <i class="bi bi-cloud-download"></i> Import dari MikroTik
-        </a>
+
         <a href="<?php echo URLROOT; ?>/AdminCustomerController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
             <i class="bi bi-plus-lg"></i> Tambah Pelanggan
         </a>
