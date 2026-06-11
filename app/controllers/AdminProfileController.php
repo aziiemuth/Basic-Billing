@@ -113,6 +113,23 @@ class AdminProfileController extends Controller {
     }
 
     /**
+     * AJAX — Real-time resource MikroTik (CPU, RAM, Uptime)
+     */
+    public function mikrotikResource() {
+        header('Content-Type: application/json');
+        
+        // Disable session blocking to allow concurrent fast polling
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        $mikrotikService = new MikrotikService();
+        $result = $mikrotikService->getResource(null);
+        echo json_encode($result);
+        exit;
+    }
+
+    /**
      * AJAX — Test koneksi ke router tertentu dari DB
      */
     public function testRouter($id) {

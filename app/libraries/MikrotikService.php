@@ -149,6 +149,9 @@ class MikrotikService {
             $resource = $api->comm('/system/resource/print');
             $uptime   = (!empty($resource) && isset($resource[0]['uptime'])) ? $resource[0]['uptime'] : '-';
             $version  = (!empty($resource) && isset($resource[0]['version'])) ? $resource[0]['version'] : '-';
+            $cpuLoad  = (!empty($resource) && isset($resource[0]['cpu-load'])) ? $resource[0]['cpu-load'] : 0;
+            $freeMem  = (!empty($resource) && isset($resource[0]['free-memory'])) ? $resource[0]['free-memory'] : 0;
+            $totalMem = (!empty($resource) && isset($resource[0]['total-memory'])) ? $resource[0]['total-memory'] : 0;
 
             // Fetch Profiles & Interfaces from RouterOS
             $profilesData = $api->comm('/ppp/profile/print');
@@ -178,6 +181,9 @@ class MikrotikService {
                 'message'    => 'Koneksi berhasil! (Sumber: ' . $source . ')',
                 'identity'   => $name,
                 'uptime'     => $uptime,
+                'cpu_load'   => $cpuLoad,
+                'free_memory'=> $freeMem,
+                'total_memory'=> $totalMem,
                 'version'    => $version,
                 'host'       => $host,
                 'port'       => $port,
@@ -192,6 +198,49 @@ class MikrotikService {
             'message' => 'Gagal terhubung ke ' . $host . ':' . $port . '. Periksa konfigurasi MIKROTIK_* di file .env.',
             'source'  => $source,
         ];
+    }
+
+    /**
+     * Fast fetch for realtime resource usage (CPU, RAM, Uptime)
+     */
+    public function getResource($router_id = null) {
+        if ($router_id) {
+            $routerModel = new MikrotikRouterModel();
+            $router      = $routerModel->getById($router_id);
+            if ($router && $router->is_active) {
+                $host = $router->host_ip; $username = $router->api_username; $password = $router->api_password; $port = $router->api_port;
+            } else {
+                $host = MIKROTIK_HOST; $username = MIKROTIK_USERNAME; $password = MIKROTIK_PASSWORD; $port = MIKROTIK_PORT;
+            }
+        } else {
+            $host = MIKROTIK_HOST; $username = MIKROTIK_USERNAME; $password = MIKROTIK_PASSWORD; $port = MIKROTIK_PORT;
+        }
+
+        if (empty($host)) return ['success' => false];
+
+        $api = new RouterosAPI();
+        $api->port = !empty($port) ? (int)$port : 8728;
+        $api->timeout = 2;
+        $api->attempts = 1;
+        $api->delay = 0;
+
+        if ($api->connect($host, $username, $password)) {
+            $resource = $api->comm('/system/resource/print');
+            $api->disconnect();
+
+            if (!empty($resource) && isset($resource[0])) {
+                $r = $resource[0];
+                return [
+                    'success' => true,
+                    'uptime' => $r['uptime'] ?? '-',
+                    'cpu_load' => $r['cpu-load'] ?? 0,
+                    'free_memory' => $r['free-memory'] ?? 0,
+                    'total_memory' => $r['total-memory'] ?? 0,
+                    'version' => $r['version'] ?? '-'
+                ];
+            }
+        }
+        return ['success' => false];
     }
 
     public function disconnect() {

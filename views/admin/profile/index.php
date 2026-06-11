@@ -110,6 +110,26 @@
                                 
                                 <div class="col-sm-5 text-secondary small mt-2">Uptime</div>
                                 <div class="col-sm-7 text-success small mt-2" id="mt-uptime"><?php echo htmlspecialchars($data['mtResult']['uptime'] ?? '-'); ?></div>
+
+                                <div class="col-sm-5 text-secondary small mt-2">CPU Load</div>
+                                <div class="col-sm-7 text-warning small mt-2" id="mt-cpu"><?php echo htmlspecialchars($data['mtResult']['cpu_load'] ?? '0'); ?>%</div>
+
+                                <div class="col-sm-5 text-secondary small mt-2">RAM Usage</div>
+                                <div class="col-sm-7 text-warning small mt-2" id="mt-ram">
+                                    <?php 
+                                        $free = $data['mtResult']['free_memory'] ?? 0;
+                                        $total = $data['mtResult']['total_memory'] ?? 0;
+                                        if ($total > 0) {
+                                            $used = $total - $free;
+                                            $ramPct = round(($used / $total) * 100);
+                                            $usedMb = round($used / 1048576, 1);
+                                            $totalMb = round($total / 1048576, 1);
+                                            echo $ramPct . '% (' . $usedMb . ' MB / ' . $totalMb . ' MB)';
+                                        } else {
+                                            echo '0%';
+                                        }
+                                    ?>
+                                </div>
                             </div>
                         </div>
 
@@ -281,6 +301,14 @@ document.getElementById('btn-retest-mt').addEventListener('click', function() {
                 document.getElementById('mt-identity').textContent = data.identity || '-';
                 document.getElementById('mt-version').textContent = data.version || '-';
                 document.getElementById('mt-uptime').textContent = data.uptime || '-';
+                if (data.cpu_load !== undefined) document.getElementById('mt-cpu').textContent = data.cpu_load + '%';
+                if (data.total_memory > 0) {
+                    let used = data.total_memory - data.free_memory;
+                    let pct = Math.round((used / data.total_memory) * 100);
+                    let usedMb = (used / 1048576).toFixed(1);
+                    let totalMb = (data.total_memory / 1048576).toFixed(1);
+                    document.getElementById('mt-ram').textContent = pct + '% (' + usedMb + ' MB / ' + totalMb + ' MB)';
+                }
             } else {
                 document.getElementById('mt-status-icon').innerHTML = '<div class="rounded-circle bg-danger bg-opacity-10 border border-danger border-opacity-25 d-flex align-items-center justify-content-center mx-auto" style="width:72px;height:72px;"><i class="bi bi-x-circle-fill text-danger" style="font-size: 36px;"></i></div>';
                 document.getElementById('mt-status-text').className = 'fw-bold text-danger mb-1';
@@ -326,6 +354,26 @@ document.querySelectorAll('.btn-test-db-router').forEach(btn => {
             });
     });
 });
+
+// Real-time polling for CPU, RAM, and Uptime every 2 seconds
+setInterval(function() {
+    fetch(APP_URLROOT + '/AdminProfileController/mikrotikResource')
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('mt-uptime').textContent = data.uptime || '-';
+                document.getElementById('mt-cpu').textContent = (data.cpu_load || 0) + '%';
+                if (data.total_memory > 0) {
+                    let used = data.total_memory - data.free_memory;
+                    let pct = Math.round((used / data.total_memory) * 100);
+                    let usedMb = (used / 1048576).toFixed(1);
+                    let totalMb = (data.total_memory / 1048576).toFixed(1);
+                    document.getElementById('mt-ram').textContent = pct + '% (' + usedMb + ' MB / ' + totalMb + ' MB)';
+                }
+            }
+        })
+        .catch(e => { /* silent fail for background polling */ });
+}, 2000);
 </script>
 
 <?php require_once APPROOT . '/views/layouts/admin_footer.php'; ?>
