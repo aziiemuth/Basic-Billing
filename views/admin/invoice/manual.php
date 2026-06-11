@@ -176,7 +176,7 @@
                                                     '<?php echo htmlspecialchars($inv->due_date); ?>'
                                                 )">
                                             <i class="bi bi-whatsapp"></i>
-                                            <span class="d-none d-xl-inline">Kirim WA</span>
+                                            <span class="d-none d-md-inline">Kirim WA</span>
                                         </button>
                                         <?php else: ?>
                                         <button class="btn btn-sm btn-outline-secondary border-opacity-25" disabled title="Nomor WA tidak tersedia">
@@ -194,16 +194,17 @@
                                                     'Rp <?php echo $amountFormatted; ?>'
                                                 )">
                                             <i class="bi bi-cash-coin"></i>
-                                            <span class="d-none d-xl-inline">Tunai</span>
+                                            <span class="d-none d-md-inline">Tunai</span>
                                         </button>
 
 
                                     <?php else: ?>
                                         <!-- Jika belum ada invoice -->
                                         <button class="btn btn-sm btn-warning d-flex align-items-center gap-1 px-3"
+                                                title="Buat Tagihan"
                                                 onclick="generateInvoice(<?php echo $inv->customer_id_db; ?>, this)">
                                             <i class="bi bi-plus-circle"></i>
-                                            <span>Buat Tagihan</span>
+                                            <span class="d-none d-md-inline">Buat Tagihan</span>
                                         </button>
                                     <?php endif; ?>
                                 </div>
@@ -507,7 +508,7 @@ function generateInvoice(customerId, btn) {
                                 '${data.invoice.due_date}'
                             )">
                         <i class="bi bi-whatsapp"></i>
-                        <span class="d-none d-xl-inline">Kirim WA</span>
+                        <span class="d-none d-md-inline">Kirim WA</span>
                     </button>
                 `;
             } else {
@@ -530,7 +531,7 @@ function generateInvoice(customerId, btn) {
                                 'Rp ${data.invoice.amount_formatted}'
                             )">
                         <i class="bi bi-cash-coin"></i>
-                        <span class="d-none d-xl-inline">Tunai</span>
+                        <span class="d-none d-md-inline">Tunai</span>
                     </button>
 
                 </div>
