@@ -167,8 +167,17 @@ class AdminProfileController extends Controller {
             $router = $db->single();
             if (!$router) {
                 // Buat dummy router jika kosong agar tidak error NOT NULL constraint
+                $dummyHost = defined('MIKROTIK_HOST') ? MIKROTIK_HOST : '127.0.0.1';
+                $dummyUser = defined('MIKROTIK_USERNAME') ? MIKROTIK_USERNAME : 'admin';
+                $dummyPass = defined('MIKROTIK_PASSWORD') ? MIKROTIK_PASSWORD : '';
+                $dummyPort = defined('MIKROTIK_PORT') ? MIKROTIK_PORT : 8728;
+                
                 $db->query("INSERT INTO mikrotik_routers (name, host_ip, api_username, api_password, api_port, pppoe_interface, description, is_active) 
-                            VALUES ('[Dummy] Router Utama', '127.0.0.1', 'admin', 'password', 8728, 'ether1', 'Router simulasi dummy', 1)");
+                            VALUES ('[Dummy] Router Utama', :host, :user, :pass, :port, 'ether1', 'Router simulasi dummy', 1)");
+                $db->bind(':host', $dummyHost);
+                $db->bind(':user', $dummyUser);
+                $db->bind(':pass', $dummyPass);
+                $db->bind(':port', $dummyPort);
                 $db->execute();
                 $routerId = $db->lastInsertId();
             } else {
