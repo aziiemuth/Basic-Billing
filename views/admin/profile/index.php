@@ -13,17 +13,16 @@
     </div>
 <?php endif; ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="fw-bold text-white mb-1"><i class="bi bi-person-badge me-2 text-primary"></i>Profil & Pengaturan Sistem</h4>
+        <h4 class="fw-bold text-white mb-1"><i class="bi bi-person-badge me-2 text-primary"></i>Profil &amp; Pengaturan Sistem</h4>
         <p class="text-secondary small mb-0">Kelola informasi profil admin, konfigurasi logo usaha, timezone, format mata uang, isolir, notifikasi, dan cek koneksi MikroTik.</p>
     </div>
 </div>
 
 <div class="row g-4">
-    <!-- Kolom Kiri: Profil Admin & Utilitas Pengujian -->
+    <!-- Kolom Kiri: Profil Admin -->
     <div class="col-lg-4">
-        <!-- Profil Admin -->
         <div class="card glass-card border-0 shadow-sm mb-4">
             <div class="card-body p-4 text-center">
                 <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3 shadow-sm" style="width: 80px; height: 80px; font-size: 32px; font-weight: bold;">
@@ -55,22 +54,21 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Kolom Kanan: Status MikroTik & Pengaturan Sistem -->
     <div class="col-lg-8">
         <!-- 1. Status MikroTik -->
         <div class="card glass-card border-0 shadow-sm mb-4">
-            <div class="card-header bg-transparent border-secondary border-opacity-25 p-4 d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-router me-2 text-info"></i>Status Koneksi MikroTik (Utama)</h6>
+            <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-router me-2 text-info"></i>Status Koneksi MikroTik</h6>
                 <button type="button" id="btn-retest-mt" class="btn btn-sm btn-outline-info border-opacity-25 d-flex align-items-center gap-2">
-                    <i class="bi bi-arrow-repeat"></i> Test Ulang
+                    <i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Test Ulang</span>
                 </button>
             </div>
-            <div class="card-body p-4">
-                <div class="row g-4 align-items-center">
-                    <div class="col-md-5 text-center border-end border-secondary border-opacity-25">
+            <div class="card-body p-3">
+                <div class="row g-3 align-items-center">
+                    <div class="col-12 col-md-5 text-center pb-3 pb-md-0">
                         <div id="mt-status-icon" class="mb-3">
                             <?php if ($data['mtResult']['success']): ?>
                                 <div class="rounded-circle bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-center mx-auto" style="width:72px;height:72px;">
@@ -88,7 +86,7 @@
                         <div class="text-secondary small" id="mt-checked-time">Diverifikasi saat halaman dimuat</div>
                     </div>
                     
-                    <div class="col-md-7">
+                    <div class="col-12 col-md-7">
                         <div class="bg-dark bg-opacity-50 p-3 rounded border border-secondary border-opacity-25 mb-3">
                             <div class="row g-2">
                                 <div class="col-sm-5 text-secondary small">Sumber Konfigurasi</div>
@@ -126,8 +124,8 @@
 
         <!-- 2. Form Pengaturan Sistem -->
         <div class="card glass-card border-0 shadow-sm mb-4">
-            <div class="card-header bg-transparent border-secondary border-opacity-25 p-4">
-                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-gear-fill me-2 text-primary"></i>Pengaturan Sistem & Profil Bisnis</h6>
+            <div class="card-header bg-transparent border-secondary border-opacity-25 p-3">
+                <h6 class="mb-0 text-white fw-bold"><i class="bi bi-gear-fill me-2 text-primary"></i>Pengaturan Sistem &amp; Profil Bisnis</h6>
             </div>
             <div class="card-body p-4">
                 <form action="<?php echo URLROOT; ?>/AdminProfileController/updateSettings" method="POST" enctype="multipart/form-data">
@@ -139,14 +137,14 @@
                         </div>
                         
                         <div class="col-md-6">
-                            <label class="form-label text-secondary small">Logo Usaha (Logo)</label>
+                            <label class="form-label text-secondary small">Logo Usaha</label>
                             <div class="d-flex align-items-center gap-3">
                                 <?php if(!empty($data['settings']->company_logo)): ?>
-                                    <div class="bg-dark bg-opacity-50 p-1 rounded border border-secondary border-opacity-25 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <div class="bg-dark bg-opacity-50 p-1 rounded border border-secondary border-opacity-25 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 45px; height: 45px;">
                                         <img src="<?php echo URLROOT; ?>/public/uploads/logo/<?php echo $data['settings']->company_logo; ?>" alt="Logo Usaha" class="img-fluid rounded" style="max-height: 100%;">
                                     </div>
                                 <?php else: ?>
-                                    <div class="bg-dark bg-opacity-50 rounded border border-secondary border-opacity-25 d-flex align-items-center justify-content-center text-secondary" style="width: 45px; height: 45px;">
+                                    <div class="bg-dark bg-opacity-50 rounded border border-secondary border-opacity-25 d-flex align-items-center justify-content-center text-secondary flex-shrink-0" style="width: 45px; height: 45px;">
                                         <i class="bi bi-image" style="font-size: 1.25rem;"></i>
                                     </div>
                                 <?php endif; ?>
@@ -184,12 +182,12 @@
                         </div>
                         
                         <div class="col-12">
-                            <label class="form-label text-secondary small">Catatan Footer Invoice (Footer)</label>
+                            <label class="form-label text-secondary small">Catatan Footer Invoice</label>
                             <textarea class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="invoice_footer" rows="2"><?php echo htmlspecialchars($data['settings']->invoice_footer); ?></textarea>
                         </div>
 
                         <div class="col-md-6 mt-4">
-                            <label class="form-label text-secondary small">Jadwal Pengingat WA (Reminder Hari Sebelum Jatuh Tempo)</label>
+                            <label class="form-label text-secondary small">Jadwal Pengingat WA (Hari Sebelum Jatuh Tempo)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">H-</span>
                                 <input type="number" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="wa_reminder_days" value="<?php echo htmlspecialchars($data['settings']->wa_reminder_days); ?>">
@@ -199,12 +197,12 @@
 
                         <div class="col-md-6 mt-4 d-flex align-items-end">
                             <div class="form-check form-switch w-100 p-3 rounded bg-dark bg-opacity-25 border border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
-                                <label class="form-check-label text-white small" for="auto_isolate">Status Isolir Otomatis Pelanggan</label>
+                                <label class="form-check-label text-white small" for="auto_isolate">Isolir Otomatis Pelanggan</label>
                                 <input class="form-check-input" type="checkbox" role="switch" id="auto_isolate" name="auto_isolate" value="1" <?php echo $data['settings']->auto_isolate ? 'checked' : ''; ?>>
                             </div>
                         </div>
                         
-                        <div class="col-12 mt-4 text-end">
+                        <div class="col-12 mt-4 d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i> Simpan Pengaturan</button>
                         </div>
                     </div>
@@ -215,7 +213,7 @@
         <!-- 3. Tambahan Router Database -->
         <?php if (!empty($data['dbRouters'])): ?>
         <div class="card glass-card border-0 shadow-sm">
-            <div class="card-header bg-transparent border-secondary border-opacity-25 p-3">
+            <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h6 class="mb-0 text-white fw-bold"><i class="bi bi-server me-2 text-secondary"></i>Router Tambahan (Database)</h6>
             </div>
             <div class="card-body p-0">
@@ -223,10 +221,10 @@
                     <table class="table table-dark table-hover mb-0 align-middle">
                         <thead class="border-secondary border-opacity-25 text-secondary small">
                             <tr>
-                                <th class="ps-4">Nama Router</th>
-                                <th>Host / IP</th>
-                                <th class="text-center">Status DB</th>
-                                <th class="pe-4 text-end">Aksi</th>
+                                <th class="ps-4 py-3 border-0">Nama Router</th>
+                                <th class="py-3 border-0">Host / IP</th>
+                                <th class="py-3 border-0 text-center">Status</th>
+                                <th class="pe-4 py-3 border-0 text-end">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -243,7 +241,7 @@
                                 </td>
                                 <td class="pe-4 text-end">
                                     <button type="button" class="btn btn-sm btn-outline-secondary border-opacity-25 btn-test-db-router" data-id="<?php echo $router->id; ?>" data-name="<?php echo htmlspecialchars($router->name); ?>">
-                                        Test Koneksi
+                                        <i class="bi bi-wifi me-1"></i><span class="d-none d-sm-inline">Test</span>
                                     </button>
                                 </td>
                             </tr>
@@ -268,7 +266,7 @@ document.getElementById('btn-retest-mt').addEventListener('click', function() {
         .then(r => r.json())
         .then(data => {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Test Ulang';
+            btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Test Ulang</span>';
             
             document.getElementById('mt-checked-time').textContent = 'Diperbarui: ' + (data.checked_at || 'Baru saja');
             document.getElementById('mt-host').textContent = data.host;
@@ -278,10 +276,8 @@ document.getElementById('btn-retest-mt').addEventListener('click', function() {
                 document.getElementById('mt-status-icon').innerHTML = '<div class="rounded-circle bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-center mx-auto" style="width:72px;height:72px;"><i class="bi bi-check-circle-fill text-success" style="font-size: 36px;"></i></div>';
                 document.getElementById('mt-status-text').className = 'fw-bold text-success mb-1';
                 document.getElementById('mt-status-text').textContent = 'Terhubung';
-                
                 document.getElementById('mt-details-box').classList.remove('d-none');
                 document.getElementById('mt-error-box').classList.add('d-none');
-                
                 document.getElementById('mt-identity').textContent = data.identity || '-';
                 document.getElementById('mt-version').textContent = data.version || '-';
                 document.getElementById('mt-uptime').textContent = data.uptime || '-';
@@ -289,7 +285,6 @@ document.getElementById('btn-retest-mt').addEventListener('click', function() {
                 document.getElementById('mt-status-icon').innerHTML = '<div class="rounded-circle bg-danger bg-opacity-10 border border-danger border-opacity-25 d-flex align-items-center justify-content-center mx-auto" style="width:72px;height:72px;"><i class="bi bi-x-circle-fill text-danger" style="font-size: 36px;"></i></div>';
                 document.getElementById('mt-status-text').className = 'fw-bold text-danger mb-1';
                 document.getElementById('mt-status-text').textContent = 'Tidak Terhubung';
-                
                 document.getElementById('mt-details-box').classList.add('d-none');
                 document.getElementById('mt-error-box').classList.remove('d-none');
                 document.getElementById('mt-error-msg').textContent = data.message;
@@ -297,7 +292,7 @@ document.getElementById('btn-retest-mt').addEventListener('click', function() {
         })
         .catch(e => {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Test Ulang';
+            btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> <span class="d-none d-sm-inline">Test Ulang</span>';
             alert('Request failed: ' + e.message);
         });
 });

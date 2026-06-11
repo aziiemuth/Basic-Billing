@@ -6,15 +6,15 @@
         <h4 class="fw-bold text-white mb-1">Manajemen Paket Internet</h4>
         <p class="text-secondary small mb-0">Kelola daftar paket, harga, bandwidth, dan profil MikroTik.</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
         <form action="<?php echo URLROOT; ?>/AdminPackageController/syncMikrotik" method="POST" class="m-0">
             <?php echo SecurityHelper::csrfField(); ?>
-            <button type="submit" class="btn btn-outline-info btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25" onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span> Menarik data...'; this.disabled=true; this.form.submit();">
-                <i class="bi bi-cloud-arrow-down"></i> Sinkronisasi dari MikroTik
+            <button type="submit" class="btn btn-outline-info btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25" onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm\'></span> Menarik...'; this.disabled=true; this.form.submit();">
+                <i class="bi bi-cloud-arrow-down"></i> <span class="d-none d-sm-inline">Sinkronisasi dari MikroTik</span><span class="d-inline d-sm-none">Sinkronisasi</span>
             </button>
         </form>
         <a href="<?php echo URLROOT; ?>/AdminPackageController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
-            <i class="bi bi-plus-lg"></i> Tambah Paket
+            <i class="bi bi-plus-lg"></i> <span>Tambah Paket</span>
         </a>
     </div>
 </div>
@@ -78,7 +78,7 @@
                                 <?php endif; ?>
                             </td>
                             <td class="pe-4 text-end">
-                                <div class="d-flex justify-content-end gap-2">
+                                <div class="d-flex justify-content-end gap-1">
                                     <a href="<?php echo URLROOT; ?>/AdminPackageController/edit/<?php echo $package->id; ?>" class="btn btn-sm btn-outline-warning border-opacity-25 text-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>

@@ -25,12 +25,12 @@
 <div class="card glass-card border-0 shadow-sm mb-4">
     <div class="card-body p-3">
         <div class="row align-items-center g-3">
-            <div class="col-md-4">
+            <div class="col-12 col-sm-6 col-md-4">
                 <input type="text" id="searchInput"
                        class="form-control bg-dark text-white border-secondary border-opacity-25"
-                       placeholder="Cari nama, ID pelanggan, atau nomor WA...">
+                       placeholder="Cari nama, ID, atau nomor WA...">
             </div>
-            <div class="col-md-3">
+            <div class="col-12 col-sm-6 col-md-4">
                 <select id="packageFilter" class="form-select bg-dark text-white border-secondary border-opacity-25">
                     <option value="all">Semua Paket</option>
                     <?php if (!empty($data['packages'])): ?>
@@ -40,10 +40,10 @@
                     <?php endif; ?>
                 </select>
             </div>
-            <div class="col-md-5 text-md-end">
+            <div class="col-12 col-md-4">
                 <span class="text-secondary small">
                     <i class="bi bi-info-circle me-1"></i>
-                    Menampilkan pelanggan <strong class="text-white">aktif &amp; terisolir</strong>.
+                    Pelanggan <strong class="text-white">aktif &amp; terisolir</strong>.
                     Total: <strong class="text-white"><?php echo count($data['invoices']); ?></strong>.
                 </span>
             </div>
@@ -156,7 +156,7 @@
 
                             <!-- Aksi -->
                             <td class="pe-4 col-actions">
-                                <div class="d-flex justify-content-end flex-wrap gap-2">
+                                <div class="d-flex justify-content-end flex-nowrap gap-1">
                                     <?php if ($hasInvoice): ?>
                                         <!-- Jika sudah ada invoice -->
                                         <!-- 1. Kirim WA Tagihan -->

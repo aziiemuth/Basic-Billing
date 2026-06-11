@@ -6,18 +6,18 @@
         <h4 class="fw-bold text-white mb-1"><i class="bi bi-hdd-network me-2 text-info"></i>Data PPPoE MikroTik</h4>
         <p class="text-secondary small mb-0">Pusat kendali PPPoE. Pantau status real-time dan tarik data (import) pelanggan langsung dari router.</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
         <a href="<?php echo URLROOT; ?>/AdminCustomerController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
-            <i class="bi bi-plus-lg"></i> Tambah PPPoE & Pelanggan
+            <i class="bi bi-plus-lg"></i> <span class="d-none d-sm-inline">Tambah PPPoE & Pelanggan</span><span class="d-inline d-sm-none">Tambah</span>
         </a>
     </div>
 </div>
 
 <!-- Filter Router -->
-<div class="card glass-card border-0 shadow-sm mb-4">
+<div class="card glass-card border-0 shadow-sm mb-4 filter-card">
     <div class="card-body p-3">
         <form method="GET" action="<?php echo URLROOT; ?>/AdminPppoeController" class="row g-3 align-items-end">
-            <div class="col-md-3">
+            <div class="col-12 col-sm-6 col-md-3">
                 <label class="text-secondary small mb-1">Pilih Router MikroTik</label>
                 <select name="router_id" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25" onchange="this.form.submit()">
                     <option value="">-- Pilih Router --</option>
@@ -28,7 +28,7 @@
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-12 col-sm-6 col-md-3">
                 <label class="text-secondary small mb-1">Status PPPoE</label>
                 <select id="pppoeStatusFilter" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25">
                     <option value="">Semua Status</option>
@@ -37,15 +37,15 @@
                     <option value="disabled">Hanya Disabled</option>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-12 col-sm-6 col-md-4">
                 <label class="text-secondary small mb-1">Cari PPPoE Username</label>
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-search"></i></span>
                     <input type="text" id="pppoeSearchInput" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Ketik nama atau username...">
                 </div>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-info btn-sm px-2 fw-medium w-100">
+            <div class="col-12 col-sm-6 col-md-2">
+                <button type="submit" class="btn btn-info btn-sm fw-medium w-100">
                     <i class="bi bi-arrow-repeat me-1"></i> Refresh
                 </button>
             </div>
@@ -115,23 +115,17 @@
     
     <?php if ($totalNotInDb > 0): ?>
     <div class="card glass-card border-0 shadow-sm mb-4 border border-info border-opacity-25">
-        <div class="card-body p-3 bg-info bg-opacity-10 d-flex justify-content-between align-items-center flex-wrap gap-3 rounded">
-            <div>
-                <h6 class="text-info fw-bold mb-1"><i class="bi bi-info-circle me-2"></i>Ada <?php echo $totalNotInDb; ?> akun yang belum masuk ke sistem Billing!</h6>
-                <p class="text-info text-opacity-75 small mb-0">Silakan pilih Paket Fallback di bawah ini, centang akun pada tabel, dan klik tombol Import.</p>
-            </div>
-            <div class="d-flex align-items-center gap-3">
+        <div class="card-body p-3 bg-info bg-opacity-10 rounded">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
                 <div>
-                    <select name="package_id" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25" style="width: 200px;">
-                        <option value="">-- Pilih Paket Fallback --</option>
-                        <?php foreach ($data['packages'] as $package) : ?>
-                            <option value="<?php echo $package->id; ?>"><?php echo htmlspecialchars($package->name); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <h6 class="text-info fw-bold mb-1"><i class="bi bi-info-circle me-2"></i>Ada <?php echo $totalNotInDb; ?> akun yang belum masuk ke sistem Billing!</h6>
+                    <p class="text-info text-opacity-75 small mb-0">Centang akun pada tabel di bawah, lalu klik tombol Import.</p>
                 </div>
-                <button type="submit" id="btnImport" class="btn btn-info btn-sm fw-medium px-4">
-                    <i class="bi bi-cloud-download me-1"></i> Import Terpilih
-                </button>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button type="submit" id="btnImport" class="btn btn-info btn-sm fw-medium px-4">
+                        <i class="bi bi-cloud-download me-1"></i> Import Terpilih
+                    </button>
+                </div>
             </div>
         </div>
     </div>

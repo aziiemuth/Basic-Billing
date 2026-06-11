@@ -11,21 +11,21 @@ require_once APPROOT . '/views/layouts/admin_header.php';
         <h4 class="fw-bold text-white mb-1"><i class="bi bi-file-earmark-bar-graph me-2 text-primary"></i>Laporan Keuangan & Kas</h4>
         <p class="text-secondary small mb-0">Rangkuman pendapatan, tunggakan, visualisasi statistik, serta eksportasi laporan kas.</p>
     </div>
-    <div class="d-flex gap-2">
-        <a href="<?php echo URLROOT; ?>/AdminReportController/pdf?month=<?php echo $data['month']; ?>&year=<?php echo $data['year']; ?>" target="_blank" class="btn btn-outline-info rounded-pill px-4 shadow-sm">
-            <i class="bi bi-file-earmark-pdf me-2"></i> Cetak PDF
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
+        <a href="<?php echo URLROOT; ?>/AdminReportController/pdf?month=<?php echo $data['month']; ?>&year=<?php echo $data['year']; ?>" target="_blank" class="btn btn-outline-info btn-sm rounded-pill px-3 shadow-sm d-flex align-items-center gap-1">
+            <i class="bi bi-file-earmark-pdf"></i> <span class="d-none d-sm-inline">Cetak PDF</span>
         </a>
-        <a href="<?php echo URLROOT; ?>/AdminReportController/export?month=<?php echo $data['month']; ?>&year=<?php echo $data['year']; ?>" class="btn btn-success rounded-pill px-4 shadow-sm">
-            <i class="bi bi-file-earmark-excel me-2"></i> Export Excel (CSV)
+        <a href="<?php echo URLROOT; ?>/AdminReportController/export?month=<?php echo $data['month']; ?>&year=<?php echo $data['year']; ?>" class="btn btn-success btn-sm rounded-pill px-3 shadow-sm d-flex align-items-center gap-1">
+            <i class="bi bi-file-earmark-excel"></i> <span class="d-none d-sm-inline">Export CSV</span>
         </a>
     </div>
 </div>
 
 <!-- PANEL FILTER PERIODE -->
-<div class="card glass-card border-0 shadow-sm mb-4">
-    <div class="card-body p-4">
+<div class="card glass-card border-0 shadow-sm mb-4 filter-card">
+    <div class="card-body p-3">
         <form method="GET" action="<?php echo URLROOT; ?>/AdminReportController/index" class="row g-3 align-items-end">
-            <div class="col-md-4">
+            <div class="col-12 col-sm-5 col-md-4">
                 <label class="form-label text-secondary small fw-semibold">Pilih Bulan</label>
                 <select name="month" class="form-select bg-dark bg-opacity-50 text-white border-secondary border-opacity-25">
                     <?php 
@@ -35,7 +35,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-6 col-sm-3 col-md-4">
                 <label class="form-label text-secondary small fw-semibold">Pilih Tahun</label>
                 <select name="year" class="form-select bg-dark bg-opacity-50 text-white border-secondary border-opacity-25">
                     <?php 
@@ -47,7 +47,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
                     <?php endfor; ?>
                 </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-6 col-sm-4 col-md-4">
                 <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel me-2"></i> Tampilkan Laporan</button>
             </div>
         </form>
@@ -55,55 +55,55 @@ require_once APPROOT . '/views/layouts/admin_header.php';
 </div>
 
 <!-- KARTU RINGKASAN METRIK KEUANGAN -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
         <div class="card bg-success bg-opacity-10 border-success border-opacity-25 shadow-sm h-100 card-hover-animation">
-            <div class="card-body p-4 text-center">
-                <div class="mb-2"><i class="bi bi-wallet2 text-success" style="font-size: 2rem;"></i></div>
-                <h6 class="text-success fw-bold">Total Pemasukan</h6>
-                <h3 class="fw-bold text-white mb-0">Rp <?php echo number_format($data['summary']['pemasukan'], 0, ',', '.'); ?></h3>
+            <div class="card-body p-3 text-center">
+                <div class="mb-2"><i class="bi bi-wallet2 text-success" style="font-size: 1.75rem;"></i></div>
+                <h6 class="text-success fw-bold small mb-1">Total Pemasukan</h6>
+                <h4 class="fw-bold text-white mb-0" style="font-size: clamp(0.9rem, 3vw, 1.25rem);">Rp <?php echo number_format($data['summary']['pemasukan'], 0, ',', '.'); ?></h4>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <div class="card bg-danger bg-opacity-10 border-danger border-opacity-25 shadow-sm h-100 card-hover-animation">
-            <div class="card-body p-4 text-center">
-                <div class="mb-2"><i class="bi bi-exclamation-octagon text-danger" style="font-size: 2rem;"></i></div>
-                <h6 class="text-danger fw-bold">Total Tunggakan</h6>
-                <h3 class="fw-bold text-white mb-0">Rp <?php echo number_format($data['summary']['tunggakan'], 0, ',', '.'); ?></h3>
+            <div class="card-body p-3 text-center">
+                <div class="mb-2"><i class="bi bi-exclamation-octagon text-danger" style="font-size: 1.75rem;"></i></div>
+                <h6 class="text-danger fw-bold small mb-1">Total Tunggakan</h6>
+                <h4 class="fw-bold text-white mb-0" style="font-size: clamp(0.9rem, 3vw, 1.25rem);">Rp <?php echo number_format($data['summary']['tunggakan'], 0, ',', '.'); ?></h4>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <div class="card bg-primary bg-opacity-10 border-primary border-opacity-25 shadow-sm h-100 card-hover-animation">
-            <div class="card-body p-4 text-center">
-                <div class="mb-2"><i class="bi bi-person-check text-primary" style="font-size: 2rem;"></i></div>
-                <h6 class="text-primary fw-bold">Pelanggan Lunas</h6>
-                <h3 class="fw-bold text-white mb-0"><?php echo $data['summary']['pelanggan_lunas']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h3>
+            <div class="card-body p-3 text-center">
+                <div class="mb-2"><i class="bi bi-person-check text-primary" style="font-size: 1.75rem;"></i></div>
+                <h6 class="text-primary fw-bold small mb-1">Pelanggan Lunas</h6>
+                <h4 class="fw-bold text-white mb-0"><?php echo $data['summary']['pelanggan_lunas']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h4>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25 shadow-sm h-100 card-hover-animation">
-            <div class="card-body p-4 text-center">
-                <div class="mb-2"><i class="bi bi-person-x text-warning" style="font-size: 2rem;"></i></div>
-                <h6 class="text-warning fw-bold">Belum Bayar</h6>
-                <h3 class="fw-bold text-white mb-0"><?php echo $data['summary']['pelanggan_belum']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h3>
+            <div class="card-body p-3 text-center">
+                <div class="mb-2"><i class="bi bi-person-x text-warning" style="font-size: 1.75rem;"></i></div>
+                <h6 class="text-warning fw-bold small mb-1">Belum Bayar</h6>
+                <h4 class="fw-bold text-white mb-0"><?php echo $data['summary']['pelanggan_belum']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h4>
             </div>
         </div>
     </div>
 </div>
 
 <!-- GRAFIK INTERAKTIF (CHART.JS) -->
-<div class="row g-4 mb-4">
+<div class="row g-3 mb-4">
     <!-- 1. Grafik Tren Pemasukan Bulanan -->
-    <div class="col-md-6">
+    <div class="col-12 col-md-6">
         <div class="card glass-card border-0 shadow-sm h-100">
             <div class="card-header bg-transparent border-secondary border-opacity-25 p-3">
                 <h6 class="mb-0 text-white fw-bold"><i class="bi bi-graph-up me-2 text-primary"></i>Tren Pemasukan Bulanan (Tahun <?php echo htmlspecialchars($data['year']); ?>)</h6>
             </div>
-            <div class="card-body p-4 d-flex align-items-center justify-content-center">
-                <div style="width: 100%; height: 260px;">
+            <div class="card-body p-3 d-flex align-items-center justify-content-center">
+                <div style="width: 100%; height: 220px;">
                     <canvas id="incomeTrendChart"></canvas>
                 </div>
             </div>
@@ -111,16 +111,16 @@ require_once APPROOT . '/views/layouts/admin_header.php';
     </div>
 
     <!-- 2. Grafik Distribusi Pelanggan & Metode Pembayaran -->
-    <div class="col-md-6">
-        <div class="row g-4 h-100">
+    <div class="col-12 col-md-6">
+        <div class="row g-3 h-100">
             <!-- Pie: Status Distribusi Pelanggan -->
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="card glass-card border-0 shadow-sm h-100">
                     <div class="card-header bg-transparent border-secondary border-opacity-25 p-3">
-                        <h6 class="mb-0 text-white fw-bold"><i class="bi bi-people me-2 text-success"></i>Distribusi Status</h6>
+                        <h6 class="mb-0 text-white fw-bold" style="font-size: 0.78rem;"><i class="bi bi-people me-1 text-success"></i>Distribusi Status</h6>
                     </div>
-                    <div class="card-body p-3 d-flex align-items-center justify-content-center">
-                        <div style="width: 100%; height: 180px; position: relative;">
+                    <div class="card-body p-2 d-flex align-items-center justify-content-center">
+                        <div style="width: 100%; height: 160px; position: relative;">
                             <canvas id="customerGrowthChart"></canvas>
                         </div>
                     </div>
@@ -128,13 +128,13 @@ require_once APPROOT . '/views/layouts/admin_header.php';
             </div>
 
             <!-- Doughnut: Pembayaran per Metode -->
-            <div class="col-md-6">
+            <div class="col-6">
                 <div class="card glass-card border-0 shadow-sm h-100">
                     <div class="card-header bg-transparent border-secondary border-opacity-25 p-3">
-                        <h6 class="mb-0 text-white fw-bold"><i class="bi bi-credit-card me-2 text-warning"></i>Metode Pembayaran</h6>
+                        <h6 class="mb-0 text-white fw-bold" style="font-size: 0.78rem;"><i class="bi bi-credit-card me-1 text-warning"></i>Metode Bayar</h6>
                     </div>
-                    <div class="card-body p-3 d-flex align-items-center justify-content-center">
-                        <div style="width: 100%; height: 180px; position: relative;">
+                    <div class="card-body p-2 d-flex align-items-center justify-content-center">
+                        <div style="width: 100%; height: 160px; position: relative;">
                             <canvas id="paymentMethodsChart"></canvas>
                         </div>
                     </div>
@@ -146,7 +146,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
 
 <!-- TABEL RIWAYAT TRANSAKSI KAS MASUK (CASHFLOW) -->
 <div class="card glass-card border-0 shadow-sm">
-    <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center">
+    <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="mb-0 text-white fw-bold"><i class="bi bi-list-columns-reverse me-2 text-info"></i>Riwayat Transaksi Masuk (Cashflow)</h6>
         <span class="badge bg-secondary bg-opacity-25 border border-secondary border-opacity-25"><?php echo count($data['cashflow']); ?> Transaksi Terakhir</span>
     </div>

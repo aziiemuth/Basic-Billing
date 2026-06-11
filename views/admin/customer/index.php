@@ -7,11 +7,10 @@
     </div>
     <div class="d-flex gap-2 flex-wrap justify-content-end">
         <button type="button" class="btn btn-outline-warning btn-sm px-3 fw-medium d-flex align-items-center gap-2 border-opacity-25" data-bs-toggle="modal" data-bs-target="#bulkUpdateModal">
-            <i class="bi bi-calendar-check"></i> Atur Jatuh Tempo Masal
+            <i class="bi bi-calendar-check"></i> <span class="d-none d-sm-inline">Atur Jatuh Tempo Masal</span><span class="d-inline d-sm-none">Jatuh Tempo</span>
         </button>
-
         <a href="<?php echo URLROOT; ?>/AdminCustomerController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
-            <i class="bi bi-plus-lg"></i> Tambah Pelanggan
+            <i class="bi bi-plus-lg"></i> <span>Tambah Pelanggan</span>
         </a>
     </div>
 </div>
@@ -19,10 +18,10 @@
 <div class="card glass-card border-0 shadow-sm">
     <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="fw-bold text-white mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Daftar Pelanggan</h6>
-        <div style="width: 250px;">
+        <div class="flex-grow-1 flex-md-grow-0" style="max-width: 250px; min-width: 150px; width: 100%;">
             <div class="input-group input-group-sm">
                 <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-search"></i></span>
-                <input type="text" id="customerSearchInput" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Cari nama pelanggan...">
+                <input type="text" id="customerSearchInput" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Cari pelanggan...">
             </div>
         </div>
     </div>
@@ -81,15 +80,15 @@
                                 <?php endif; ?>
                             </td>
                             <td class="pe-4 text-end">
-                                <div class="d-flex justify-content-end gap-2">
+                                <div class="d-flex justify-content-end gap-1">
                                     <a href="<?php echo URLROOT; ?>/AdminCustomerController/show/<?php echo $customer->id; ?>" class="btn btn-sm btn-outline-info border-opacity-25 text-info" title="Detail">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                     <a href="<?php echo URLROOT; ?>/AdminCustomerController/edit/<?php echo $customer->id; ?>" class="btn btn-sm btn-outline-warning border-opacity-25 text-warning" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="<?php echo URLROOT; ?>/AdminCustomerController/delete/<?php echo $customer->id; ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus pelanggan ini? Semua data terkait juga akan terhapus.');">
-    <?php echo SecurityHelper::csrfField(); ?>
+                                    <form action="<?php echo URLROOT; ?>/AdminCustomerController/delete/<?php echo $customer->id; ?>" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus pelanggan ini?');">
+<?php echo SecurityHelper::csrfField(); ?>
                                         <button type="submit" class="btn btn-sm btn-outline-danger border-opacity-25 text-danger" title="Hapus">
                                             <i class="bi bi-trash"></i>
                                         </button>

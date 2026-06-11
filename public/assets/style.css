@@ -840,3 +840,209 @@ header.topbar .text-secondary { color: var(--muted) !important; }
   background-color: rgba(255,255,255,0.02);
   color: var(--muted);
 }
+
+/* ══════════════════════════════════════════════════════
+   MOBILE-FIRST RESPONSIVE IMPROVEMENTS
+   All admin pages: Customer, Package, Router, PPPoE, etc.
+   ══════════════════════════════════════════════════════ */
+
+/* ── PREVENT ICON SQUISH — global ───────────────────── */
+.btn i, .btn .bi {
+  flex-shrink: 0;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14px;
+}
+.btn-sm i, .btn-sm .bi { min-width: 12px; }
+
+/* ── TABLE IMPROVEMENTS ─────────────────────────────── */
+.table th, .table td { white-space: nowrap; vertical-align: middle; }
+.table td.allow-wrap { white-space: normal; word-break: break-word; }
+.table .badge { white-space: nowrap; display: inline-flex; }
+
+/* ── ACTION BUTTON GROUP ────────────────────────────── */
+.d-flex.justify-content-end.gap-2 .btn,
+.d-flex.gap-1.justify-content-end .btn {
+  flex-shrink: 0;
+  padding: 0.35rem 0.55rem;
+  min-height: 30px;
+}
+
+/* ── CARD HEADER SEARCH ──────────────────────────────── */
+.card-header .input-group { min-width: 160px; }
+
+/* ═══════════════════════════════════════
+   MOBILE < 576px
+   ═══════════════════════════════════════ */
+@media (max-width: 575.98px) {
+
+  /* Page headers — stack title & buttons */
+  .d-flex.justify-content-between.align-items-center.mb-4,
+  .d-flex.justify-content-between.align-items-center.mb-3 {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+  }
+  .d-flex.justify-content-between.align-items-center.mb-4 > .d-flex.gap-2,
+  .d-flex.justify-content-between.align-items-center.mb-3 > .d-flex.gap-2 {
+    width: 100% !important;
+    flex-wrap: wrap !important;
+  }
+  .d-flex.justify-content-between.align-items-center.mb-4 > .d-flex.gap-2 .btn,
+  .d-flex.justify-content-between.align-items-center.mb-3 > .d-flex.gap-2 .btn {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+    min-width: 120px;
+  }
+  .d-flex.justify-content-between.align-items-center.mb-4 > a.btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Stat cards: 2 columns */
+  .row.g-3.mb-4 > .col-md-3,
+  .row.g-3.mb-4 > .col-md-4 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+
+  /* Filter form: all full width */
+  .row.g-3.align-items-end > .col-md-3,
+  .row.g-3.align-items-end > .col-md-4,
+  .row.g-3.align-items-end > .col-md-5,
+  .row.g-3.align-items-end > .col-md-2,
+  .row.g-3.align-items-end > .col-md-6 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Card header search — stack */
+  .card-header.d-flex.justify-content-between,
+  .card-header > .d-flex.justify-content-between {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+  .card-header [style*="width: 250px"],
+  .card-header [style*="width:250px"],
+  #customerSearchInput { width: 100% !important; }
+
+  /* Table compact */
+  .table { font-size: 0.78rem; }
+  .table > :not(caption) > * > * { padding: 0.45rem 0.5rem; }
+  .table thead { font-size: 0.68rem; }
+
+  /* Table action buttons compact */
+  .d-flex.justify-content-end.gap-2 .btn,
+  .d-flex.gap-1.justify-content-end .btn {
+    padding: 0.3rem 0.4rem !important;
+    min-height: 28px !important;
+    font-size: 0.72rem !important;
+  }
+
+  /* PPPoE import banner action area — stack */
+  .card-body .d-flex.justify-content-between.align-items-center.flex-wrap {
+    gap: 0.75rem !important;
+  }
+  .card-body .d-flex.justify-content-between.align-items-center.flex-wrap > .d-flex.align-items-center.gap-3 {
+    flex-direction: column !important;
+    width: 100% !important;
+    align-items: stretch !important;
+  }
+  .card-body .d-flex.justify-content-between.align-items-center.flex-wrap select,
+  .card-body .d-flex.justify-content-between.align-items-center.flex-wrap [style*="width: 200px"] {
+    width: 100% !important;
+  }
+  .card-body .d-flex.justify-content-between.align-items-center.flex-wrap #btnImport {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* h4 page titles */
+  h4.fw-bold { font-size: clamp(0.95rem, 4vw, 1.1rem) !important; }
+  p.text-secondary.small.mb-0 { font-size: 0.76rem !important; }
+
+  /* Pagination footer */
+  .card-footer.d-flex.justify-content-between {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Modals */
+  .modal-dialog { margin: 0.5rem; max-width: calc(100% - 1rem); }
+  .modal-content { border-radius: 0.75rem; }
+  .modal-body { padding: 1rem; }
+
+  /* Sync/filter card inside card-body row */
+  .card-body .row.g-3 > .col-md-5,
+  .card-body .row.g-3 > .col-md-3,
+  .card-body .row.g-3 > .col-md-4 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* ═══════════════════════════════════════
+   TABLET PORTRAIT 576–767px
+   ═══════════════════════════════════════ */
+@media (min-width: 576px) and (max-width: 767.98px) {
+
+  .d-flex.justify-content-between.align-items-center.mb-4 {
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+  }
+  .d-flex.justify-content-between.align-items-center.mb-4 > .d-flex.gap-2 {
+    flex-wrap: wrap !important;
+  }
+
+  /* Stat cards: 2 cols */
+  .row.g-3.mb-4 > .col-md-3 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+
+  /* Filter: 2-column */
+  .row.g-3.align-items-end > .col-md-3,
+  .row.g-3.align-items-end > .col-md-4 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+  .row.g-3.align-items-end > .col-md-2 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Card header search */
+  .card-header [style*="width: 250px"] { width: 200px !important; }
+}
+
+/* ═══════════════════════════════════════
+   TABLET LANDSCAPE / iPad 768–991px
+   ═══════════════════════════════════════ */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+  /* Stat cards: 2 per row */
+  .row.g-3.mb-4 > .col-md-3 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+
+  /* Filter forms: 2-column */
+  .row.g-3.align-items-end > .col-md-3,
+  .row.g-3.align-items-end > .col-md-4 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+  .row.g-3.align-items-end > .col-md-2 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* PPPoE import banner: allow wrap */
+  .card-body .d-flex.justify-content-between.align-items-center.flex-wrap > .d-flex.align-items-center.gap-3 {
+    flex-wrap: wrap !important;
+  }
+}

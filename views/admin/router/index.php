@@ -1,15 +1,14 @@
 <?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
-<?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold text-white mb-1">Manajemen Router / Server</h4>
         <p class="text-secondary small mb-0">Kelola daftar router MikroTik yang terhubung dengan sistem.</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
         <a href="<?php echo URLROOT; ?>/AdminRouterController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
-            <i class="bi bi-plus-lg"></i> Tambah Router
+            <i class="bi bi-plus-lg"></i> <span>Tambah Router</span>
         </a>
     </div>
 </div>
@@ -62,7 +61,7 @@
                                 <?php endif; ?>
                             </td>
                             <td class="pe-4 text-end">
-                                <div class="d-flex justify-content-end gap-2">
+                                <div class="d-flex justify-content-end gap-1">
                                     <!-- Test Koneksi -->
                                     <button type="button"
                                             class="btn btn-sm btn-outline-info border-opacity-25 text-info btn-test-conn"

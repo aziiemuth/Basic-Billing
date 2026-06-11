@@ -6,21 +6,21 @@
         <h4 class="fw-bold text-white mb-1"><i class="bi bi-arrow-repeat me-2 text-info"></i>Sinkronisasi PPPoE MikroTik</h4>
         <p class="text-secondary small mb-0">Pantau status koneksi online/offline pelanggan secara realtime dari MikroTik.</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap justify-content-end">
         <a href="<?php echo URLROOT; ?>/AdminCustomerController/importMikrotik<?php echo $data['router_id'] ? '?router_id='.$data['router_id'] : ''; ?>" class="btn btn-outline-info btn-sm px-3 border-opacity-25 fw-medium d-flex align-items-center gap-1">
-            <i class="bi bi-cloud-download"></i> Tarik Data (Import) dari MikroTik
+            <i class="bi bi-cloud-download"></i> <span class="d-none d-sm-inline">Tarik Data (Import) dari MikroTik</span><span class="d-inline d-sm-none">Import</span>
         </a>
         <a href="<?php echo URLROOT; ?>/AdminRouterController" class="btn btn-outline-secondary btn-sm px-3 border-opacity-25 d-flex align-items-center">
-            <i class="bi bi-arrow-left me-1"></i> Kembali
+            <i class="bi bi-arrow-left me-1"></i> <span class="d-none d-sm-inline">Kembali</span>
         </a>
     </div>
 </div>
 
 <!-- Filter Router -->
-<div class="card glass-card border-0 shadow-sm mb-4">
+<div class="card glass-card border-0 shadow-sm mb-4 filter-card">
     <div class="card-body p-3">
         <div class="row g-3 align-items-end">
-            <div class="col-md-5">
+            <div class="col-12 col-sm-6 col-md-5">
                 <label class="text-secondary small mb-1">Pilih Router</label>
                 <select id="router-select" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25">
                     <option value="">-- Semua Router (tanpa realtime) --</option>
@@ -31,19 +31,19 @@
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="col-md-3">
-                <button id="btn-load-router" class="btn btn-info btn-sm px-4 fw-medium">
+            <div class="col-12 col-sm-6 col-md-3">
+                <button id="btn-load-router" class="btn btn-info btn-sm px-4 fw-medium w-100">
                     <i class="bi bi-search me-1"></i> Muat Status
                 </button>
             </div>
             <?php if ($data['router_id']): ?>
-            <div class="col-md-4 text-end">
+            <div class="col-12 col-md-4">
                 <?php if ($data['syncError']): ?>
-                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 p-2">
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 p-2 d-block text-start">
                         <i class="bi bi-x-circle me-1"></i> <?php echo htmlspecialchars($data['syncError']); ?>
                     </span>
                 <?php else: ?>
-                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 p-2">
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 p-2 d-block text-start">
                         <i class="bi bi-check-circle me-1"></i> Terhubung — <?php echo count($data['mikrotikStatus']); ?> PPPoE ditemukan
                     </span>
                 <?php endif; ?>

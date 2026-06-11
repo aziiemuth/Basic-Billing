@@ -3,8 +3,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-0">Generate Tagihan Massal</h4>
-        <p class="text-secondary mb-0">Buat invoice tagihan bulanan untuk banyak pelanggan sekaligus</p>
+        <h4 class="fw-bold text-white mb-0"><i class="bi bi-lightning-charge me-2 text-warning"></i>Generate Tagihan Massal</h4>
+        <p class="text-secondary mb-0 small">Buat invoice tagihan bulanan untuk banyak pelanggan sekaligus</p>
     </div>
 </div>
 
@@ -69,7 +69,7 @@
                     <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success fw-bold" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
                 </div>
 
-                <div class="d-flex justify-content-center gap-5 mt-2">
+                <div class="d-flex justify-content-center gap-3 gap-md-5 mt-2 flex-wrap">
                     <div class="text-center">
                         <h2 class="text-success fw-bold mb-0" id="countSuccess">0</h2>
                         <small class="text-secondary small text-uppercase fw-semibold" style="letter-spacing: 0.5px;">Berhasil / WA Sent</small>
@@ -83,12 +83,12 @@
         </div>
 
         <div class="card glass-card border-0 shadow-sm h-100" id="idlePanel">
-            <div class="card-body p-5 d-flex align-items-center justify-content-center flex-column text-center">
+            <div class="card-body p-4 p-md-5 d-flex align-items-center justify-content-center flex-column text-center">
                 <div class="rounded-circle bg-secondary bg-opacity-10 p-4 mb-4 border border-secondary border-opacity-10">
-                    <i class="bi bi-receipt text-secondary opacity-75" style="font-size: 3rem;"></i>
+                    <i class="bi bi-receipt text-secondary opacity-75" style="font-size: 2.5rem;"></i>
                 </div>
                 <h5 class="text-white fw-bold mb-2">Siap Mengeksekusi</h5>
-                <p class="text-secondary mb-0 max-width-350">Silakan tentukan kriteria bulan tagihan, paket internet, dan area router di panel kiri, kemudian klik tombol untuk memulai generator otomatis.</p>
+                <p class="text-secondary mb-0">Silakan tentukan kriteria bulan tagihan, paket internet, dan area router di panel kiri, kemudian klik tombol untuk memulai generator otomatis.</p>
             </div>
         </div>
     </div>
