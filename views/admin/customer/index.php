@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (paginationInfo) paginationInfo.textContent = 'Menampilkan 0 data';
             if (paginationFooter) paginationFooter.style.display = 'none';
         } else {
-            if (paginationInfo) paginationInfo.textContent = Menampilkan  -  dari  data;
+            if (paginationInfo) paginationInfo.textContent = `Menampilkan ${start + 1} - ${end} dari ${totalItems} data`;
             if (paginationFooter) paginationFooter.style.display = 'flex';
         }
         
@@ -240,8 +240,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Prev button
             const prevLi = document.createElement('li');
-            prevLi.className = page-item ;
-            prevLi.innerHTML = <a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>;
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
             prevLi.addEventListener('click', function(e) {
                 e.preventDefault();
                 if (currentPage > 1) {
@@ -260,11 +260,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             for (let i = startPage; i <= endPage; i++) {
                 const pageLi = document.createElement('li');
-                pageLi.className = page-item ;
+                pageLi.className = `page-item ${currentPage === i ? 'active' : ''}`;
                 
                 const activeLinkClass = currentPage === i ? 'bg-primary border-primary text-white' : 'bg-dark border-secondary border-opacity-25 text-white';
                 
-                pageLi.innerHTML = <a class="page-link rounded " href="#"></a>;
+                pageLi.innerHTML = `<a class="page-link rounded ${activeLinkClass}" href="#">${i}</a>`;
                 pageLi.addEventListener('click', function(e) {
                     e.preventDefault();
                     currentPage = i;
@@ -275,8 +275,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Next button
             const nextLi = document.createElement('li');
-            nextLi.className = page-item ;
-            nextLi.innerHTML = <a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>;
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
             nextLi.addEventListener('click', function(e) {
                 e.preventDefault();
                 if (currentPage < totalPages) {
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (!data.success) {
                     // Router is dead (offline)
-                    const colsToUpdate = document.querySelectorAll(.customer-status-col[data-router-id=" + routerId + "]);
+                    const colsToUpdate = document.querySelectorAll(`.customer-status-col[data-router-id="${routerId}"]`);
                     colsToUpdate.forEach(col => {
                         if (!col.querySelector('.router-mati-badge')) {
                             const badge = document.createElement('span');
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(() => {
-                const colsToUpdate = document.querySelectorAll(.customer-status-col[data-router-id=" + routerId + "]);
+                const colsToUpdate = document.querySelectorAll(`.customer-status-col[data-router-id="${routerId}"]`);
                 colsToUpdate.forEach(col => {
                     if (!col.querySelector('.router-mati-badge')) {
                         const badge = document.createElement('span');
