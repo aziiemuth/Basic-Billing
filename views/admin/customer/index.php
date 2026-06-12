@@ -1,4 +1,4 @@
-<?php /** @var array $data */ ?>
+﻿<?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
@@ -18,8 +18,16 @@
 <div class="card glass-card border-0 shadow-sm">
     <div class="card-header bg-transparent border-secondary border-opacity-25 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
         <h6 class="fw-bold text-white mb-0"><i class="bi bi-people-fill me-2 text-primary"></i>Daftar Pelanggan</h6>
-        <div class="flex-grow-1 flex-md-grow-0" style="max-width: 250px; min-width: 150px; width: 100%;">
-            <div class="input-group input-group-sm">
+        <div class="d-flex gap-2 flex-grow-1 flex-md-grow-0" style="max-width: 450px; min-width: 250px; width: 100%;">
+            <select id="packageFilter" class="form-select form-select-sm bg-dark text-white border-secondary border-opacity-25" style="max-width: 200px;">
+                <option value="all">Semua Paket</option>
+                <?php if (!empty($data['packages'])): ?>
+                    <?php foreach ($data['packages'] as $pkg): ?>
+                        <option value="<?php echo $pkg->id; ?>"><?php echo htmlspecialchars($pkg->name); ?></option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </select>
+            <div class="input-group input-group-sm flex-grow-1">
                 <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary"><i class="bi bi-search"></i></span>
                 <input type="text" id="customerSearchInput" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Cari pelanggan...">
             </div>
@@ -47,7 +55,7 @@
                     </tr>
                     <?php else: ?>
                         <?php foreach($data['customers'] as $customer): ?>
-                        <tr>
+                        <tr data-package-id="<?php echo htmlspecialchars($customer->package_id); ?>">
                             <td class="ps-4 text-white fw-medium"><?php echo $customer->customer_id; ?></td>
                             <td>
                                 <div class="d-flex align-items-center gap-3">
@@ -152,7 +160,6 @@
         </div>
     </div>
 </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const itemsPerPage = 15;
@@ -166,6 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const paginationInfo = document.getElementById('pagination-info');
     const paginationControls = document.getElementById('pagination-controls');
     const searchInput = document.getElementById('customerSearchInput');
+    const packageFilter = document.getElementById('packageFilter');
     
     function renderPagination() {
         if (rows.length === 0) {
@@ -173,8 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Filter rows based on search input
+        // Filter rows based on search input and package filter
         const searchVal = searchInput ? searchInput.value.toLowerCase() : '';
+        const selectedPackage = packageFilter ? packageFilter.value : 'all';
+        
         const filteredRows = rows.filter(row => {
             const nameCell = row.cells[1];
             if (nameCell) {
@@ -184,7 +194,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const nameText = nameEl ? nameEl.textContent : '';
                 const usernameText = usernameEl ? usernameEl.textContent : '';
                 
-                return nameText.toLowerCase().includes(searchVal) || usernameText.toLowerCase().includes(searchVal);
+                const matchesSearch = nameText.toLowerCase().includes(searchVal) || usernameText.toLowerCase().includes(searchVal);
+                
+                const packageId = row.getAttribute('data-package-id');
+                const matchesPackage = (selectedPackage === 'all' || packageId === selectedPackage);
+                
+                return matchesSearch && matchesPackage;
             }
             return false;
         });
@@ -212,67 +227,76 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update pagination info
         if (totalItems === 0) {
-            paginationInfo.textContent = 'Menampilkan 0 data';
+            if (paginationInfo) paginationInfo.textContent = 'Menampilkan 0 data';
             if (paginationFooter) paginationFooter.style.display = 'none';
         } else {
-            paginationInfo.textContent = `Menampilkan ${start + 1} - ${end} dari ${totalItems} data`;
+            if (paginationInfo) paginationInfo.textContent = Menampilkan  -  dari  data;
             if (paginationFooter) paginationFooter.style.display = 'flex';
         }
         
         // Render buttons
-        paginationControls.innerHTML = '';
-        
-        // Prev button
-        const prevLi = document.createElement('li');
-        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-        prevLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
-        prevLi.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (currentPage > 1) {
-                currentPage--;
-                renderPagination();
-            }
-        });
-        paginationControls.appendChild(prevLi);
-        
-        // Page numbers
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, startPage + 4);
-        if (endPage - startPage < 4) {
-            startPage = Math.max(1, endPage - 4);
-        }
-        
-        for (let i = startPage; i <= endPage; i++) {
-            const pageLi = document.createElement('li');
-            pageLi.className = `page-item ${currentPage === i ? 'active' : ''}`;
+        if (paginationControls) {
+            paginationControls.innerHTML = '';
             
-            const activeLinkClass = currentPage === i ? 'bg-primary border-primary text-white' : 'bg-dark border-secondary border-opacity-25 text-white';
-            
-            pageLi.innerHTML = `<a class="page-link rounded ${activeLinkClass}" href="#">${i}</a>`;
-            pageLi.addEventListener('click', function(e) {
+            // Prev button
+            const prevLi = document.createElement('li');
+            prevLi.className = page-item ;
+            prevLi.innerHTML = <a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>;
+            prevLi.addEventListener('click', function(e) {
                 e.preventDefault();
-                currentPage = i;
-                renderPagination();
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPagination();
+                }
             });
-            paginationControls.appendChild(pageLi);
-        }
-        
-        // Next button
-        const nextLi = document.createElement('li');
-        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-        nextLi.innerHTML = `<a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
-        nextLi.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderPagination();
+            paginationControls.appendChild(prevLi);
+            
+            // Page numbers
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
             }
-        });
-        paginationControls.appendChild(nextLi);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageLi = document.createElement('li');
+                pageLi.className = page-item ;
+                
+                const activeLinkClass = currentPage === i ? 'bg-primary border-primary text-white' : 'bg-dark border-secondary border-opacity-25 text-white';
+                
+                pageLi.innerHTML = <a class="page-link rounded " href="#"></a>;
+                pageLi.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentPage = i;
+                    renderPagination();
+                });
+                paginationControls.appendChild(pageLi);
+            }
+            
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = page-item ;
+            nextLi.innerHTML = <a class="page-link rounded bg-dark border-secondary border-opacity-25 text-white" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>;
+            nextLi.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPagination();
+                }
+            });
+            paginationControls.appendChild(nextLi);
+        }
     }
 
     if (searchInput) {
         searchInput.addEventListener('keyup', function() {
+            currentPage = 1;
+            renderPagination();
+        });
+    }
+    
+    if (packageFilter) {
+        packageFilter.addEventListener('change', function() {
             currentPage = 1;
             renderPagination();
         });
@@ -297,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (!data.success) {
                     // Router is dead (offline)
-                    const colsToUpdate = document.querySelectorAll(`.customer-status-col[data-router-id="${routerId}"]`);
+                    const colsToUpdate = document.querySelectorAll(.customer-status-col[data-router-id=" + routerId + "]);
                     colsToUpdate.forEach(col => {
                         if (!col.querySelector('.router-mati-badge')) {
                             const badge = document.createElement('span');
@@ -310,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(() => {
-                const colsToUpdate = document.querySelectorAll(`.customer-status-col[data-router-id="${routerId}"]`);
+                const colsToUpdate = document.querySelectorAll(.customer-status-col[data-router-id=" + routerId + "]);
                 colsToUpdate.forEach(col => {
                     if (!col.querySelector('.router-mati-badge')) {
                         const badge = document.createElement('span');
