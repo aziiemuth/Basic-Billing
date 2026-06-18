@@ -61,7 +61,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
             <div class="card-body p-3 text-center">
                 <div class="mb-2"><i class="bi bi-wallet2 text-success" style="font-size: 1.75rem;"></i></div>
                 <h6 class="text-success fw-bold small mb-1">Total Pemasukan</h6>
-                <h4 class="fw-bold text-white mb-0" style="font-size: clamp(0.9rem, 3vw, 1.25rem);">Rp <?php echo number_format($data['summary']['pemasukan'], 0, ',', '.'); ?></h4>
+                <h4 class="fw-bold mb-0" style="font-size: clamp(0.9rem, 3vw, 1.25rem);">Rp <?php echo number_format($data['summary']['pemasukan'], 0, ',', '.'); ?></h4>
             </div>
         </div>
     </div>
@@ -70,7 +70,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
             <div class="card-body p-3 text-center">
                 <div class="mb-2"><i class="bi bi-exclamation-octagon text-danger" style="font-size: 1.75rem;"></i></div>
                 <h6 class="text-danger fw-bold small mb-1">Total Tunggakan</h6>
-                <h4 class="fw-bold text-white mb-0" style="font-size: clamp(0.9rem, 3vw, 1.25rem);">Rp <?php echo number_format($data['summary']['tunggakan'], 0, ',', '.'); ?></h4>
+                <h4 class="fw-bold mb-0" style="font-size: clamp(0.9rem, 3vw, 1.25rem);">Rp <?php echo number_format($data['summary']['tunggakan'], 0, ',', '.'); ?></h4>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
             <div class="card-body p-3 text-center">
                 <div class="mb-2"><i class="bi bi-person-check text-primary" style="font-size: 1.75rem;"></i></div>
                 <h6 class="text-primary fw-bold small mb-1">Pelanggan Lunas</h6>
-                <h4 class="fw-bold text-white mb-0"><?php echo $data['summary']['pelanggan_lunas']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h4>
+                <h4 class="fw-bold mb-0"><?php echo $data['summary']['pelanggan_lunas']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h4>
             </div>
         </div>
     </div>
@@ -88,7 +88,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
             <div class="card-body p-3 text-center">
                 <div class="mb-2"><i class="bi bi-person-x text-warning" style="font-size: 1.75rem;"></i></div>
                 <h6 class="text-warning fw-bold small mb-1">Belum Bayar</h6>
-                <h4 class="fw-bold text-white mb-0"><?php echo $data['summary']['pelanggan_belum']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h4>
+                <h4 class="fw-bold mb-0"><?php echo $data['summary']['pelanggan_belum']; ?> <span class="fs-6 text-secondary fw-normal">Layanan</span></h4>
             </div>
         </div>
     </div>

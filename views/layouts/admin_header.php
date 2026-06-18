@@ -82,6 +82,9 @@
                     <a href="<?php echo URLROOT; ?>/AdminUserController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminUser') !== false ? 'active' : ''; ?>">
                         <i class="bi bi-person-gear flex-shrink-0"></i> <span>User Login</span>
                     </a>
+                    <a href="<?php echo URLROOT; ?>/AdminGuideController" class="nav-link fw-medium d-flex align-items-center gap-2 <?php echo strpos($_SERVER['REQUEST_URI'], 'AdminGuide') !== false ? 'active' : ''; ?>">
+                        <i class="bi bi-book flex-shrink-0"></i> <span>Petunjuk Penggunaan</span>
+                    </a>
                 </nav>
             </div>
 

@@ -639,25 +639,25 @@ header.topbar .text-secondary { color: var(--muted) !important; }
 }
 
 /* Fix text-white inside solid colored backgrounds like bg-primary, bg-success, bg-danger, bg-warning, bg-gradient, rounded-circle in light mode */
-[data-theme="light"] .bg-primary .text-white,
-[data-theme="light"] .bg-success .text-white,
-[data-theme="light"] .bg-danger .text-white,
-[data-theme="light"] .bg-warning .text-white,
-[data-theme="light"] .bg-info .text-white,
-[data-theme="light"] .bg-primary.text-white,
-[data-theme="light"] .bg-success.text-white,
-[data-theme="light"] .bg-danger.text-white,
-[data-theme="light"] .bg-warning.text-white,
-[data-theme="light"] .bg-info.text-white,
+[data-theme="light"] .bg-primary:not([class*="bg-opacity-"]) .text-white,
+[data-theme="light"] .bg-success:not([class*="bg-opacity-"]) .text-white,
+[data-theme="light"] .bg-danger:not([class*="bg-opacity-"]) .text-white,
+[data-theme="light"] .bg-warning:not([class*="bg-opacity-"]) .text-white,
+[data-theme="light"] .bg-info:not([class*="bg-opacity-"]) .text-white,
+[data-theme="light"] .bg-primary:not([class*="bg-opacity-"]).text-white,
+[data-theme="light"] .bg-success:not([class*="bg-opacity-"]).text-white,
+[data-theme="light"] .bg-danger:not([class*="bg-opacity-"]).text-white,
+[data-theme="light"] .bg-warning:not([class*="bg-opacity-"]).text-white,
+[data-theme="light"] .bg-info:not([class*="bg-opacity-"]).text-white,
 [data-theme="light"] .bg-gradient .text-white,
 [data-theme="light"] .bg-gradient.text-white,
 [data-theme="light"] .rounded-circle.text-white,
 [data-theme="light"] .rounded-circle .text-white,
-[data-theme="light"] .bg-primary .bi,
-[data-theme="light"] .bg-primary i,
-[data-theme="light"] .sidebar .bg-primary,
-[data-theme="light"] .sidebar .bg-primary i,
-[data-theme="light"] .sidebar .bg-primary .bi {
+[data-theme="light"] .bg-primary:not([class*="bg-opacity-"]) .bi,
+[data-theme="light"] .bg-primary:not([class*="bg-opacity-"]) i,
+[data-theme="light"] .sidebar .bg-primary:not([class*="bg-opacity-"]),
+[data-theme="light"] .sidebar .bg-primary:not([class*="bg-opacity-"]) i,
+[data-theme="light"] .sidebar .bg-primary:not([class*="bg-opacity-"]) .bi {
   color: #ffffff !important;
 }
 
