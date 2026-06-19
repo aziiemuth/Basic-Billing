@@ -5,7 +5,6 @@
     <a href="<?php echo URLROOT; ?>/AdminRouterController" class="text-secondary text-decoration-none small d-inline-flex align-items-center gap-2 mb-2">
         <i class="bi bi-arrow-left"></i> Kembali ke Daftar Router
     </a>
-    <h4 class="fw-bold text-white mb-1">Edit Router Server</h4>
     <p class="text-secondary small mb-0">Perbarui informasi dan konfigurasi koneksi router MikroTik.</p>
 </div>
 

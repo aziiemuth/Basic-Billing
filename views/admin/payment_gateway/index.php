@@ -3,7 +3,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-1">Kelola Payment Gateway</h4>
         <p class="text-secondary small mb-0">Atur kredensial pembayaran online yang digunakan sistem.</p>
     </div>
     <a href="<?php echo URLROOT; ?>/AdminPaymentGatewayController/create" class="btn btn-primary btn-sm px-3 fw-medium">

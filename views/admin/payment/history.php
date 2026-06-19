@@ -3,7 +3,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-1"><i class="bi bi-clock-history text-primary me-2"></i>Histori Tagihan &amp; Aktivitas</h4>
         <p class="text-secondary small mb-0">Kelola riwayat invoice, pembayaran online, pemutusan isolir, serta pengiriman notifikasi WhatsApp secara terintegrasi.</p>
     </div>
 </div>

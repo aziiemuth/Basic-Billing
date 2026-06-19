@@ -3,7 +3,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-1"><i class="bi bi-whatsapp me-2 text-success"></i>Broadcast WhatsApp</h4>
         <p class="text-secondary small mb-0">Kirim pesan custom ke pelanggan berdasarkan status. Token dikonfigurasi via file <code>.env</code>.</p>
     </div>
     <?php if (!defined('WA_ENABLED') || !WA_ENABLED): ?>

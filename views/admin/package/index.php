@@ -3,7 +3,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-1">Manajemen Paket Internet</h4>
         <p class="text-secondary small mb-0">Kelola daftar paket, harga, bandwidth, dan profil MikroTik.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap justify-content-end">

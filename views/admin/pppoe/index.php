@@ -3,7 +3,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-1"><i class="bi bi-hdd-network me-2 text-info"></i>Data PPPoE MikroTik</h4>
         <p class="text-secondary small mb-0">Pusat kendali PPPoE. Pantau status real-time dan tarik data (import) pelanggan langsung dari router.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap justify-content-end">

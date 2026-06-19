@@ -3,9 +3,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="fw-bold text-white mb-1">
-            <i class="bi bi-receipt-cutoff me-2 text-warning"></i>Tagihan Manual
-        </h4>
         <p class="text-secondary small mb-0">
             Kelola tagihan pelanggan aktif &amp; terisolir — kirim WA, terima tunai, atau proses via payment gateway.
         </p>

@@ -8,7 +8,6 @@ require_once APPROOT . '/views/layouts/admin_header.php';
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-1"><i class="bi bi-file-earmark-bar-graph me-2 text-primary"></i>Laporan Keuangan & Kas</h4>
         <p class="text-secondary small mb-0">Rangkuman pendapatan, tunggakan, visualisasi statistik, serta eksportasi laporan kas.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap justify-content-end">

@@ -2,7 +2,6 @@
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold text-white mb-1">Manajemen Pelanggan</h4>
         <p class="text-secondary small mb-0">Kelola data pelanggan, status, dan layanan internet.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap justify-content-end">

@@ -15,7 +15,6 @@
 
 <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="fw-bold text-white mb-1"><i class="bi bi-person-badge me-2 text-primary"></i>Profil &amp; Pengaturan Sistem</h4>
         <p class="text-secondary small mb-0">Kelola informasi profil admin, konfigurasi logo usaha, timezone, format mata uang, isolir, notifikasi, dan cek koneksi MikroTik.</p>
     </div>
 </div>

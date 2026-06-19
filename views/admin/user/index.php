@@ -3,7 +3,6 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="fw-bold text-white mb-1"><i class="bi bi-people-fill me-2 text-primary"></i>Kelola User Login</h4>
         <p class="text-secondary small mb-0">Kelola akun yang dapat masuk ke panel admin.</p>
     </div>
     <a href="<?php echo URLROOT; ?>/AdminUserController/create" class="btn btn-primary btn-sm px-3 fw-medium d-flex align-items-center gap-2">
