@@ -199,10 +199,44 @@ class AdminInvoiceController extends Controller {
         // Update status invoice
         $this->invoiceModel->updateStatus($invoiceId, 'paid');
         
-        // Simpan transaksi cashflow (Payment ID null karena manual)
+        // --- UPDATE PAYMENTS TABLE ---
+        $paymentModel = $this->model('PaymentModel');
+        $payment = $paymentModel->getByInvoiceId($invoiceId);
+        
+        $paymentIdForTransaction = null;
+
+        if ($payment) {
+            // Update existing pending payment to success
+            $paymentModel->updateWebhookStatus($payment->reference_id, 'success', 'tunai', 'Manual by Admin');
+            $paymentIdForTransaction = $payment->id;
+        } else {
+            // Create a new successful payment record
+            $orderId = 'INV-' . $invoice->id . '-MANUAL-' . time();
+            $paymentData = [
+                'invoice_id'         => $invoice->id,
+                'reference_id'       => $orderId,
+                'amount'             => $invoice->total_amount,
+                'payment_gateway_id' => null,
+                'payment_method'     => 'tunai',
+                'status'             => 'success',
+                'payment_url'        => null,
+            ];
+            $paymentModel->create($paymentData);
+            
+            $newPayment = $paymentModel->getByReferenceId($orderId);
+            if ($newPayment) {
+                $paymentIdForTransaction = $newPayment->id;
+                $db = new Database();
+                $db->query("UPDATE payments SET paid_at = CURRENT_TIMESTAMP WHERE id = :id");
+                $db->bind(':id', $newPayment->id);
+                $db->execute();
+            }
+        }
+
+        // Simpan transaksi cashflow
         require_once APPROOT . '/app/models/TransactionModel.php';
         $transactionModel = new TransactionModel();
-        $transactionModel->recordPaymentSuccess(null, $invoiceId, $invoice->total_amount);
+        $transactionModel->recordPaymentSuccess($paymentIdForTransaction, $invoiceId, $invoice->total_amount, 'tunai');
 
         // Enable PPPoE di MikroTik & ubah status customer ke active
         $customer = $this->customerModel->getById($invoice->customer_id);
@@ -219,7 +253,7 @@ class AdminInvoiceController extends Controller {
             $pppoeModel = $this->model('PppoeSecretModel');
             $pppoe = $pppoeModel->getByCustomerId($customer->id);
 
-            if ($pppoe) {
+            if ($pppoe && $customer->status === 'isolated') {
                 $mikrotikService = new MikrotikService();
                 if ($mikrotikService->connect($customer->mikrotik_router_id)) {
                     $ok = $mikrotikService->enablePppoeSecret($pppoe->username);
@@ -237,7 +271,12 @@ class AdminInvoiceController extends Controller {
                 } else {
                     $mtResult = ['connected' => false, 'message' => $mikrotikService->getLastError()];
                 }
+            } else {
+                $mtResult = ['connected' => false, 'message' => 'PPPoE sudah aktif atau tidak diisolir.'];
             }
+            
+            // Ubah status customer ke active setelah mikrotik di handle
+            $this->customerModel->updateStatus($customer->id, 'active');
         }
 
         echo json_encode([

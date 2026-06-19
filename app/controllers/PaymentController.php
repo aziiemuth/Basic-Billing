@@ -157,7 +157,7 @@ class PaymentController extends Controller {
                 $pppoeModel = new PppoeSecretModel();
                 $pppoe = $pppoeModel->getByCustomerId($customer->id);
                 
-                if ($pppoe) {
+                if ($pppoe && $customer->status === 'isolated') {
                     // Enable PPPoE di MikroTik
                     $mikrotikService = new MikrotikService();
                     if ($mikrotikService->connect($customer->mikrotik_router_id)) {
