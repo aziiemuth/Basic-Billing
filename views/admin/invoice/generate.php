@@ -1,7 +1,7 @@
 <?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <h4 class="fw-bold text-white mb-0"><i class="bi bi-lightning-charge me-2 text-warning"></i>Generate Tagihan Massal</h4>
         <p class="text-secondary mb-0 small">Buat invoice tagihan bulanan untuk banyak pelanggan sekaligus</p>

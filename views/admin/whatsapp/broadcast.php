@@ -1,7 +1,7 @@
 <?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <p class="text-secondary small mb-0">Kirim pesan custom ke pelanggan berdasarkan status. Token dikonfigurasi via file <code>.env</code>.</p>
     </div>

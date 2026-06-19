@@ -1,7 +1,7 @@
 <?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <a href="<?php echo URLROOT; ?>/AdminCustomerController" class="text-decoration-none text-secondary small mb-2 d-inline-block"><i class="bi bi-arrow-left"></i> Kembali ke Daftar Pelanggan</a>
         <h4 class="fw-bold text-white mb-0">Tambah Pelanggan Baru</h4>

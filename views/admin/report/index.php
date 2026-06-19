@@ -6,7 +6,7 @@ require_once APPROOT . '/views/layouts/admin_header.php';
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <p class="text-secondary small mb-0">Rangkuman pendapatan, tunggakan, visualisasi statistik, serta eksportasi laporan kas.</p>
     </div>

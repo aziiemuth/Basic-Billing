@@ -1,7 +1,7 @@
 <?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <h4 class="fw-bold text-white mb-0">Import Pelanggan dari MikroTik</h4>
         <p class="text-secondary mb-0">Tarik data akun PPPoE dari Router MikroTik ke dalam Database Billing.</p>
