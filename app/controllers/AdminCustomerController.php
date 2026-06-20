@@ -12,10 +12,44 @@ class AdminCustomerController extends Controller {
         $customers = $this->customerModel->getAll();
         $packages = $this->model('PackageModel')->getAll();
         
+        $db = new Database();
+        $db->query("SELECT * FROM pppoe_secrets");
+        $allPppoe = $db->resultSet();
+        $pppoeMap = [];
+        foreach ($allPppoe as $p) {
+            $pppoeMap[$p->customer_id] = $p;
+        }
+
+        $routerIds = [];
+        foreach ($customers as $c) {
+            if ($c->mikrotik_router_id && !in_array($c->mikrotik_router_id, $routerIds)) {
+                $routerIds[] = $c->mikrotik_router_id;
+            }
+        }
+
+        require_once APPROOT . '/app/libraries/MikrotikService.php';
+        $mikrotikStatuses = [];
+        foreach ($routerIds as $rId) {
+            $mikrotikService = new MikrotikService();
+            if ($mikrotikService->connect($rId)) {
+                $statusData = $mikrotikService->syncAllStatus();
+                $lowerStatusData = [];
+                foreach ($statusData as $uname => $sData) {
+                    $lowerStatusData[strtolower(trim($uname))] = $sData;
+                }
+                $mikrotikStatuses[$rId] = $lowerStatusData;
+                $mikrotikService->disconnect();
+            } else {
+                $mikrotikStatuses[$rId] = [];
+            }
+        }
+        
         $data = [
             'title' => 'Manajemen Pelanggan',
             'customers' => $customers,
-            'packages' => $packages
+            'packages' => $packages,
+            'pppoeMap' => $pppoeMap,
+            'mikrotikStatuses' => $mikrotikStatuses
         ];
         
         $this->view('admin/customer/index', $data);

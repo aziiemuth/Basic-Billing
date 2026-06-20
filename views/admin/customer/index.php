@@ -1,4 +1,4 @@
-﻿<?php /** @var array $data */ ?>
+<?php /** @var array $data */ ?>
 <?php require_once APPROOT . '/views/layouts/admin_header.php'; ?>
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
@@ -78,13 +78,36 @@
                                 <?php endif; ?>
                             </td>
                             <td class="customer-status-col" data-router-id="<?php echo $customer->mikrotik_router_id; ?>">
-                                <?php if ($customer->status == 'active'): ?>
-                                    <span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill customer-status-badge">Aktif</span>
-                                <?php elseif ($customer->status == 'inactive'): ?>
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill customer-status-badge">Nonaktif</span>
-                                <?php elseif ($customer->status == 'isolated'): ?>
-                                    <span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill customer-status-badge">Terisolir</span>
-                                <?php endif; ?>
+                                <?php
+                                $rId = $customer->mikrotik_router_id;
+                                $pppoeSecret = isset($data['pppoeMap'][$customer->id]) ? $data['pppoeMap'][$customer->id] : null;
+                                $statusM = null;
+                                if ($pppoeSecret) {
+                                    $unameKey = strtolower(trim($pppoeSecret->username));
+                                    if (isset($data['mikrotikStatuses'][$rId][$unameKey])) {
+                                        $statusM = $data['mikrotikStatuses'][$rId][$unameKey];
+                                    }
+                                }
+
+                                if ($statusM) {
+                                    if ($statusM['disabled']) {
+                                        echo '<span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill customer-status-badge"><i class="bi bi-x-circle me-1"></i>Isolir</span>';
+                                    } elseif ($statusM['online']) {
+                                        echo '<span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill customer-status-badge"><i class="bi bi-activity me-1"></i>Online</span>';
+                                    } else {
+                                        echo '<span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill customer-status-badge">Offline</span>';
+                                    }
+                                } else {
+                                    // Fallback to db status if not found in Mikrotik or Mikrotik offline
+                                    if ($customer->status == 'active') {
+                                        echo '<span class="badge bg-success bg-opacity-10 text-success px-2 py-1 border border-success border-opacity-25 rounded-pill customer-status-badge">Aktif</span>';
+                                    } elseif ($customer->status == 'inactive') {
+                                        echo '<span class="badge bg-secondary bg-opacity-10 text-secondary px-2 py-1 border border-secondary border-opacity-25 rounded-pill customer-status-badge">Nonaktif</span>';
+                                    } elseif ($customer->status == 'isolated') {
+                                        echo '<span class="badge bg-danger bg-opacity-10 text-danger px-2 py-1 border border-danger border-opacity-25 rounded-pill customer-status-badge">Terisolir</span>';
+                                    }
+                                }
+                                ?>
                             </td>
                             <td class="pe-4 text-end">
                                 <div class="d-flex justify-content-end gap-1">
