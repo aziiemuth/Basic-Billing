@@ -75,7 +75,7 @@
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#invoices" type="button"><i class="bi bi-file-earmark-text me-1 me-sm-2"></i><span class="d-none d-sm-inline">Riwayat Invoice</span><span class="d-inline d-sm-none">Invoice</span></button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#customerLogs" type="button"><i class="bi bi-person-badge-fill me-1 me-sm-2"></i><span class="d-none d-sm-inline">Riwayat Status &amp; Isolir</span><span class="d-inline d-sm-none">Isolir</span></button>
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#customerLogs" type="button"><i class="bi bi-person-badge-fill me-1 me-sm-2"></i><span class="d-none d-sm-inline">Riwayat Aktifitas</span><span class="d-inline d-sm-none">Aktifitas</span></button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" data-bs-toggle="tab" data-bs-target="#whatsappLogs" type="button"><i class="bi bi-whatsapp me-1 me-sm-2"></i><span class="d-none d-sm-inline">Riwayat Broadcast WA</span><span class="d-inline d-sm-none">WA Log</span></button>
@@ -204,7 +204,7 @@
         </div>
     </div>
 
-    <!-- TAB 3: RIWAYAT STATUS & ISOLIR -->
+    <!-- TAB 3: RIWAYAT AKTIFITAS -->
     <div class="tab-pane fade" id="customerLogs">
         <div class="card glass-card border-0 shadow-sm">
             <div class="card-body p-0">
@@ -234,7 +234,7 @@
                                             <?php elseif (strpos($action, 'aktif') !== false || strpos($action, 'activate') !== false || strpos($action, 'enable') !== false): ?>
                                                 <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25"><i class="bi bi-unlock me-1"></i>AKTIF (ON)</span>
                                             <?php else: ?>
-                                                <span class="badge bg-info bg-opacity-15 text-info border border-info border-opacity-25"><?php echo strtoupper($log->action); ?></span>
+                                                <span class="badge bg-secondary bg-opacity-25 text-white border border-secondary border-opacity-25"><?php echo strtoupper($log->action); ?></span>
                                             <?php endif; ?>
                                         </td>
                                         <td class="pe-4 text-secondary small allow-wrap"><?php echo htmlspecialchars($log->description); ?></td>

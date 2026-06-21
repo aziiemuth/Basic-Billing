@@ -77,6 +77,9 @@ class CustomerModel {
     }
 
     public function update($data) {
+        // Ambil data pelanggan sebelum diupdate untuk mengecek perubahan status
+        $old = $this->getById($data['id']);
+
         $this->db->query('UPDATE customers SET name = :name, whatsapp = :whatsapp, email = :email, username = :username, address = :address, latitude = :latitude, longitude = :longitude, package_id = :package_id, custom_price = :custom_price, mikrotik_router_id = :mikrotik_router_id, installation_date = :installation_date, due_date = :due_date, status = :status WHERE id = :id');
 
         $this->db->bind(':id', $data['id']);
@@ -94,7 +97,22 @@ class CustomerModel {
         $this->db->bind(':due_date', $data['due_date']);
         $this->db->bind(':status', $data['status']);
 
-        return $this->db->execute();
+        $result = $this->db->execute();
+
+        // Jika berhasil update dan status berubah, catat di log
+        if ($result && $old && $old->status != $data['status']) {
+            $status = $data['status'];
+            $action = ($status == 'isolated') ? 'isolir' : (($status == 'active') ? 'aktif' : 'nonaktif');
+            $desc = 'Status pelanggan diubah secara manual dari ' . strtoupper($old->status) . ' menjadi ' . strtoupper($status);
+            
+            $this->db->query('INSERT INTO customer_logs (customer_id, action, description) VALUES (:cid, :action, :desc)');
+            $this->db->bind(':cid', $data['id']);
+            $this->db->bind(':action', $action);
+            $this->db->bind(':desc', $desc);
+            $this->db->execute();
+        }
+
+        return $result;
     }
 
     public function updatePhotos($id, $photo_profile, $photo_ktp) {
@@ -153,10 +171,25 @@ class CustomerModel {
      * Update customer status (active/inactive/isolated)
      */
     public function updateStatus($id, $status) {
+        $old = $this->getById($id);
+
         $this->db->query('UPDATE customers SET status = :status WHERE id = :id');
         $this->db->bind(':status', $status);
         $this->db->bind(':id', $id);
-        return $this->db->execute();
+        $result = $this->db->execute();
+
+        if ($result && $old && $old->status != $status) {
+            $action = ($status == 'isolated') ? 'isolir' : (($status == 'active') ? 'aktif' : 'nonaktif');
+            $desc = 'Status pelanggan diubah dari ' . strtoupper($old->status) . ' menjadi ' . strtoupper($status);
+            
+            $this->db->query('INSERT INTO customer_logs (customer_id, action, description) VALUES (:cid, :action, :desc)');
+            $this->db->bind(':cid', $id);
+            $this->db->bind(':action', $action);
+            $this->db->bind(':desc', $desc);
+            $this->db->execute();
+        }
+
+        return $result;
     }
 
     /**
