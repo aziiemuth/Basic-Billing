@@ -247,7 +247,7 @@ class AdminInvoiceController extends Controller {
             
             // Kirim notifikasi WA pelunasan manual
             if (!empty($customer->whatsapp)) {
-                WhatsappService::sendPaymentSuccess($customer->id, $customer->whatsapp, $customer->name, $invoice->invoice_number, $invoice->total_amount, $invoice->billing_month);
+                WhatsappService::sendPaymentSuccess($customer->id, $customer->whatsapp, $customer->name, $invoice->invoice_number, $invoice->total_amount, $invoice->billing_month, 'Tunai');
             }
 
             $pppoeModel = $this->model('PppoeSecretModel');
@@ -287,10 +287,11 @@ class AdminInvoiceController extends Controller {
         exit;
     }
 
+
     // =========================================================================
-    // AJAX: Kirim Notifikasi WA Tagihan Manual via Fonnte API
+    // AJAX: Kirim Notifikasi WA Pengingat Jatuh Tempo
     // =========================================================================
-    public function sendManualWA($invoiceId) {
+    public function sendReminderWA($invoiceId) {
         header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode(['success' => false, 'message' => 'Invalid request.']);
@@ -314,20 +315,17 @@ class AdminInvoiceController extends Controller {
             exit;
         }
 
-        $ok = WhatsappService::sendNewInvoice(
+        $ok = WhatsappService::sendPaymentReminder(
             $customer->id,
             $customer->whatsapp,
             $customer->name,
-            $invoice->invoice_number,
             $invoice->total_amount,
-            $invoice->billing_month,
             $invoice->due_date
         );
 
         if ($ok) {
-            echo json_encode(['success' => true, 'message' => 'Pesan tagihan berhasil dikirim ke WhatsApp ' . $customer->name . '.']);
+            echo json_encode(['success' => true, 'message' => 'Pesan pengingat tagihan berhasil dikirim ke WhatsApp ' . $customer->name . '.']);
         } else {
-            // WA_ENABLED = false: pesan masuk antrian pending (tidak error fatal)
             if (!defined('WA_ENABLED') || !WA_ENABLED) {
                 echo json_encode(['success' => false, 'message' => 'WA Gateway belum aktif. Aktifkan WA_ENABLED=true di .env untuk kirim via Fonnte.']);
             } else {

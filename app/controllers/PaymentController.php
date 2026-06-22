@@ -198,7 +198,8 @@ class PaymentController extends Controller {
             $customer->name,
             $invoice->invoice_number,
             $invoice->total_amount,
-            $invoice->billing_month
+            $invoice->billing_month,
+            'Online (Payment Gateway)'
         );
     }
 }

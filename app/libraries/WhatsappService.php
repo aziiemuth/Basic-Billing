@@ -201,14 +201,14 @@ class WhatsappService {
     /**
      * Kirim notifikasi pembayaran lunas
      */
-    public static function sendPaymentSuccess($customerId, $phone, $customerName, $invoiceNumber, $amount, $billingMonth) {
+    public static function sendPaymentSuccess($customerId, $phone, $customerName, $invoiceNumber, $amount, $billingMonth, $paymentMethod = 'Sistem') {
         $bulan = self::indonesianMonth(date('n', strtotime($billingMonth . '-01')));
         $tahun = date('Y', strtotime($billingMonth . '-01'));
         $nominal = 'Rp ' . number_format($amount, 0, ',', '.');
 
         $message = "*Pembayaran Berhasil*\n\n"
                  . "Halo *{$customerName}*,\n"
-                 . "Kami telah menerima pembayaran tagihan internet Anda.\n\n"
+                 . "Kami telah menerima pembayaran tagihan internet Anda via *{$paymentMethod}*.\n\n"
                  . "Detail Pembayaran:\n"
                  . "No. Invoice : {$invoiceNumber}\n"
                  . "Periode     : {$bulan} {$tahun}\n"

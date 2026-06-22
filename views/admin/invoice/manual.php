@@ -156,28 +156,24 @@
                                 <div class="d-flex justify-content-end flex-nowrap gap-1">
                                     <?php if ($hasInvoice): ?>
                                         <!-- Jika sudah ada invoice -->
-                                        <!-- 1. Kirim WA Tagihan -->
+                                        <!-- 1. Kirim Pengingat Tagihan -->
                                         <?php if ($hasWa): ?>
-                                        <button class="btn btn-sm btn-outline-success border-opacity-25 d-flex align-items-center gap-1"
-                                                id="btn-wa-<?php echo $inv->id; ?>"
-                                                title="<?php echo (defined('WA_ENABLED') && WA_ENABLED) ? 'Kirim via Fonnte API' : 'Buka WhatsApp Web'; ?>"
-                                                onclick="sendManualWA(
+                                        <button class="btn btn-sm btn-outline-info border-opacity-25 d-flex align-items-center gap-1"
+                                                id="btn-reminder-<?php echo $inv->id; ?>"
+                                                title="<?php echo (defined('WA_ENABLED') && WA_ENABLED) ? 'Kirim Pengingat via Fonnte API' : 'Buka WhatsApp Web'; ?>"
+                                                onclick="sendReminderWA(
                                                     <?php echo $inv->id; ?>,
                                                     '<?php echo htmlspecialchars(addslashes($inv->whatsapp), ENT_QUOTES); ?>',
                                                     '<?php echo htmlspecialchars(addslashes($inv->customer_name), ENT_QUOTES); ?>',
-                                                    '<?php echo htmlspecialchars($inv->customer_code); ?>',
-                                                    '<?php echo htmlspecialchars(addslashes($inv->package_name ?? ''), ENT_QUOTES); ?>',
                                                     '<?php echo $amountFormatted; ?>',
-                                                    '<?php echo htmlspecialchars($inv->invoice_number); ?>',
-                                                    '<?php echo htmlspecialchars($inv->billing_month); ?>',
                                                     '<?php echo htmlspecialchars($inv->due_date); ?>'
                                                 )">
-                                            <i class="bi bi-whatsapp"></i>
-                                            <span class="d-none d-md-inline">Kirim WA</span>
+                                            <i class="bi bi-bell"></i>
+                                            <span class="d-none d-md-inline">Pengingat</span>
                                         </button>
                                         <?php else: ?>
                                         <button class="btn btn-sm btn-outline-secondary border-opacity-25" disabled title="Nomor WA tidak tersedia">
-                                            <i class="bi bi-whatsapp"></i>
+                                            <i class="bi bi-bell"></i>
                                         </button>
                                         <?php endif; ?>
 
@@ -490,34 +486,30 @@ function generateInvoice(customerId, btn) {
             let btnWa = '';
             if (phone !== '-') {
                 btnWa = `
-                    <button class="btn btn-sm btn-outline-success border-opacity-25 d-flex align-items-center gap-1"
-                            id="btn-wa-${data.invoice.id}"
-                            title="${WA_ENABLED ? 'Kirim via Fonnte API' : 'Buka WhatsApp Web'}"
-                            onclick="sendManualWA(
+                    <button class="btn btn-sm btn-outline-info border-opacity-25 d-flex align-items-center gap-1"
+                            id="btn-reminder-${data.invoice.id}"
+                            title="${WA_ENABLED ? 'Kirim Pengingat via Fonnte API' : 'Buka WhatsApp Web'}"
+                            onclick="sendReminderWA(
                                 ${data.invoice.id},
                                 '${phone.replace(/'/g, "\\'")}',
                                 '${name.replace(/'/g, "\\'")}',
-                                '${code}',
-                                '${data.invoice.package_name.replace(/'/g, "\\'")}',
                                 '${data.invoice.amount_formatted}',
-                                '${data.invoice.invoice_number}',
-                                '${data.invoice.billing_month}',
                                 '${data.invoice.due_date}'
                             )">
-                        <i class="bi bi-whatsapp"></i>
-                        <span class="d-none d-md-inline">Kirim WA</span>
+                        <i class="bi bi-bell"></i>
+                        <span class="d-none d-md-inline">Pengingat</span>
                     </button>
                 `;
             } else {
                 btnWa = `
                     <button class="btn btn-sm btn-outline-secondary border-opacity-25" disabled title="Nomor WA tidak tersedia">
-                        <i class="bi bi-whatsapp"></i>
+                        <i class="bi bi-bell"></i>
                     </button>
                 `;
             }
             
             colActions.innerHTML = `
-                <div class="d-flex justify-content-end flex-wrap gap-2">
+                <div class="d-flex justify-content-end flex-nowrap gap-1">
                     ${btnWa}
                     <button class="btn btn-sm btn-outline-warning border-opacity-25 d-flex align-items-center gap-1"
                             id="btn-cash-${data.invoice.id}"
@@ -546,11 +538,12 @@ function generateInvoice(customerId, btn) {
     });
 }
 
+
 // ====================================================================
-// Kirim WA Tagihan
+// Kirim WA Pengingat
 // ====================================================================
-function sendManualWA(invoiceId, phone, name, customerId, pkg, amount, invoiceNumber, billingMonth, dueDate) {
-    const btn = document.getElementById('btn-wa-' + invoiceId);
+function sendReminderWA(invoiceId, phone, name, amount, dueDate) {
+    const btn = document.getElementById('btn-reminder-' + invoiceId);
 
     if (WA_ENABLED) {
         // --- Kirim via Fonnte API ---
@@ -558,7 +551,7 @@ function sendManualWA(invoiceId, phone, name, customerId, pkg, amount, invoiceNu
         btn.disabled  = true;
         btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
 
-        fetch(APP_URLROOT + '/AdminInvoiceController/sendManualWA/' + invoiceId, {
+        fetch(APP_URLROOT + '/AdminInvoiceController/sendReminderWA/' + invoiceId, {
             method:  'POST',
             headers: { 'X-CSRF-Token': CSRF_TOKEN, 'Content-Type': 'application/json' },
         })
@@ -581,11 +574,8 @@ function sendManualWA(invoiceId, phone, name, customerId, pkg, amount, invoiceNu
         let p = phone.replace(/[^0-9]/g, '');
         if (p.startsWith('0')) p = '62' + p.substring(1);
 
-        const tgl        = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-        const bulan      = new Date(billingMonth + '-01').toLocaleDateString('id-ID', { year: 'numeric', month: 'long' });
         const jatuhTempo = new Date(dueDate).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-
-        const text = `=========================\n   * ${SITE_NAME} *\n=========================\n   *STRUK TAGIHAN BULANAN*\n-------------------------\nTanggal    : ${tgl}\nPelanggan  : *${name}*\nID         : ${customerId}\nBulan      : ${bulan}\nNo. Invoice: ${invoiceNumber}\n-------------------------\n*Rincian Layanan:*\n- Paket WiFi    : ${pkg}\n- Tarif Bulanan : Rp ${amount}\n-------------------------\n*TOTAL HARUS DIBAYAR:*\n*Rp ${amount}*\nJatuh Tempo : *${jatuhTempo}*\n=========================\n\nMohon lakukan pembayaran sebelum tanggal jatuh tempo agar koneksi internet Anda tetap aktif.\n\nTerima kasih\n_${SITE_NAME}_`;
+        const text = `*Pengingat Tagihan*\n\nHalo *${name}*,\nTagihan internet Anda sebesar *Rp ${amount}* akan jatuh tempo pada *${jatuhTempo}*.\n\nSegera lakukan pembayaran agar internet Anda tetap aktif.\n\n_ ${SITE_NAME} _`;
 
         window.open('https://wa.me/' + p + '?text=' + encodeURIComponent(text), '_blank');
         showToast('warning', 'WA Gateway Belum Aktif',
