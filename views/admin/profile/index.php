@@ -205,21 +205,9 @@
                             <textarea class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="invoice_footer" rows="2"><?php echo htmlspecialchars($data['settings']->invoice_footer); ?></textarea>
                         </div>
 
-                        <div class="col-md-6 mt-4">
-                            <label class="form-label text-secondary small">Jadwal Pengingat WA (Hari Sebelum Jatuh Tempo)</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">H-</span>
-                                <input type="number" class="form-control bg-dark bg-opacity-50 text-white border-secondary border-opacity-25" name="wa_reminder_days" value="<?php echo htmlspecialchars($data['settings']->wa_reminder_days); ?>">
-                                <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">Hari</span>
-                            </div>
-                        </div>
 
-                        <div class="col-md-6 mt-4 d-flex align-items-end">
-                            <div class="form-check form-switch w-100 p-3 rounded bg-dark bg-opacity-25 border border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
-                                <label class="form-check-label text-white small" for="auto_isolate">Isolir Otomatis Pelanggan</label>
-                                <input class="form-check-input" type="checkbox" role="switch" id="auto_isolate" name="auto_isolate" value="1" <?php echo $data['settings']->auto_isolate ? 'checked' : ''; ?>>
-                            </div>
-                        </div>
+
+
                         
                         <div class="col-12 mt-4 d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary px-4"><i class="bi bi-save me-2"></i> Simpan Pengaturan</button>
