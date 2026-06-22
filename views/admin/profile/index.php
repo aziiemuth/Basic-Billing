@@ -264,6 +264,14 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-test on page load to prevent blank status
+    setTimeout(() => {
+        let btn = document.getElementById('btn-retest-mt');
+        if(btn) btn.click();
+    }, 500);
+});
+
 document.getElementById('btn-retest-mt').addEventListener('click', function() {
     var btn = this;
     btn.disabled = true;

@@ -12,9 +12,13 @@ class AdminProfileController extends Controller {
      * Halaman utama profile admin + status koneksi MikroTik + Pengaturan Sistem
      */
     public function index() {
-        // Test koneksi MikroTik secara langsung saat halaman dimuat
-        $mikrotikService = new MikrotikService();
-        $mtResult        = $mikrotikService->testConnection(null); // dari config.php
+        // Menghindari test koneksi sinkron pada page load agar tidak timeout. Status akan dicek via AJAX (Test Ulang).
+        $mtResult = [
+            'success' => false,
+            'message' => 'Status belum dicek. Silakan klik "Test Ulang".',
+            'host' => defined('MIKROTIK_HOST') ? MIKROTIK_HOST : '',
+            'port' => defined('MIKROTIK_PORT') ? MIKROTIK_PORT : 8728
+        ];
 
         // Cek juga apakah ada router di database
         $routerModel = $this->model('MikrotikRouterModel');
